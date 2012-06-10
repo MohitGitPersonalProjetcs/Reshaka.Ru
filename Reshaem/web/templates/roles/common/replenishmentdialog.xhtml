@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+
+        <ui:composition>
+
+            <p:dialog onHide="clearRepFiles();hideRepUploadControl();" onShow="showRepUploadControl();" header="Пополнение баланса" widgetVar="replenishment_dlg" position="top" rendered="#{webSession.group == 2}" >
+
+                <h:panelGroup id="replenishment_dialog_content">
+                    <p:tabView cache="false" id="tab_view_r">
+
+                        <p:tab id="tab1" title="Яндекс Деньги" rendered="#{webSession.group == 2}">
+                            <h:form >
+                                <!--                                <h:panelGrid columns="3" id="yandex_replenishment" width="430">-->
+                                <h:outputText value="Сумма: " />  
+                                <h:inputText value="#{replenishmentBean.money}">
+                                    <p:ajax event="keyup" update="qwerty" />
+                                </h:inputText>
+<!--                                    <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple;" onclick="replenishment_dlg.hide()" >Пополнить </h:outputLink>-->
+                                <!--                                
+                                </h:panelGrid>-->
+                                <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple;" onclick="replenishment_dlg.hide()" ><h:commandButton value="Пополнить" /></h:outputLink>
+
+                                <p:scrollPanel style="width: 450px; height: 150px;" mode="native" >
+                                    <span style="font-weight: bold;">Правила пополнения счета</span>
+                                    <br/>
+                                    <div style="font-style: italic;">
+                                        1) Если сумма для оплаты - число нецелое, то отделять дробную часть следует точкой, незначищие нули в конце писать не надо. <br/>
+                                        <br/>
+                                        2) Для перечисления средств через Яндекс.Деньги просто укажите сумму в форме выше и нажмите кнопку "пополнить".
+                                    </div>
+                                    <br/>
+                                    <div style="color: red; font-style: italic;">
+                                        3) Обратите внимание, что время выполнения платежа 1-3 минуты. После перехода в ваш кошелек платеж должен быть выполнен в течение 20 минут, иначе он не будет обработан в автоматическом режиме! <br/>
+                                        <br/>
+                                        4) Пожалуйста, не пополняйте счет снова, пока не пройдет предыдущий платеж! Если через 20 минут счет в системе не был пополнен автоматически, пожалуйста, оформите заявку на ввод средств!
+                                    </div>
+                                </p:scrollPanel>
+
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab2" title="Webmoney" rendered="#{webSession.group == 2}">
+                            <!--                            <h:form >-->
+                            <!--                                <h:panelGrid columns="3" id="webmoney_replenishment" width="430">-->
+                            <!--                                    <h:outputText value="Сумма: " />  -->
+                            <!--                                    <p:inputText>-->
+                            <!--                                        <p:ajax event="keyup" update="qwerty" />-->
+                            <!--                                    </p:inputText>-->
+                            <!--                                    <h:outputLink target="blank_" id="qwerty2"  style="color: purple;" onclick="replenishment_dlg.hide()" >Пополнить </h:outputLink>-->
+
+
+                            <!--                                </h:panelGrid>-->
+                            <!--                            <h:commandLink  value="test"  action="https://merchant.webmoney.ru/lmi/payment.asp" >
+                                                            <f:param name="LMI_PAYMENT_AMOUNT" value="1" />
+                                                            <f:param name="LMI_PAYMENT_DESC" value="test"/>
+                                                            <f:param  name="LMI_PAYMENT_NO" value="1"/>
+                                                            <f:param  name="LMI_PAYEE_PURSE" value="R125208907646"/>
+                                                            <f:param  name="LMI_SIM_MODE" value="0"/>
+                                                        </h:commandLink>-->
+
+<!--                            <p:inputText value="#{replenishmentBean.test}">
+                                <p:ajax event="keyup" update="html_inj" />
+                            </p:inputText>-->
+
+
+                            <form id="ppayp" name="ppappa" method="POST" action="https://merchant.webmoney.ru/lmi/payment.asp">
+                                Сумма:
+
+                                <input type="text" name="LMI_PAYMENT_AMOUNT" />
+                                <input type="hidden" name="LMI_PAYMENT_DESC" value="replenishment"/>
+                                <input type="hidden" name="LMI_PAYMENT_NO" value="#{webSession.id}"/>
+                                <input type="hidden" name="LMI_PAYEE_PURSE" value="R125208907646"/>
+                                <input type="hidden" name="LMI_SIM_MODE" value="0"/>
+
+
+                                <input type="submit" value="Пополнить"/>
+
+                            </form>
+                            <!--                                <h:form>
+                                                                <p:commandLink value="fwertwert"  action="#{replenishmentBean.linkForWebmoneyPayment}">
+                                                                    <f:param name="LMI_PAYMENT_AMOUNT" value="1" />
+                                                                    <f:param name="LMI_PAYMENT_DESC" value="test"/>
+                                                                    <f:param  name="LMI_PAYMENT_NO" value="1"/>
+                                                                    <f:param  name="LMI_PAYEE_PURSE" value="R125208907646"/>
+                                                                    <f:param  name="LMI_SIM_MODE" value="0"/>
+                                                                </p:commandLink>
+                                                            </h:form>-->
+                            <!--                            </h:form>-->
+
+                            <p:scrollPanel style="width: 450px; height: 150px;" mode="native" >
+                                <span style="font-weight: bold;">Правила пополнения счета</span>
+                                <br/>
+                                <div style="font-style: italic;">
+                                    1) Если сумма для оплаты - число нецелое, то отделять дробную часть следует точкой, незначищие нули в конце писать не надо.  <br/>
+                                    <br/>
+                                    2)Платежи выполняются через Merchant WebMoney Transfer. На сегодняшний день доступно пополнение только с кошелька WMR. 
+                                </div>
+
+                            </p:scrollPanel>
+
+                        </p:tab>
+
+                        <p:tab id="tab3" title="Заявка на ввод"  rendered="#{webSession.group == 2}">
+                            <h:form>
+                                <h:panelGrid columns="2" id="in_replenishment" width="430">
+                                    <h:outputText value="Сумма: " />  
+                                    <p:inputText value="#{replenishmentRequestBean.money}">
+                                        <!--                                        <p:ajax event="keyup" update="qwerty" />-->
+                                    </p:inputText>
+                                    <h:outputText value="Тип платежа: " /> 
+                                    <p:selectOneMenu value="#{replenishmentRequestBean.type}" >  
+                                        <f:selectItem itemLabel="Оплата мобильного" itemValue="mobile" />  
+                                        <f:selectItem itemLabel="Бнковский перевод" itemValue="bank" />  
+                                        <f:selectItem itemLabel="Яндекс Деньги" itemValue="yandex-money" />  
+                                        <f:selectItem itemLabel="Webmoney" itemValue="webmoney" />  
+                                        <f:selectItem itemLabel="Другое" itemValue="other" />  
+                                    </p:selectOneMenu>  
+                                    <!--                                    <h:outputLink target="blank_" id="qwerty3"  style="color: purple;" onclick="replenishment_dlg.hide()" >Пополнить </h:outputLink>-->
+                                </h:panelGrid>
+                                <h:panelGroup>
+                                    <p:inputTextarea autoResize="false" value="#{replenishmentRequestBean.text}" style="width: 100%;" id="in_inp" />
+                                    <p:watermark for="in_inp" value="Комментарий. Максимально 255 символов" />
+                                </h:panelGroup>
+
+
+
+                                <h:panelGroup id="repUploadControl">
+                                    <p>Квитанция:</p>
+                                    <p:fileUpload style="width: 100%;" fileUploadListener="#{replenishmentRequestBean.fileUploadController.handleFileUpload}" auto="true"
+                                                  mode="advanced"
+                                                  multiple="true" rendered="#{replenishmentRequestBean.fileUploadController.displayUploadControl}"
+                                                  uploadLabel="Загрузить условие" label="Обзор..." update="uploadedRepFiles, :growl"
+                                                  />
+                                    <h:panelGroup id="uploadedRepFiles" style="max-height: 100px;">
+                                        <p:dataList var="file" value="#{replenishmentRequestBean.fileUploadController.files}">
+                                            #{file.fileName} (#{file.size} байт)
+                                        </p:dataList>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <p:remoteCommand name="hideRepUploadControl" process="@this" actionListener="#{replenishmentRequestBean.fileUploadController.hideUploadControl}" update="repUploadControl,:growl"/>
+                                <p:remoteCommand name="showRepUploadControl" process="@this" actionListener="#{replenishmentRequestBean.fileUploadController.showUploadControl}" update="repUploadControl,:growl"/>
+                                <p:remoteCommand name="clearRepFiles"  process="@this" actionListener="#{replenishmentRequestBean.fileUploadController.clearFiles}" update="uploadedRepFiles"/>
+
+
+                                <hr/>
+                                <br/>
+                                <div style="text-align: right;" >
+                                    <p:commandButton value="Подать заявку" update=":growl" oncomplete="hideRepUploadControl();replenishment_dlg.hide();"  actionListener="#{replenishmentRequestBean.addReplenishmentRequest()}" />
+                                </div>
+                            </h:form>
+                        </p:tab>
+
+                    </p:tabView>
+                </h:panelGroup>
+
+
+            </p:dialog>
+
+            <script type="text/javascript">  
+            
+                
+                function redirectToYandex(xhr, status, args) {
+                    //                    if(args.ok != undefined) {  
+                    //                        window.location = args.ok;
+                    //                    }
+                    //                    else {
+                    //                        window.location = "http://yandex.ru";
+                    //                    }
+                    //                    alert(status)
+                    //                    alert(args);
+                    alert(document.getElementById("yandex_hidden").value);
+           
+                }
+                
+                function test(xhr, status, args) {
+                    window.location = "http://yandex.ru"
+                }
+                
+            </script>
+
+
+
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+            <p:dialog header="Регистрация решающего" id="partner_dialog" widgetVar="partner_dlg" width="500" position="top" onHide="clearUrlParamenters()">
+                <h:form>
+                <h:panelGrid columns="2" width="470">
+                    <h:panelGroup style="width: 250px;" rendered="false">
+
+                        <h:panelGrid columns="2" columnClasses="label, value">  
+
+
+
+                            <h:outputLabel for="login2q" value="Email: *" />  
+                            <h:panelGroup>
+                                <p:inputText id="login2q"   
+                                             value="#{userBean.login}" required="true" label="Login">  
+                                    <p:ajax event="keyup" update="tickq"   
+                                            listener="#{userBean.updatePicturePath()}"/>  
+
+                                    <f:validateLength minimum="0" />  
+                                </p:inputText>
+                                <p:graphicImage id="tickq" value="#{userBean.pathToPicture}" style="vertical-align: middle;"/>
+                            </h:panelGroup>
+
+                            <h:outputLabel for="password3q" value="Пароль: *" />  
+                            <p:password id="password3q"   
+                                        value="#{userBean.password}" required="true" label="Password" feedback="true" match="passwordConfirmq">  
+                                <f:validateLength minimum="2" />  
+                            </p:password>  
+
+                            <h:outputLabel for="passwordConfirmq" value="Еще раз: *" />
+                            <p:password id="passwordConfirmq"   
+                                        value="#{userBean.password}" required="true" label="Password 2" feedback="false">  
+                                <f:validateLength minimum="2" />  
+                            </p:password>
+
+<!--                            <h:outputLabel for="emailq" value="Email: *" />  
+                            <p:inputText id="emailq"   
+                                         value="#{userBean.email}" required="true" label="Email">  
+                                <f:validateLength minimum="2" />  
+                            </p:inputText>  -->
+
+                            <h:outputText value="Телефон: " />  
+                            <p:inputMask value="#{userBean.phone}" mask="(999) 999-9999" required="true" label="phone"/> 
+
+                            <h:outputLabel for="icqq" value="ICQ: " />  
+                            <p:inputText id="icqq"   
+                                         value="#{userBean.icq}" required="false" label="ICQ">  
+                                <f:validateLength minimum="5" />  
+                            </p:inputText>  
+
+                            <h:outputLabel for="skypeq" value="Skype: " />  
+                            <p:inputText id="skypeq"   
+                                         value="#{userBean.skype}" required="false" label="skype">  
+                                <f:validateLength minimum="2" />  
+                            </p:inputText>  
+                            <h:outputLabel for="educ" value="Образование"/>
+                            <p:inputText id="educ" value="#{userBean.education}"/>
+
+                        </h:panelGrid> 
+                    </h:panelGroup>
+
+
+                    <h:panelGroup style="width: 200px;">
+                        <h:panelGrid columns="2">
+                        <h:panelGrid columns="1">
+                            <h:outputText value="Обо мне" />
+                            <p:inputTextarea id="partner_textarea" value="#{userBean.additionalInformation}" cols="40" rows="6"/>
+                            <p:watermark for="partner_textarea" value="Оставлять здесь контактные данные категорически запрещено!" /> 
+
+                        </h:panelGrid>
+                        <h:panelGroup>
+                            <h:outputLabel value="Я разбираюсь в" rendered="false" />
+                        <p:scrollPanel style="width:150px;height:100px" rendered="false">  
+
+<!--                            <p:selectManyCheckbox  value="#{userBean.selectedSubjects}" 
+                                                  layout="pageDirection">  
+                                <f:selectItems value="#{makeOrderBean.allSubjects}" />  
+                            </p:selectManyCheckbox>  -->
+                            
+<!--                            <p:selectOneMenu value="#{makeOrderBean.subject}" converter="subjectConverter" effectDuration="1">  
+                            <f:selectItems value="#{makeOrderBean.allSubjects}" var="subject" itemLabel="#{subject.subjectName}"/>  
+                        </p:selectOneMenu> -->
+
+                        </p:scrollPanel>  
+                        </h:panelGroup>
+                        </h:panelGrid>
+
+                    </h:panelGroup>
+                </h:panelGrid>
+                <hr/>
+                <div style="float: right;">
+                    <p:commandButton value="Отправить заявку!" update=":growl,:main_panel" 
+                                      oncomplete="partner_dlg.hide()" />
+                </div>
+                </h:form>
+            </p:dialog>
+        </ui:composition>
+    </body>
+</html>

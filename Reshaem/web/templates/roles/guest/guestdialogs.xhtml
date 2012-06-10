@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+
+            <p:dialog onShow="onLoginDialogShow()" rendered="#{!webSession.signedIn}" id="login_dialog" header="Login" widgetVar="dlg_login" modal="true" resizable="false" hideEffect="fade" onHide="setParameter('step','0')">   
+                <div style="font-size: large" id="login_dialog_message"></div>
+
+                <h:form id="login_form" >
+                    <h:panelGrid columns="2">
+                        <h:panelGroup>
+
+                            <script id="openIdScript"  type="text/javascript"></script>
+                            <iframe  
+                                style="width:359px;height:200px;" scrolling="no" frameborder="no" id="openIdIframe" ></iframe>
+                            <img src="images/delimiter.jpg" />
+
+                        </h:panelGroup>
+
+                        <h:panelGrid columns="2" cellpadding="5" width="359">  
+                            <h:outputLabel for="email_w" value="Email: *" style="font-size: large;" />  
+                            <p:inputText value="#{userBean.email}"    
+                                         id="email_w" required="true" label="username" />  
+
+                            <h:outputLabel for="password1" value="Пароль: * " style="font-size: large;" />  
+                            <p:password value="#{userBean.password}"   
+                                        id="password1" required="true" label="password" feedback="false"/>  
+
+
+                            <!--                                                     update=":main_panel,:growl,:makeorder_dialog"   -->
+
+                            <f:facet name="footer">  
+                                <table style="width: 100%">
+                                    <tr>
+                                        <td title="Не запоминать сеанс входа"><p:selectBooleanCheckbox value="#{userBean.disableCookies}"/> Чужой компьютер</td>
+                                        <td style="width: 20%;"><div style="text-align: right;">
+                                                <p:commandButton value="Войти"  
+                                                                 actionListener="#{userBean.logInByEmail}"   
+                                                                 oncomplete ="handleLoginRequest(xhr,status,args)"
+                                                                 />    
+                                            </div></td>
+                                    </tr>
+                                </table>
+                                <h:outputLink value="javascript:void()" onclick="dlg_recover.show()" >Забыли пароль ?</h:outputLink>
+                                <h:outputText />
+                                <div><h:outputLink value="javascript:void();" style="font-size: large; color: blue;" onclick="dlg_register.show()">Регистрация</h:outputLink>  </div>
+                                
+                            </f:facet>  
+                        </h:panelGrid>  
+                    </h:panelGrid>
+                </h:form>
+
+
+            </p:dialog>
+
+            <script type="text/javascript">  
+                function handleLoginRequest(xhr, status, args) {  
+                    //alert(status + "-"+xhr + "-"+args.loggedIn);
+                    //alert("args.validationFailed = " + args.validationFailed);
+                    //alert("launched");
+                    //  if (!args.validationFailed ) alert("ok");
+                    // if (args.validationFailed) alert("ok2");
+                    if(args.validationFailed || !args.loggedIn) {  
+                        //do something if auth failed
+                        jQuery('#login_dialog').effect("shake", { times:3 }, 100);
+                    } else {  
+                        //  alert("i should hide dialog");
+                        logInButtonClicked();
+                        //dlg_login.hide();
+                    }  
+                }
+                
+                function test2(){
+                    alert("test");
+                }
+                
+            </script>
+
+
+
+            <p:dialog rendered="#{!webSession.signedIn}" id="registration_dialog" header="Регистрация" widgetVar="dlg_register" onShow="dlg_login.hide();" modal="true" width="344" resizable="false" onHide="setParameter('step','0')">  
+                <h:form id="registration_form">  
+
+                    <h:panelGrid columns="2">  
+
+                        <h:outputLabel for="email1" value="Email: *" style="color: blue;"  />  
+                        <h:panelGroup>
+
+                            <p:inputText id="email1"   
+                                         value="#{userBean.email}" required="true" label="Email">  
+                                <p:ajax event="keyup" update="tick"   
+                                        listener="#{userBean.updatePicturePath()}"/>  
+
+                                <f:validateLength minimum="0" />  
+                            </p:inputText>
+                            <p:graphicImage id="tick" value="#{userBean.pathToPicture}" style="vertical-align: middle;"/>
+                        </h:panelGroup>
+
+
+                        <h:outputLabel for="password2" value="Пароль: *" style="color: blue;" />  
+                        <p:password id="password2"   
+                                    value="#{userBean.password}" required="true" label="Пароль" feedback="false" match="passwordConfirm">  
+                            <f:validateLength minimum="2" />  
+                        </p:password>  
+
+
+                        <h:outputLabel for="passwordConfirm" value="Подтвердить: *" style="color: blue;" />
+                        <p:password id="passwordConfirm"   
+                                    value="#{userBean.password}" required="true" label="Подтверждение пароля" feedback="false">  
+                            <f:validateLength minimum="2" />  
+                        </p:password>
+                        <h:outputText/> 
+<!--                        <h:panelGroup style="font-size: larger;" >
+                            <p:selectBooleanCheckbox value="#{userBean.agreed}">  
+                                <p:ajax process="@this" update="confirm_button3"/>  
+                            </p:selectBooleanCheckbox> 
+
+                            C 
+                            <h:link target="_blank" outcome="rules.xhtml" value="правилами" style="color:red;" />
+                            ознакомлен
+                        </h:panelGroup>-->
+                        <p:watermark for="passwordConfirm" value="пароль еще раз" />
+                        <p:watermark for="email1" value="ваша почта" />
+                        <p:watermark for="password2" value="пароль" />
+
+                    </h:panelGrid>  
+<!--          disabled="#{!userBean.agreed}"-->
+                    <div style="text-align: right;" >
+                        <p:commandButton id="confirm_button3"
+                               
+                                         value="Зарегистрироваться !" 
+                                         update=":growl"
+                                         actionListener="#{userBean.registerByEmail}" 
+                                         oncomplete="handleRegisterRequest(xhr, status, args)" />  
+
+                    </div>
+                </h:form> 
+            </p:dialog> 
+
+            <p:dialog rendered="#{!webSession.signedIn}" id="recover_dialog" header="Восстановление пароля" widgetVar="dlg_recover" onShow="dlg_login.hide();" modal="true" width="344" resizable="false" onHide="setParameter('step','0')">  
+                <h:form id="recovery_form">  
+                    Введите Email
+                    <h:panelGrid columns="2">
+                        <h:outputText value="email" />
+                        <p:inputText value="#{userBean.recoveryEmail}"/>
+
+                    </h:panelGrid>
+                    <div style="text-align: right;">
+                        <p:commandButton value="Восстановить" oncomplete="handleRecoverRequest(xhr, status, args)"
+                                         actionListener="#{userBean.recoverPassword(userBean.recoveryEmail)}"
+                                         update=":growl"
+                                         />
+                    </div>
+                </h:form> 
+            </p:dialog> 
+
+
+            <script type="text/javascript">  
+                function handleRegisterRequest(xhr, status, args) {  
+                    if(args.validationFailed || !args.registered) {  
+                        //do something if auth failed
+                        jQuery('#registration_dialog').effect("shake", { times:3 }, 100);
+                    } else {  
+                        //dlg_register.hide();
+                        logInButtonClicked();
+                    }  
+                }  
+                
+                function handleRecoverRequest(xhr, status, args) {  
+                    if(args.validationFailed || !args.recovery) {  
+                        //do something if auth failed
+                        jQuery('#recover_dialog').effect("shake", { times:3 }, 100);
+                    } else {  
+                        dlg_recover.hide();
+                    }  
+                }  
+                
+            </script>
+
+
+
+
+        </ui:composition>
+    </body>
+</html>

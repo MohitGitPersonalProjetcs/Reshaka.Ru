@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+            <p:confirmDialog id="confirmDialog"
+                             header="Вы выбрали решающего !" 
+                             severity="alert" 
+                             widgetVar="confirmationDeal"
+                             message ="Вы внесли половину цены."
+                             >  
+
+                <p:commandButton id="confirm_b" value="ОК" oncomplete="confirmationDeal.hide()"  />  
+
+            </p:confirmDialog>  
+
+            <p:confirmDialog id="notEnoughMoney"
+                             header="Не достаточно средств" 
+                             severity="alert" 
+                             widgetVar="notEnoughMoney"
+                             message ="Пожалуйста, пополните ваш счет! "
+                             >  
+
+
+                <p:commandButton id="decline_b1" value="OK" onclick="notEnoughMoney.hide()" type="button" />   
+
+            </p:confirmDialog>  
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,371 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Reshaka.Ru :: Chat</title>
+        <link href="#{request.contextPath}/css/default.css" rel="stylesheet" type="text/css" />
+        <style type="text/css">
+            html {
+                height: 98%;
+            }
+            body {
+                height: 98%;
+                font: 11pt Arial, Helvetica, sans-serif; /* Рубленый шрифт текста */
+                margin: 0; /* Отступы на странице */
+                min-width: 720px;
+            }
+            h1 {
+                font-size: 36px; /* Размер шрифта */
+                margin: 0; /* Убираем отступы */
+                color: #fc6; /* Цвет текста */
+            }
+            h2 {
+                margin-top: 0; /* Убираем отступ сверху */
+            }
+            #chatheader { /* Верхний блок */
+                background: #0080c0; /* Цвет фона */
+                /*padding: 10px;  Поля вокруг текста */
+            }
+            #chatsidebar { /* Правая колонка */
+                float: right; /* Обтекание слева */
+                /*border: 1px solid #333;  Параметры рамки вокруг */
+                width: 180px; /* Ширина колонки */
+                padding: 5px; /* Поля вокруг текста */
+                margin: 0px 10px 20px 5px; /* Значения отступов */
+            }
+            #chatcontent { /* Левая колонка */
+                margin: 0px 210px 20px 5px; /* Значения отступов */
+                padding: 5px; /* Поля вокруг текста */
+                /*border: 1px solid #333;  Параметры рамки */
+                height: 97%;
+                min-height: 440px;
+                min-width: 500px;
+            }
+            #chatfooter { /* Нижний блок */
+                background: #333; /* Цвет фона */
+                padding: 5px; /* Поля вокруг текста */
+                color: #fff; /* Цвет текста */
+                clear: left; /* Отменяем действие float */
+            }
+
+            .chat-message .msg-text {
+                margin-left: 2em;
+                color: black;
+            }
+            .chat-message {
+                border-style: dotted;
+                border-color: #e1e1ff;
+                border-width: 0px;
+                border-bottom-width: 1px;
+            }
+
+            /* Hide radio buttons */
+            #periodradio input {
+                display:inline-block;
+            }
+            #periodradio label:after {
+                content:" | ";
+            }
+
+            /* THE SPEECH BUBBLE
+------------------------------------------------------------------------------------------------------------------------------- */
+
+            .triangle-right {
+                position:relative;
+                padding:15px;
+                margin:1em 0 1em;
+                color:#fff;
+                background:#075698; /* default background for browsers without gradient support */
+                /* css3 */
+                background:-webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
+                background:-moz-linear-gradient(#2e88c4, #075698);
+                background:-o-linear-gradient(#2e88c4, #075698);
+                background:linear-gradient(#2e88c4, #075698);
+                -webkit-border-radius:10px;
+                -moz-border-radius:10px;
+                border-radius:10px;
+                margin-left: 10%;
+            }
+
+            /* Variant : for top positioned triangle
+            ------------------------------------------ */
+
+            .triangle-right.top {
+                background:-webkit-gradient(linear, 0 0, 0 100%, from(#075698), to(#2e88c4));
+                background:-moz-linear-gradient(#075698, #2e88c4);
+                background:-o-linear-gradient(#075698, #2e88c4);
+                background:linear-gradient(#075698, #2e88c4);
+                margin-left: 10%;
+            }
+
+            /* THE TRIANGLE
+            ------------------------------------------------------------------------------------------------------------------------------- */
+
+            .triangle-right:after {
+                content:"";
+                position:absolute;
+                bottom:-20px; /* value = - border-top-width - border-bottom-width */
+                left:30px; /* controls horizontal position */
+                border-width:20px 0 0 20px; /* vary these values to change the angle of the vertex */
+                border-style:solid;
+                border-color:#075698 transparent; 
+                /* reduce the damage in FF3.0 */
+                display:block; 
+                width:0;
+            }
+
+            /* Variant : top
+            ------------------------------------------ */
+
+            .triangle-right.top:after {
+                top:-20px; /* value = - border-top-width - border-bottom-width */
+                right:30px; /* controls horizontal position */
+                bottom:auto;
+                left:auto;
+                border-width:20px 20px 0 0; /* vary these values to change the angle of the vertex */
+                border-color:transparent #075698; 
+            }
+
+
+            /* LEFT!!! */
+            .triangle-left {
+                position:relative;
+                padding:15px;
+                margin:1em 0 1em;
+                color:#fff;
+                background:#075698; /* default background for browsers without gradient support */
+                /* css3 */
+                background:-webkit-gradient(linear, 0 0, 0 100%, from(#2e88c4), to(#075698));
+                background:-moz-linear-gradient(#2e88c4, #075698);
+                background:-o-linear-gradient(#2e88c4, #075698);
+                background:linear-gradient(#2e88c4, #075698);
+                -webkit-border-radius:10px;
+                -moz-border-radius:10px;
+                border-radius:10px;
+                margin-right: 10%;
+            }
+
+            /* Variant : for top positioned triangle
+            ------------------------------------------ */
+
+            .triangle-left.top {
+                background:-webkit-gradient(linear, 0 0, 0 100%, from(#075698), to(#2e88c4));
+                background:-moz-linear-gradient(#075698, #2e88c4);
+                background:-o-linear-gradient(#075698, #2e88c4);
+                background:linear-gradient(#075698, #2e88c4);
+                margin-right: 10%;
+            }
+
+            /* THE TRIANGLE
+            ------------------------------------------------------------------------------------------------------------------------------- */
+
+            .triangle-left:after {
+                content:"";
+                position:absolute;
+                bottom:-20px; /* value = - border-top-width - border-bottom-width */
+                left:30px; /* controls horizontal position */
+                border-width:20px 20px 0 0; /* vary these values to change the angle of the vertex */
+                border-style:solid;
+                border-color:#075698 transparent; 
+                /* reduce the damage in FF3.0 */
+                display:block; 
+                width:0;
+            }
+
+            /* Variant : top
+            ------------------------------------------ */
+
+            .triangle-left.top:after {
+                top:-20px; /* value = - border-top-width - border-bottom-width */
+                left:30px; /* controls horizontal position */
+                bottom:auto;
+                right:auto;
+                border-width:20px  0 0 20px; /* vary these values to change the angle of the vertex */
+                border-color:transparent #075698; 
+            }
+
+            .chat-message .right {
+                text-align: left;
+                text-decoration: underline;
+                color: blue;
+            }
+
+            .chat-message .left {
+                text-align: left;
+                text-decoration: underline;
+                color: red;
+            }
+        </style>
+    </h:head>
+
+    <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Handler for .ready() called.
+            setInterval("nextMessage()", 2000); //update the chart every 2000 ms    
+            nextMessage();
+        });           
+        
+        var myLogin = '#{webSession.login}';
+        var myRole = #{webSession.group};
+        
+        function deleteMessage(id) {
+            alert('You cannot delete message with ID='+id+' at the moment. The operation is not supported.');
+        }
+        
+        function updateMessages(xhr, status, args) {
+            if(!args.ok) return;
+            var msgs = eval('('+ args.messages +')');
+            for(i in msgs) {
+                if(msgs[i].fromUserLogin == undefined) continue;
+                
+                var c = 'right';
+                if(msgs[i].fromUserLogin!=myLogin) { c = 'right'; }
+                else { c = 'left'; }
+                
+                var del = '';
+                if(myRole==1 || msgs[i].fromUserLogin==myLogin)
+                    del = '<div style="text-align: right; font-size: smaller;"><a href="javascript:void()" onclick="deleteMessage('+msgs[i].messageId+');">Удалить</a></div>';
+                
+                var att = '';
+                if(msgs[i].attachmentId!=null)
+                    att = '<br/><span style="font-size: smaller;">Сообщение содержит прикрепленный файл:<strong> <a href="download.xhtml?id='
+                    + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
+
+                var html = '<div class="chat-message">'
+                    + '<div class="'+c+'"><label title="Отправлено '+msgs[i].dateSent+' пользователю '+msgs[i].toUserLogin+'"><strong>'+msgs[i].fromUserLogin+'</strong></label>:</div>'
+                    + '\t<div class="msg-text">'+msgs[i].text+' '+ att
+                    + '</div>'+del+'</div>';    
+                $('#chatMessages').append(html);
+            }
+            if(messagesPanel!=undefined)
+                setTimeout('messagesPanel.scrollY('+(msgs.length*2)+');', 1);
+        }
+        
+        function handleChangeUser(xhr, status, args) {
+            changeUser(window, args.friend);
+        }
+
+        
+    </script>
+
+    <h:body rendered="#{webSession.signedIn}">
+        <!--        <div id="chatheader"></div>-->
+        <div id="chatsidebar">
+            <div id="userlist">
+                <p>
+                    <c:if test="#{webSession.group != 1}">
+                        <a href="javascript:void(0);" title="Чат с оператором технической поддержки" onclick="changeUser(window, 'support');">Администратор</a>
+                    </c:if>
+                    <c:if test="#{webSession.group == 1}">
+                        <a href="javascript:void(0);" title="Поток всех сообщений" onclick="changeUser(window, '_stream');">Все сообщения</a>
+                    </c:if>
+                    [<h:link outcome="chat.xhtml" value="*" title="Открыть в отдельном окне" target="_blank"><f:param name="friend" value="#{param['friend']}"/></h:link>]
+                    [<a href="javascript:void(0);" title="Помощь" onclick="alert('Not implemented yet! \nThis feature is under construction and will be available soon.');">?</a>]
+                </p>
+                <hr/>
+                <span title="Список пользователей, с которыми вы недавно беседовали"><b><h:outputLabel value="Недавние диалоги"/></b></span>
+                <h:form id="recent_users_list" prependId="false" style="max-height: 370px; font-size: 13px;">
+                    <p:dataList value="#{chatBean.recentUsers}" var="simpleUser">
+                        <a href="javascript:void(0);" onclick="changeUser(window, '#{simpleUser.id}');">#{simpleUser.login}</a><sup><h:outputText value="online" style="color:green;" rendered="#{simpleUser.online}" title="Пользователь скорее всего онлайн"/></sup>
+                        <h:panelGroup rendered="#{simpleUser.unreadMessages gt 0}">(#{simpleUser.unreadMessages})</h:panelGroup>
+                    </p:dataList>
+                </h:form>
+            </div>
+            <hr/>
+            <div id="finduser">
+                <h:form>
+                    <span title="Начните вводить имя пользователя"><b>Поиск пользователя:</b></span>
+                    <p:autoComplete completeMethod="#{chatBean.completeLogin}" value="#{chatBean.selectedUser}" action="#{chatBean.dummy}"
+                                    var="u" itemLabel="#{u.login}" itemValue="#{u}" converter="simpleUser" forceSelection="true"
+                                    title="Начните вводить имя пользователя">
+                        <p:ajax event="itemSelect" listener="#{chatBean.changeUser}" process="@this" oncomplete="handleChangeUser(xhr, status, args);"/>
+                    </p:autoComplete> 
+
+                </h:form>
+            </div>
+        </div>
+        <div id="chatcontent">
+            <h3>Добро пожаловать в чат, #{webSession.login}!</h3>
+            <h:panelGrid columns="2" width="100%">
+                <h:panelGroup style="display: block; width: 100%; font-size: smaller;">
+                    Ваш собеседник:
+                    <b><h:link outcome="profile.xhtml" target="_blank" value="#{chatBean.friend.login}" rendered="#{chatBean.friend.id!=null}">
+                            <f:param name="id" value="#{chatBean.friend.id}"/>
+                        </h:link>
+                       <h:outputText value="не выбран" rendered="#{chatBean.friend.id==null}"/></b></h:panelGroup>
+                <h:panelGroup style="display: block; width: 100%; font-size: smaller; text-align: right;">
+                    <h:selectOneRadio id="periodradio" required="false" value="#{chatBean.period}" style="width: auto; float: right;" onchange="window.location='chat.xhtml?period='+this.value+'&amp;friend=#{chatBean.friendId}';">  
+                        <f:selectItem id="period_one_day" itemLabel="1 день" itemValue="1"/>  
+                        <f:selectItem id="period_week" itemLabel="Неделя"  itemValue="7"/>
+                        <f:selectItem id="period_month" itemLabel="Месяц"  itemValue="30"/>
+                        <f:selectItem id="period_all" itemLabel="Все"  itemValue="10000"/>
+                    </h:selectOneRadio>
+                    <div style="clear: right;"></div>
+                </h:panelGroup>
+            </h:panelGrid>
+            <p:scrollPanel style="height: 80%; min-height: 350px; " mode="native" widgetVar="messagesPanel">
+                <div id="chatMessages" style="minwidth: 500px;">
+                    <!--                    <div style="color: green; font-weight: bolder;">Сообщения чата:</div>-->
+                </div>
+            </p:scrollPanel>
+            <h:panelGroup rendered="#{chatBean.friendId!=null}">
+                <h:form prependId="false" id="chat_send_message_form" enctype="multipart/form-data">
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td><h:outputText value="Сообщение:" title="Введите ваше сообщение и нажмите ENTER" style="font-weight: bolder;"/></td>
+                                <td style="width: 80%; padding-right: 1em;"><h:inputTextarea required="true" style="width: 100%;" rows="2" value="#{chatBean.text}"/></td>
+                                <td><p:commandButton value="Отправить!" process="@form" actionListener="#{chatBean.sendMessage}" oncomplete="clearChatFiles();" update="chat_send_message_form, :recent_users_list"/></td>
+                                <td><p:commandButton value="Файл..." onclick="dlg_upload.show();"/></td>
+                                <td><h:panelGroup id="uploadedFilesCount"><h:outputText rendered="#{chatBean.fileUploadController.files.size()!=0}"  value="(#{chatBean.fileUploadController.files.size()})"/></h:panelGroup></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p:dialog widgetVar="dlg_upload" modal="true" header="Прикрепить файлы..." onShow="showUploadControl();" onHide="hideUploadControl();">
+
+                        <p:remoteCommand name="showUploadControl" process="@this" actionListener="#{chatBean.showUploadControl}" 
+                                         async="false" update="uploadControl"/>
+
+                        <p:remoteCommand name="hideUploadControl" process="@this" actionListener="#{chatBean.hideUploadControl}" 
+                                         async="false" update="uploadControl"/>
+                        <p:remoteCommand name="clearChatFiles" process="@this" actionListener="#{chatBean.fileUploadController.clearFiles}" 
+                                         async="false" update="uploadedFilesCount"/>
+                        Перетащите файлы сюда либо добавьте их через проводник. Затем нажмите <strong>Загрузить</strong>.<br/>
+                        По завершении загрузки нажмите кнопку <strong>Закрыть</strong>.<br/>
+                        <h:panelGroup id="uploadControl">
+                            <p:fileUpload rendered="#{chatBean.displayUploadControl}" mode="advanced" uploadLabel="Загрузить" cancelLabel="Отмена" label="Обзор..." 
+                                          auto="false" multiple="true" update="fileUploadGrowl, uploadedFilesCount" 
+                                          fileUploadListener="#{chatBean.fileUploadController.handleFileUpload}"/>
+                        </h:panelGroup>
+                        <p:commandButton value="Закрыть" onclick="dlg_upload.hide();"/>
+                        <p:growl id="fileUploadGrowl" showDetail="true"/>
+                    </p:dialog>
+
+
+                </h:form>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{chatBean.friendId==null}">
+                Отображены все ваши сообщения за выбранный период, т.к. не выбран собеседник.<br/>
+                Вы можете выбрать собеседника из списка недавних диалогов либо в поиске. 
+            </h:panelGroup>
+            <h:form>
+                <p:remoteCommand name="nextMessage" process="@this" actionListener="#{chatBean.requestNewMessages}" 
+                                 oncomplete="updateMessages(xhr, status, args);" async="false"/>
+                <p:poll async="true" autoStart="true" listener="#{chatBean.dummy}" process="@this" update=":recent_users_list" interval="5"/>
+            </h:form> 
+        </div>
+        <!--        <div id="chatfooter">Copyright 2012. Reshaka.Ru</div> -->
+    </h:body>
+    <h:body rendered="#{!webSession.signedIn}">
+        Вы не вошли в систему. Пожалуйста, 
+        <a href="#" onclick="window.parent.location = '#{request.contextPath}/faces/ichat.xhtml#operation=login'; window.parent.location.reload();">авторизуйтесь</a>.
+        
+    </h:body>
+</html>

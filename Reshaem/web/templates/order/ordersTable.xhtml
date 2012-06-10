@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:panelGroup id="orders_panel">
+        <h1>Таблица заказов</h1>
+        <h:form prependId="false">  
+            <p:dataTable id="dataTable" var="order" value="#{ordersBean.orders}"
+                         paginator="true" rows="10"  
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                         rowsPerPageTemplate="5,10,15">  
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="ID" />  
+                    </f:facet>  
+                    <h:outputText value="#{orderBean.orderId}" />  
+                </p:column>  
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="Условие" />  
+                    </f:facet>  
+
+                    <p:commandLink id="downloadLink" value="Download" ajax="false">  
+                        <p:fileDownload value="#{fileDownloadController.file}"/>  
+                        <f:param name="attachement_id" value="#{orderBean.conditionId}" />
+                        <f:param name="user_login" value="#{webSession.login}" />
+                    </p:commandLink>
+
+                </p:column>  
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="Решение" />  
+                    </f:facet>  
+                    <h:outputText value="#{orderBean.solutionId}" />  
+                </p:column>  
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="Заказчик" />  
+                    </f:facet>  
+                    <h:outputText value="#{orderBean.employerId}" />  
+                </p:column>  
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="Решака" />  
+                    </f:facet>  
+                    <h:outputText value="..." />  
+                </p:column>  
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="Статус" />  
+                    </f:facet>  
+                    <h:outputText value="#{orderBean.status}" />  
+                </p:column>  
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="Цена" />  
+                    </f:facet>  
+                    <h:outputText value="#{orderBean.price}" />  
+                </p:column>
+
+                <p:column>  
+                    <f:facet name="header">  
+                        <h:outputText value="Предмет" />  
+                    </f:facet>  
+                    <h:outputText value="#{orderBean.subjectId}" />  
+                </p:column>
+
+            </p:dataTable>  
+
+        </h:form>  
+
+    </h:panelGroup>
+</ui:composition>
+

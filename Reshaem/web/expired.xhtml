@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <f:view xmlns:h="http://java.sun.com/jsf/html" 
+            xmlns:f="http://java.sun.com/jsf/core"
+            xmlns:p="http://primefaces.org/ui">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <title>Reshaka.Ru - Session expired</title>
+            <meta http-equiv="Refresh" content="1; url=#{(param['redirect']==null ? request.contextPath : param['redirect'])}"/>
+            <script type="text/javascript" src="#{request.contextPath}/js/jquery.min.js"></script>
+        </h:head>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                setTimeout(function () {$('#content').css('display', 'block');  $('#fill').css('cursor','default'); }, 3000);
+            });
+        </script>
+        <h:body>
+            <div id="content" style="display: none;">
+                <h2>HTTP-сессия просрочена</h2>
+                <div>HTTP-сессия, которыю вы запросили, закончилась. Сейчас вы будете автоматически перенаправлены на
+                    <h:link outcome="index2.xhtml" value="главную страницу">
+                        <f:param name="status" value="post-expired"/>
+                    </h:link>
+                </div>
+            </div>
+            <div id="fill" style="height: 1000px; cursor: progress;"></div>
+        </h:body>
+    </f:view>
+</html>

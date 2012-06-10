@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    >
+    <ui:composition>
+
+        <h:panelGroup id="auth_dlgs">
+
+            <p:dialog id="dialog1" header="Login" widgetVar="dlg_login" modal="true" resizable="false" hideEffect="fade">   
+
+                <h:form id="login_form">
+                    <h:panelGrid columns="2" cellpadding="5">  
+                        <h:outputLabel for="username" value="Username: *" />  
+                        <p:inputText value="#{userBean.login}"   
+                                     id="username" required="true" label="username" />  
+
+                        <h:outputLabel for="password6" value="Password: * " />  
+                        <p:password value="#{userBean.password}"   
+                                    id="password6" required="true" label="password" feedback="false"/>  
+
+                        <f:facet name="footer">  
+                            <div style="text-align: right;">
+                                <p:commandButton value="Login" update=":growl,auth_panel,:main_panel,makeorder_dlgs,makeorder_dialog"   
+                                                 actionListener="#{userBean.logIn}"   
+                                                 oncomplete="handleLoginRequest(xhr, status, args)"/>
+                            </div>
+                            <div onclick="dlg_register.show()">New user?  </div>
+                            
+                        </f:facet>  
+                    </h:panelGrid>  
+                </h:form>
+
+
+            </p:dialog>
+
+            <script type="text/javascript">  
+                function handleLoginRequest(xhr, status, args) {  
+                    if(args.validationFailed || !args.loggedIn) {  
+                        //do something if auth failed
+                        jQuery('#dialog1').effect("shake", { times:3 }, 100);
+                    } else {  
+//                        dlg_login.hide();
+                    }  
+                }  
+            </script>
+
+
+
+            <!-- There will be registration dialog -->
+
+            <p:dialog id="dialog2" header="Registration" widgetVar="dlg_register" onShow="dlg_login.hide();" modal="true" width="344" resizable="false">  
+                <h:form id="registration_form">  
+
+                    <h:panelGrid columns="2">  
+
+                        <h:outputLabel for="login3" value="Login: *" />  
+                        <h:panelGroup>
+                            <p:inputText id="login3"   
+                                         value="#{userBean.login}" required="true" label="Login">  
+                                <p:ajax event="keyup" update="tick"   
+                                        listener="#{userBean.updatePicturePath()}"/>  
+
+                                <f:validateLength minimum="0" />  
+                            </p:inputText>
+                            <p:graphicImage id="tick" value="#{userBean.pathToPicture}" style="vertical-align: middle;"/>
+                        </h:panelGroup>
+
+                        <h:outputLabel for="password7" value="Password: *" />  
+                        <p:password id="password7"   
+                                    value="#{userBean.password}" required="true" label="Password" feedback="true" match="passwordConfirm">  
+                            <f:validateLength minimum="2" />  
+                        </p:password>  
+
+                        <h:outputLabel for="passwordConfirm" value="Confirm Password: *" />
+                        <p:password id="passwordConfirm"   
+                                    value="#{userBean.password}" required="true" label="Password 2" feedback="false">  
+                            <f:validateLength minimum="2" />  
+                        </p:password>
+
+                        <h:outputLabel for="email" value="Email: *" />  
+                        <p:inputText id="email"   
+                                     value="#{userBean.email}" required="true" label="Email">  
+                            <f:validateLength minimum="2" />  
+                        </p:inputText>  
+
+                        <h:outputText value="Phone: " />  
+                        <p:inputMask value="#{userBean.phone}" mask="(999) 999-9999" required="true" label="phone"/> 
+
+                        <h:outputLabel for="icq" value="ICQ: " />  
+                        <p:inputText id="icq"   
+                                     value="#{userBean.icq}" required="false" label="ICQ">  
+                            <f:validateLength minimum="5" />  
+                        </p:inputText>  
+
+                        <h:outputLabel for="skype" value="Skype: " />  
+                        <p:inputText id="skype"   
+                                     value="#{userBean.skype}" required="false" label="skype">  
+                            <f:validateLength minimum="2" />  
+                        </p:inputText>  
+                        
+
+                        
+                    </h:panelGrid>  
+
+                    <p:commandButton value="Register" update=":growl,registration_form,:main_panel"
+                                     actionListener="#{userBean.register}" 
+                                     oncomplete="handleRegisterRequest(xhr, status, args)" />  
+
+                </h:form> 
+            </p:dialog> 
+
+            <script type="text/javascript">  
+                function handleRegisterRequest(xhr, status, args) {  
+                    if(args.validationFailed || !args.loggedIn) {  
+                        //do something if auth failed
+                        jQuery('#dialog2').effect("shake", { times:3 }, 100);
+                    } else {  
+                        dlg_register.hide();
+                    }  
+                }  
+            </script>
+        </h:panelGroup>
+    </ui:composition>
+
+</html>

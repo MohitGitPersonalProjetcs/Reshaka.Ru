@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    <f:view>
+        <h:head>
+            <title>Reshaka.Ru :: Download</title>
+            <link href="#{request.contextPath}/css/default.css" rel="stylesheet" type="text/css" />
+        </h:head>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                setTimeout(function () {$("#downloadLink").click(); return true;}, 1500);
+            });  
+        </script>
+
+        <h:body>
+            <div style="width:400px; margin: 0 auto;">
+                <h:panelGroup rendered="#{fileDownloadController.fileExists()}">
+                    Вы (#{webSession.user.login}) собираетесь скачать следующий файл:
+                    <h:form style="text-align: right; font-size: larger;" prependId="false">
+                        <h:panelGrid columns="2" id="fileInfo">
+                            <h:outputText value="Идентификатор файла" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.id}"/>
+                            <h:outputText value="Имя файла:" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.fileInfo.name}"/>
+                            <h:outputText value="Размер файла:" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.fileInfo.size} Байт"/>
+                            <h:outputText value="Тип файла:" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.fileInfo.mimeType}"/>
+                        </h:panelGrid>
+                        Загрузка файла начнется автоматически через несколько секунд.
+                        <p:commandLink styleClass="DownloadLink" value="Download" id="downloadLink" ajax="false" style="font-weight: bolder;">
+                            <f:param name="id" value="#{fileDownloadController.id}"/>
+                            <p:fileDownload value="#{fileDownloadController.file}"/>
+                        </p:commandLink>
+                    </h:form>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{!fileDownloadController.fileExists()}">
+                    Запрашиваемый вами (#{webSession.user.login}) файл не существует либо у вас недостаточно прав на его загрузку.
+                </h:panelGroup>
+            </div>
+        </h:body>
+    </f:view>
+</html>

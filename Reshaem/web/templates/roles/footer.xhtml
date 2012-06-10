@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core" 
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition>
+        <h:panelGroup rendered="#{webSession.group == 1 or webSession.group == 3}">
+            <div><strong>Статистика сайта:</strong></div>
+            <div id="site_stats" style="font-size: smaller;">    
+                <div><strong>Всего онлайн:</strong> #{statsBean.onlineCount} из них #{statsBean.guestsCount} гостей</div>
+                <div><strong>Пользователи онлайн:</strong> #{statsBean.usersCount} из них #{statsBean.partnersCount} решак(а) и #{statsBean.adminsCount} администратор(ов)</div>
+                <div>
+                    <strong>Список пользователей:</strong>
+                    <c:forEach items="#{statsBean.users}" var="user">
+                        <h:outputText value=" "/>
+                        <c:if test="#{user.userGroup==3}">
+                            <h:link target="_blank" outcome="profile.xhtml" value="#{user.login}" style="color: green;">
+                                <f:param name="id" value="#{user.id}"/>
+                            </h:link>
+                        </c:if>
+                        <c:if test="#{user.userGroup==2}">
+                            <h:link target="_blank" outcome="profile.xhtml" value="#{user.login}" style="color: blue;">
+                                <f:param name="id" value="#{user.id}"/>
+                            </h:link>
+                        </c:if>
+                        <c:if test="#{user.userGroup==1}">
+                            <h:link target="_blank" outcome="profile.xhtml" value="#{user.login}" style="color: red;">
+                                <f:param name="id" value="#{user.id}"/>
+                            </h:link>
+                        </c:if>
+                    </c:forEach>
+                    <h:panelGroup rendered="#{webSession.signedIn}">
+                        ... <h:link outcome="users.xhtml" value="Все пользователи"/>
+                    </h:panelGroup>
+                </div>
+            </div>
+        </h:panelGroup>
+    </ui:composition>
+</html>

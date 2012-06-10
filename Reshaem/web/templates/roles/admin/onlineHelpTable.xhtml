@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+            <h:outputText rendered="#{webSession.group!=1}" value="У вас не достаточно прав для просмотра данной страницы" />
+            <h:form prependId="false" id="form14">
+            <p:dataTable rendered="#{webSession.group==1}" var="online"
+                         id="onlineTable"
+                         value="#{showOnlineHelpBean.onlineHelpList}" rows="20" paginator="true"
+
+                         >
+                <!--                <p:ajax event="rowSelect" oncomplete="onlineDialog.show()" />-->
+                
+                <p:column style="width:20px" headerText="EDIT">  
+                    
+                    <p:commandLink process="@this"   oncomplete="onlineDialog.show()" update=":online_dialog_content" >
+                        <h:outputText value="###" />
+                        <f:setPropertyActionListener  value="#{online}" target="#{onlineHelpBean.selectedOnlineHelp}" />  
+                    </p:commandLink>
+
+                </p:column>
+
+                <p:column headerText="ID">  
+                    #{online.id}
+                </p:column>
+
+                <p:column headerText="ID заказа" >   
+                    #{online.orderId}
+                </p:column>
+
+                <p:column headerText="Тип" >   
+                    #{online.type}
+                </p:column>
+
+                <p:column headerText="начало" >   
+                    <h:outputText id="reg_dt" value="#{online.startDate}">
+                        <f:convertDateTime timeZone="GMT+4" for="reg_dt" pattern="MM/dd/yyyy HH:mm" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="окончание" >   
+                    <h:outputText id="reg_dt1" value="#{online.endDate}">
+                        <f:convertDateTime timeZone="GMT+4" for="reg_dt1" pattern="MM/dd/yyyy HH:mm" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="контакт1" >   
+                    <p:cellEditor>  
+                        <f:facet name="output">  
+                            <h:outputText value="#{online.srcAdderss}" />  
+                        </f:facet>  
+                        <f:facet name="input">  
+                            <p:inputText value="#{online.srcAdderss}" style="width:100%"/>  
+                        </f:facet>  
+                    </p:cellEditor> 
+
+                </p:column>
+
+                <p:column headerText="контакт2" >   
+                    #{online.dstAddress}
+                </p:column>
+
+                <p:column headerText="статус" >   
+                    #{online.status}
+                </p:column>
+              
+            </p:dataTable>
+            </h:form>
+
+            <h:form>
+                <p:commandButton oncomplete="addOnlineDialog.show()" value="Добавить" actionListener="#{onlineHelpBean.initSelectedOnlineHelp()}" />
+            </h:form>
+
+            <p:dialog id="dialog" header="OnlineHelp detail" widgetVar="onlineDialog" resizable="false"  
+                      showEffect="explode" hideEffect="explode"
+                      rendered="#{webSession.group==1}"
+                      >  
+                <h:panelGroup id="online_dialog_content">
+                    <h:form>
+                        <h:panelGrid columns="2">
+                            
+                            <h:outputText value="ID" />
+                            <h:outputText value="#{onlineHelpBean.selectedId}" />
+                            
+                            
+                            <h:outputText value="Тип" />
+                            <p:selectOneMenu value="#{onlineHelpBean.selectedType}">
+                                <f:selectItem  itemValue="EMAIL" itemLabel="EMAIL"  />
+                                <f:selectItem  itemValue="EMAIL" itemLabel="SKYPE"  />
+                                <f:selectItem  itemValue="EMAIL" itemLabel="VK"  />
+                            </p:selectOneMenu>
+
+
+                            <h:outputText value="Контакт 1" />
+                            <h:inputText value="#{onlineHelpBean.selectedSrcAddr}" />
+
+                            <h:outputText value="Контакт 2" />
+                            <h:inputText value="#{onlineHelpBean.selectedDstAddr}" />
+
+                            <h:outputText value="Начало" />
+                            <p:calendar id="online_help_deadline" mindate="#{makeOrderBean.minDate}" value="#{onlineHelpBean.selectedStartDate}" pattern="MM/dd/yyyy HH:mm"  /> 
+
+
+                            <h:outputText value="Окончание" />
+                            <p:calendar id="online_help_deadline2" mindate="#{makeOrderBean.minDate}" value="#{onlineHelpBean.selectedEndDate}" pattern="MM/dd/yyyy HH:mm"  /> 
+
+                            <p:commandButton update=":form14:onlineTable" value="Применить"
+                                         oncomplete="onlineDialog.hide()"
+                                         actionListener="#{onlineHelpBean.updateOnlineHelp()}" />
+
+                            <p:commandButton update=":form14:onlineTable" value="Удалить!"
+                                         oncomplete="onlineDialog.hide()"
+                                         actionListener="#{onlineHelpBean.deleteOnlineHelp()}" />
+                            
+                        </h:panelGrid>
+
+                        
+
+                    </h:form>
+                </h:panelGroup>
+            </p:dialog>  
+
+            <p:dialog id="addOnline" header=" add OnlineHelp" widgetVar="addOnlineDialog" resizable="false"  
+                      showEffect="explode" hideEffect="explode"
+                      rendered="#{webSession.group==1}"
+                      >  
+                <h:form>
+
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Тип" />
+                        <p:selectOneMenu value="#{onlineHelpBean.selectedType}">
+                            <f:selectItem  itemValue="EMAIL" itemLabel="EMAIL"  />
+                            <f:selectItem  itemValue="SKYPE" itemLabel="SKYPE"  />
+                            <f:selectItem  itemValue="VK" itemLabel="VK"  />
+                        </p:selectOneMenu>
+                        <h:outputText value="Контакт 1" />
+                        <h:inputText value="#{onlineHelpBean.selectedSrcAddr}" />
+
+                        <h:outputText value="Контакт 2" />
+                        <h:inputText value="#{onlineHelpBean.selectedDstAddr}" />
+
+
+                        <h:outputText value="Начало" />
+                        <p:calendar  id="online_help_deadline3" mindate="#{makeOrderBean.minDate}" value="#{onlineHelpBean.selectedStartDate}" pattern="MM/dd/yyyy HH:mm"  /> 
+
+
+                        <h:outputText value="Окончание" />
+                        <p:calendar  id="online_help_deadline24" mindate="#{makeOrderBean.minDate}" value="#{onlineHelpBean.selectedEndDate}" pattern="MM/dd/yyyy HH:mm"  /> 
+
+
+                    </h:panelGrid>
+
+                    <p:commandButton update=":form14:onlineTable" value="ADD"
+                                     oncomplete="addOnlineDialog.hide()"
+                                     actionListener="#{onlineHelpBean.addOnlineHelp()}" />
+
+                </h:form>
+            </p:dialog>  
+
+        </ui:composition>
+    </body>
+</html>

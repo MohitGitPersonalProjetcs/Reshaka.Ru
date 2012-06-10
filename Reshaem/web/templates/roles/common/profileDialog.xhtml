@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+            <p:dialog id="dlg_profile" widgetVar="dlg_profile" header="Личная информация..." resizable="false" modal="true" width="490" position="top">
+                <h:panelGroup id="profile_dialog_content">
+                    <p:tabView cache="false">
+                        <p:tab id="tab1" title="Главная">
+                            <h:form>
+                                <h:panelGrid columns="2" id="basic_data" width="430">
+                                    <h:outputText value="Псевдоним:" title="Это имя будут видеть другие пользователи. Вы можете сменить его только один раз! "/>  
+                                    <h:panelGroup>
+                                        <p:inputText id="nicks" value="#{profileBean.login}"
+                                                     required="true" readonly="#{!userBean.canChangeNickname(webSession.id)}" />  
+                                        <p:tooltip style="width: 160px;" for="nicks" value="Это имя будут видеть другие пользователи. Вы можете сменить его только один раз! " />
+                                    </h:panelGroup>
+                                    <h:outputText value="Логин:" title="Используется для входа на сайт (не виден другим пользователям)"/>  
+                                    <p:inplace editor="true">  
+                                        <p:inputText value="#{profileBean.email}"  
+                                                     required="true" label="text" />  
+                                    </p:inplace> 
+
+                                    <h:outputText value="Телефон:" title="(виден администратору)"/>  
+                                    <p:inplace editor="true">  
+                                        <p:inputMask value="#{profileBean.phone}" mask="(999) 999-9999" 
+                                                     required="false" label="text" />  
+                                    </p:inplace> 
+
+                                    <h:outputText value="ICQ:" title="(виден администратору)"/>  
+                                    <p:inplace editor="true">  
+                                        <p:inputText value="#{profileBean.icq}"  
+                                                     required="false" label="text" />  
+                                    </p:inplace> 
+
+                                    <h:outputText value="Skype:" title="(виден администратору)"/>  
+                                    <p:inplace editor="true">  
+                                        <p:inputText value="#{profileBean.skype}"  
+                                                     required="false" label="text" />  
+                                    </p:inplace>
+
+                                </h:panelGrid>
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Отмена" actionListener="#{profileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="basic_data, :growl"/>
+                                    <p:commandButton value="Применить" actionListener="#{profileBean.apply}" process="@form" update="basic_data, :growl"/>
+                                </div>
+                                <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size: smaller; color: red;"/>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab2" title="Дополнительно">
+                            <h:form>
+                                <h:panelGrid columns="1" id="extra_data" width="430">
+                                    <h:outputText value="Контакты:" title="(видны администратору)"/>  
+                                    <p:inputTextarea id="extra_contacts" value="#{profileBean.additionalContacts}" style="width: 420px;"/>  
+
+                                    <h:outputText value="Дополнительная информация:" title="(видна администратору)"/>  
+                                    <p:inputTextarea id="extra_info" value="#{profileBean.additionalInformation}" style="width: 420px;"/>  
+
+                                </h:panelGrid>
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Отмена" actionListener="#{profileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="extra_data, :growl"/>
+                                    <p:commandButton value="Применить" actionListener="#{profileBean.apply}" process="@form" update="extra_data, :growl"/>
+                                </div>
+                                <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size: smaller; color: red;"/>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab3" title="Аватар" rendered="false">
+                            <h:form enctype="multipart/form-data">
+                                <h:panelGrid id="current_avatar" width="430" columns="2">
+                                    <h:outputText value="Ваш текущий аватар:"/>
+                                    <p:graphicImage width="200" value="#{profileBean.currentAvatar}"/>
+                                </h:panelGrid> 
+                                <h:panelGroup id="upload_avatar_panel">
+                                    Выберите изображение.
+                                    <p:fileUpload auto="true" multiple="false" fileUploadListener="#{profileBean.uploadAvatar}" 
+                                                  sizeLimit="1000000"  update=":growl"/>
+                                    <p:commandButton update="current_avatar,:growl" value="Применить" actionListener="#{profileBean.applyUploadedAvatar}"/>
+                                </h:panelGroup>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab4" title="Смена пароля">
+                            <h:form>
+                                <h:panelGrid columns="2" id="pwd_data" width="430">
+                                    <h:outputText value="Логин:" />  
+                                    <h:outputText value="#{profileBean.email}"/>  
+
+                                    <h:outputText value="Старый пароль:" />  
+                                    <p:password value="#{profileBean.oldPassword}"  
+                                                label="text" feedback="false" />  
+
+                                    <h:outputText value="Новый пароль:" />   
+                                    <p:password value="#{profileBean.password}" id="pwd1"  
+                                                required="true" label="text" match="pwd2" />  
+
+                                    <h:outputText value="Подтверждение:" />  
+                                    <p:password value="#{profileBean.password}"  
+                                                required="true" label="text" id="pwd2" />  
+
+                                </h:panelGrid>
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Отмена" actionListener="#{profileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="pwd_data, :growl"/>
+                                    <p:commandButton value="Применить" actionListener="#{profileBean.applyPassword}" update="pwd_data, :growl"/>
+                                </div>
+                                <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size:smaller; color: red;"/>
+                            </h:form>
+                        </p:tab>
+                        <script src="http://loginza.ru/js/widget.js" type="text/javascript"></script>
+                        <p:tab id="tab5" title="Open ID" rendered="false">
+                            <h:form>
+                                <h:panelGrid columns="3" id="open_id_data" width="430">
+
+                                    <h:outputText value="Vkontakte" />    
+                                    <h:outputText value="#{profileBean.vkontakte}" style="color: green;"/> 
+                                    <div>
+                                        <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=vkontakte&amp;lang=ru" >
+                                            <img src="images/vkontakte.png" alt="Вконтакте" title="Связать с Вконтакте"/>
+                                        </a>
+                                    </div>
+
+                                    <h:outputText value="Facebook" />      
+                                    <h:outputText value="#{profileBean.facebook}" style="color: green;" />   
+                                    <div>
+                                        <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=facebook&amp;lang=ru" >
+                                            <img src="images/facebook.png" alt="Facebook" title="Связать с Facebook"/>
+                                        </a>
+                                    </div>
+
+                                    <h:outputText value="Яндекс" />      
+                                    <h:outputText value=" #{profileBean.yandex}" style="color: green;" />  
+                                    <div>
+                                        <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=yandex&amp;lang=ru" >
+                                            <img src="images/yandex.png" alt="Yandex" title="Связать с Яндекс"/>
+                                        </a>
+                                    </div>
+
+                                    <h:outputText value="Mail.Ru" /> 
+                                    <h:outputText value="#{profileBean.mailru}" style="color: green;"  />  
+                                    <div>
+                                        <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=mailru&amp;lang=ru" >
+                                            <img src="images/mailru.png" alt="Mail.Ru" title="Связать с Mail.Ru"/>
+                                        </a>
+                                    </div>
+
+                                    <h:outputText value="Google" />          
+                                    <h:outputText value="#{profileBean.gmail}" style="color: green;"  />  
+                                    <div>
+                                        <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=google&amp;lang=ru" >
+                                            <img src="images/google.png" alt="Google" title="Связать с Gmail"/>
+                                        </a>
+                                    </div>
+
+                                </h:panelGrid>
+
+                            </h:form>
+                        </p:tab>
+
+                    </p:tabView>
+                </h:panelGroup>
+            </p:dialog>
+
+            <script type="text/javascript">
+                function profileHandler(xhr, status, args) {
+                    if(args.ok==true) {
+                        dlg_profile.hide();
+                    } else {
+                    } 
+                }
+            </script>
+
+        </ui:composition>
+    </body>
+</html>

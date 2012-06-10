@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="templates/roles/template.xhtml">
+
+        <ui:define name="aboutus">
+            <ui:include src="templates/roles/aboutusblock.xhtml"/>
+        </ui:define>
+
+        <ui:define name="dialogs">
+            <ui:include src="templates/roles/dialogsblock.xhtml"/>
+        </ui:define>
+
+        <ui:define name="buttonstotherightoflogo">
+            <ui:include src="templates/roles/common/buttonstotherightoflogo.xhtml"/>
+        </ui:define>
+
+        <ui:define name="threebigbuttons">
+            <ui:include src="templates/roles/threebigbuttonsblock.xhtml"/>
+        </ui:define>
+
+        <ui:define name="right_column">
+
+
+            <ui:include src="templates/roles/rightpanelblock.xhtml" />
+        </ui:define>
+
+        <ui:define name="tablesblock">
+            <ui:include src="templates/roles/orderstableblock.xhtml"/>
+        </ui:define>
+
+        <ui:define name="javascript">
+            <ui:include src="templates/roles/common/javascripts.xhtml"/>
+        </ui:define>
+
+        <ui:define name="footer">
+            <div id="site_stats" style="font-size: smaller;">
+                <div><strong>Всего онлайн:</strong> #{statsBean.onlineCount} из них #{statsBean.guestsCount} гостей</div>
+                <div><strong>Пользователи онлайн:</strong> #{statsBean.usersCount} из них #{statsBean.partnersCount} решак(а) и #{statsBean.adminsCount} администратор(ов)</div>
+                <div>
+                    <strong>Список пользователей:</strong>
+                    <c:forEach items="#{statsBean.users}" var="user">
+                        <h:outputText value=" "/>
+                        <c:if test="#{user.userGroup==3}">
+                            <h:outputText value="#{user.login}" style="color: green;"/>
+                        </c:if>
+                        <c:if test="#{user.userGroup==2}">
+                            <h:outputText value="#{user.login}" style="color: blue;"/>
+                        </c:if>
+                        <c:if test="#{user.userGroup==1}">
+                            <h:outputText value="#{user.login}" style="color: red;"/>
+                        </c:if>
+                    </c:forEach>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+
+</html>

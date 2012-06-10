@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <f:view xmlns:h="http://java.sun.com/jsf/html"
+            xmlns:p="http://primefaces.org/ui"
+            xmlns:f="http://java.sun.com/jsf/core" 
+            xmlns:c="http://java.sun.com/jsp/jstl/core"
+            xmlns:ui="http://java.sun.com/jsf/facelets">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <title>Reshaka.RU</title>
+
+            <c:if test="#{'expired'.equals(param['status'])}"> 
+                <meta http-equiv="Refresh" content="0; url=#{request.contextPath}/faces/index2.xhtml?status=post-expired"/>
+            </c:if>
+            <c:if test="#{!'expired'.equals(param['status'])}">
+                <c:if test="#{webSession.signedIn}">
+                    <link href="#{request.contextPath}/css/main-user.css" rel="stylesheet" type="text/css" />
+                </c:if>
+                <c:if test="#{!webSession.signedIn}">
+                    <link href="#{request.contextPath}/css/main-guest.css" rel="stylesheet" type="text/css" />
+                </c:if>
+                <link href="#{request.contextPath}/css/default.css" rel="stylesheet" type="text/css" />
+
+                <!--[if lte IE 6]>
+                <link rel="stylesheet" href="css/cssf-ie6.css" type="text/css" media="screen" /><![endif]-->
+                <!--[if IE 7]>
+                <link rel="stylesheet" href="css/cssf-ie7.css" type="text/css" media="screen" /><![endif]-->
+            </c:if>
+        </h:head>
+
+        <h:body rendered="#{!'expired'.equals(param['status'])}">
+            <div style="width: 950px; color: red; font-weight: bold; margin: 0 auto;">
+                Это тестовый сайт. Все внесенные вами изменения будут удалены. Вы можете оставлять отзывы по улучшению функционала сайта, а также о найденных багах.
+            </div>
+            <!-- include block -->
+            <ui:insert name = "allincludes"> 
+
+            </ui:insert>
+            <!-- end of include block -->
+            <!--[if lte IE 6]>
+            <div style="font-size: 12px; border-bottom: solid; border-width: 1px; z-index: 10000; font-weight: bolder; color: maroon; position: absolute; background-color: white; top: 0;">Мы настоятельно рекомендуем Вам использовать Internet Explorer 7 и выше! А лучше скачайте Google Chrome или Firefox.</div>
+            <![endif]-->
+            <p:growl widgetVar="growl" id="growl" showDetail="true" life="1500" sticky="false" />
+            <h:panelGroup id="main_panel">
+                <h:panelGroup id="rightcol">
+                    <ui:insert name="right_column">
+                    </ui:insert>
+                </h:panelGroup>
+                <div id="topPanel">
+                    <div style="width: 250px; float: left;">
+                        <a href="#{request.contextPath}/faces/index2.xhtml">
+                            <img src="#{request.contextPath}/images/logo.png" title="Reshaka.RU" 
+                                 alt="Reshaka.RU" width="230" height="80" border="0" />
+                        </a>
+                    </div>
+                    <div style="margin-left: 250px;">
+                        <ul style="padding-top: 17px;">
+                            <!-- buttons block to the right of logo -->
+                            <ui:insert name="buttonstotherightoflogo">
+
+                            </ui:insert>
+                            <!-- end of buttons block to the right of logo -->
+                        </ul>
+                    </div>
+
+
+                    <div id="threebuttons">
+                        <!-- here will be three big buttons -->
+                        <ui:insert name ="threebigbuttons">
+
+                        </ui:insert>
+                        <div style="claer:both;"></div>
+                        <!-- end of block with three big buttons -->
+                    </div>
+                </div>
+                <div id="bodyPanel">
+                    <!-- here will be aboutUs panel -->
+                    <h:panelGroup id="about_us_form">
+                        <ui:insert name="aboutus">
+
+                        </ui:insert>
+                    </h:panelGroup>
+                    <!-- end of about us block -->
+                    <!-- here will be table with all orders -->
+                    <ui:insert name="tablesblock" rendered="#{webSession.signedIn}">
+                        Here will be table with all orders
+                    </ui:insert>
+                    <!-- end of ordersTable block -->
+                    <p class="dotline"><img src="#{request.contextPath}/images/blank.gif" alt="" width="1" height="1" /></p>
+                </div>
+
+                <h:panelGroup >
+                    <div onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" id="share42"  style=" opacity: 0.5; top: 180px; z-index:1000; position:fixed; right:10px;  ">
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -224px 0" href="#" onclick="window.open('http://vkontakte.ru/share.php?url=http%3A%2F%2Freshaka.ru/Reshaem/faces/index2.xhtml', '_blank', 'scrollbars=0, resizable=1, menubar=0, left=200, top=200, width=554, height=421, toolbar=0, status=0');return false" title="Поделиться В Контакте" target="_blank"></a>                   
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -64px 0" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Freshaka.ru/Reshaem/faces/index2.xhtml&amp;t=" title="Поделиться в Facebook" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -192px 0" href="http://twitter.com/share?text=Решение задач для школьников и студентов на заказ. Очень помогло!&amp;url=http%3A%2F%2Freshaka.ru/Reshaem/" title="Добавить в Twitter" target="_blank"></a>
+
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -128px 0" href="http://connect.mail.ru/share?url=http%3A%2F%2Freshaka.ru/Reshaem/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов." title="Поделиться в Моем Мире@Mail.Ru" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -160px 0" href="http://www.odnoklassniki.ru/dk?st.cmd=addShare&amp;st._surl=http%3A%2F%2Freshaka.ru/Reshaem/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов на заказ. Рекомендую!" title="Добавить в Одноклассники" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -96px 0" href="http://www.google.com/bookmarks/mark?op=edit&amp;output=popup&amp;bkmk=http%3A%2F%2Freshaka.ru/Reshaem/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов." title="Сохранить закладку в Google" target="_blank"></a>
+                    </div>
+                </h:panelGroup>
+                <div id="footer">	
+                    <div id="footerPanel">	
+                        <!-- footer -->	
+                        <ui:insert name ="footer">
+                            Footer
+                        </ui:insert>
+                        <p class="copyright">
+                            <h:panelGroup rendered="#{webSession.signedIn}"> 
+                                <a href="javascript:void()" onclick="sys_comments_dlg.show();" >добавить отзыв</a> | <a href="#{request.contextPath}/faces/feedbacks.xhtml" > все отзывы</a> <br/>
+                            </h:panelGroup>
+                            © Reshaka.RU all right reserved
+                        </p>	
+                    </div>	
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup id ="dialogs_panel">
+                <ui:insert name="dialogs">
+                    <!-- here will be all dialogs -->
+                </ui:insert>
+            </h:panelGroup>
+
+
+            <h:panelGroup id ="javascript_panel">
+                <ui:insert name="javascript">
+                    <!-- here will be all javascripts -->
+                </ui:insert>
+                <h:form>
+                    <p:poll update=":rightcol" process="@this" interval="30" async="true"/>
+                    <p:poll async="true" process="@this" interval="10" autoStart="true" listener="#{webSession.updateParameters}"/>
+                </h:form>
+            </h:panelGroup>
+        </h:body>
+    </f:view>
+</html>

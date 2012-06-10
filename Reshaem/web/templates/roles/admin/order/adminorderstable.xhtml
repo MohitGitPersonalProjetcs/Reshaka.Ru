@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+
+        <ui:composition>
+            <h:form>
+                <p:dataTable  id="basic" var="order" value="#{showOrdersBean.orders}" paginator="true"
+                              paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"  
+                              rowsPerPageTemplate="5,10,15" >  
+                    <p:column id="orderid" headerText="ID">  
+                        <h:outputText value="#{order.id}" />  
+                    </p:column>  
+
+                    <p:column id="hiredate" headerText="Свежесть">  
+                        <h:outputText value="#{order.hireDateString}" /> 
+                    </p:column>  
+
+                    <p:column id="condition" headerText="Условие">  
+                                            <ui:include src="../../downloadlink.xhtml">
+                                                <ui:param name="attachmentId" value="#{order.conditionId}"/>
+                                            </ui:include>                    </p:column>  
+
+                    <p:column id="solution" headerText="Решение">  
+                                        
+                                        <ui:include src="../../downloadlink.xhtml">
+                                            <ui:param name="attachmentId" value="#{order.solutionId}"/>
+                                        </ui:include>
+                                    </p:column> 
+
+                    <p:column id="employerid" headerText="Заказчик">  
+                        <h:outputText value="#{order.employer.login}" />  
+                    </p:column>  
+
+                    <p:column id="status" headerText="Статус">  
+                        <h:outputText value="#{order.status}" />  
+                    </p:column>  
+
+                    <p:column id="price" headerText="Цена">  
+                        <h:outputText value="#{order.price}" />  
+                    </p:column> 
+
+                    <p:column id="deadline" headerText="Срок">  
+                        <h:outputText value="#{order.deadlineString}" />  
+                    </p:column> 
+                    <p:column id="subject" headerText="Предмет">  
+                        <h:outputText value="#{order.subject.subjectName}" />  
+                    </p:column> 
+
+                </p:dataTable>  
+            </h:form>
+        </ui:composition>
+
+    </body>
+</html>

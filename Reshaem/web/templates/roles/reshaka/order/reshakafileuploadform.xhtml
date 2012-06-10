@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Upload test</title>
+        <link href="#{request.contextPath}/css/default.css" rel="stylesheet" type="text/css" />
+    </h:head>
+    <h:body>
+
+        <p:commandButton value="show apload dialog" onclick="solution_dlg_upload.show()" />
+
+        <ui:composition>
+            <p:dialog id="solution_upload_dialog" header="Upload" widgetVar="solution_dlg_upload" closable="false"
+                      resizable="false" hideEffect="fade" minWidth="400" onShow="showSolutionUploadControl();" onHide="hideSolutionUploadControl();">   
+                <h:form enctype="multipart/form-data" prependId="false">  
+                    Добавьте все файлы решения и нажмите ОК.
+                    <p:remoteCommand name="showSolutionUploadControl" process="@this" actionListener="#{dealBean.fileUploadController.showUploadControl}" async="false" update="uploadControl"/>
+                    <p:remoteCommand name="hideSolutionUploadControl" process="@this" actionListener="#{dealBean.fileUploadController.hideUploadControl}" async="false" update="uploadControl"/>
+                    <h:panelGroup id="uploadControl">
+                        <p:fileUpload rendered="#{dealBean.fileUploadController.displayUploadControl}" 
+                                      fileUploadListener="#{dealBean.fileUploadController.handleFileUpload}" auto="true" 
+                                      mode="advanced"   
+                                      update="wmessages"
+                                      multiple="true"
+                                      uploadLabel="Загрузить решение"
+                                      />  
+                    </h:panelGroup>
+                    <p:growl id="wmessages" showDetail="true" sticky="false" />
+                    <p:commandButton value="OK"  oncomplete="solution_dlg_upload.hide()"/>
+
+                </h:form>
+
+            </p:dialog>
+            <script type="text/javascript">  
+                function handleSolutionRequest(xhr, status, args) {  
+
+                    solution_dlg_upload.hide();
+                     
+                }  
+            </script>
+
+
+        </ui:composition>
+
+    </h:body>
+</html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>This is makeOrderForm template</title>
+    </head>
+    <body>
+        <h:form enctype="multipart/form-data">
+            <ui:composition>
+                <h:panelGroup id="makeorder_form" style="top:1px;" >
+                    <h:outputLabel value="Дополнительные данные о заказе:"  /> <br/>
+                    <p:inputTextarea id="inputarea" value="#{makeOrderBean.description}" autoResize="false" rows="5" style="width: 98%;"/>   
+                    <p:watermark for="inputarea" value="Здесь вы можете указать требования к решению, оформлению и т.д. Оставлять здесь контактные данные категорически запрещено!" /> 
+                    <h:panelGrid columns="3" width="600px;"  >
+                        <h:outputLabel value="Срок: *" style="color: blue;" />  
+                        <h:outputText value="Предмет" style="color:blue;" />
+                        <h:outputLabel value="Стоимость (RUR)"  style="color: blue;" />  
+                        <p:calendar id="order_deadline" mindate="#{makeOrderBean.minDate}" required="true" value="#{makeOrderBean.deadline}" pattern="MM/dd/yyyy HH:mm" />
+                        <p:selectOneMenu value="#{makeOrderBean.subject}" converter="subjectConverter" effectDuration="1">  
+                            <f:selectItems value="#{makeOrderBean.allSubjects}" var="subject" itemLabel="#{subject.subjectName}"/>  
+                        </p:selectOneMenu> 
+                        <h:panelGroup>
+                            <p:inputText id="price" style="width: 40px;" value="#{makeOrderBean.price}">
+                                <f:validateDoubleRange minimum="0.0" />
+                            </p:inputText>
+                            <p:tooltip for="price" style="width: 250px;" value="Укажите примерную стоимость, на которую Вы рассчитываете. Оставьте поле пустым, если не знаете цену даже примерно. " />
+                        </h:panelGroup>
+                    </h:panelGrid>
+                    <h:panelGroup id="orderUploadControl">
+                        <p>Добавьте файлы условия задачи (фотографии, pdf, doc и др.). Максимальный размер загружаемых файлов - <b>10 MБ</b></p>
+                        <p:fileUpload style="width: 100%;" fileUploadListener="#{makeOrderBean.fileUploadController.handleFileUpload}" auto="true"
+                                      mode="advanced"
+                                      multiple="true" rendered="#{makeOrderBean.fileUploadController.displayUploadControl}"
+                                      uploadLabel="Загрузить условие" label="Обзор..." update="uploadedOrderFiles, :growl"
+                                      />
+                        <h:panelGroup id="uploadedOrderFiles" style="max-height: 100px;">
+                            <p:dataList var="file" value="#{makeOrderBean.fileUploadController.files}">
+                                #{file.fileName} (#{file.size} байт)
+                            </p:dataList>
+                        </h:panelGroup>
+                        <p:panel rendered="false">
+                            <h:panelGroup style="color: red;"  >
+                            "ВНИМАНИЕ! После того, как ваш заказ будет просмотрен, необходимо будет внести предоплату, равную половине от стоимости решения. До внесения предоплаты решение задачи начато НЕ будет! При несвоевременной предоплате и согласии на решение, срок решения может быть автоматически продлен! Имейте это ввиду и НЕ указывайте в этой форме сразу "предельный" срок!" 
+                            </h:panelGroup>
+                        </p:panel>
+                    </h:panelGroup>
+
+                    <p:remoteCommand name="hideOrderUploadControl" process="@this" actionListener="#{makeOrderBean.fileUploadController.hideUploadControl}" update="orderUploadControl,:growl"/>
+                    <p:remoteCommand name="showOrderUploadControl" process="@this" actionListener="#{makeOrderBean.fileUploadController.showUploadControl}" update="orderUploadControl,:growl"/>
+                    <p:remoteCommand name="clearOrderFiles"  process="@this" actionListener="#{makeOrderBean.fileUploadController.clearFiles}" update="uploadedOrderFiles"/>
+                </h:panelGroup> 
+                <br/>
+            </ui:composition>
+        </h:form>
+
+    </body>
+</html>

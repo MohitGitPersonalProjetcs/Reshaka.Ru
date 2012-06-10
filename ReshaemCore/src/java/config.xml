@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReshakaConfig>
+    <parameter name="mainAdminId" list="false">
+        <value>99999999</value>
+    </parameter>
+    <parameter name="mainAdminLogin" list="false">
+        <value>admin</value>
+    </parameter>
+    <parameter name="mainAdminEmail" list="false">
+        <value>admin@reshaka.ru</value>
+    </parameter>
+    <parameter name="mainAdminPassword" list="false">
+        <value>reshaka</value>
+    </parameter>
+    
+    <parameter name="adminPercent" list="false">
+        <value>0.3</value>
+    </parameter>
+    
+    <parameter name="chatAdminId" list="false">
+        <value>77777777</value>
+    </parameter>
+    <parameter name="chatAdminLogin" list="false">
+        <value>support</value>
+    </parameter>
+    <parameter name="chatAdminEmail" list="false">
+        <value>support@reshaka.ru</value>
+    </parameter>
+    <parameter name="chatAdminPassword" list="false">
+        <value>reshaka</value>
+    </parameter>
+    
+    <parameter name="subjects" list="true">
+        <value>Выберите предмет</value>
+        <value>Гидравлика</value>
+        <value>Детали машин</value>
+        <value>Инженерная графика</value>
+        <value>Информатика</value>
+        <value>История</value>
+        <value>Логика</value>
+        <value>Математика</value>
+        <value>Материаловедение</value>
+        <value>Прикладная механика</value>
+        <value>Программирование</value>
+        <value>Русский язык</value>
+        <value>Сопротивление материалов</value>
+        <value>Теоретическая механика</value>
+        <value>ТОЭ</value>
+        <value>Физика</value>
+        <value>Химия</value>
+        <value>Эконометрика</value>
+        <value>Экономика</value>
+        <value>Электроника</value>
+        <value>Англ. язык</value>
+        <value>Нет в списке</value>
+    </parameter>
+    
+    <parameter name="tags" list="true">
+        <value>Гидравлика</value>
+        <value>Детали машин</value>
+        <value>Инженерная графика</value>
+        <value>Информатика</value>
+        <value>История</value>
+        <value>Логика</value>
+        <value>Математика</value>
+        <value>Материаловедение</value>
+        <value>Прикладная механика</value>
+        <value>Программирование</value>
+        <value>Русский язык</value>
+        <value>Сопротивление материалов</value>
+        <value>Теоретическая механика</value>
+        <value>ТОЭ</value>
+        <value>Физика</value>
+        <value>Химия</value>
+        <value>Эконометрика</value>
+        <value>Экономика</value>
+        <value>Электроника</value>
+        <value>Англ. язык</value>
+        <value>Нет в списке</value>
+    </parameter>
+    
+    <parameter name="statusNew" list="false">
+        <value>Заказ размещён недавно и ещё не оценен нашими специалистами</value>
+    </parameter>
+    
+    <parameter name="statusRated" list="false">
+        <value>Заказ оценен нашими специалистами, а значит может быть выполнен при внесении предоплаты.</value>
+    </parameter>
+    
+    <parameter name="statusSolved" list="false">
+        <value>Заказ решён. Для того, чтобы его скачать, заказчик должен оплатить вторую половину стоимости. </value>
+    </parameter>
+    
+    <parameter name="statusPayed" list="false">
+        <value>Заказ выполнен и оплачен.</value>
+    </parameter>
+   
+    <parameter name="openIdWidgetId" list="false">
+        <value>16675</value>
+    </parameter>
+    <parameter name="openIdSecretKey" list="false">
+        <value>da55bc3d147b61a5aaf9b6a29a1d0cfa</value>
+    </parameter>
+   
+    <parameter name="YandexLastOperationId" list="false">
+        <value>772884699550116025</value>
+    </parameter>
+    
+    <parameter name="YandexToken" list="false">
+        <value>410011373789086.AD56B2703C1F14CDA03E3FC6E00795D18892A45E9D1A3CD2825992EACF0812E57CEAFE7C2CE3AFFA18C46075CA79DC4827E82D0BD47CA576D7634150995E91C68A48350E2D7793589D77F51B1645D63AE5849CF7A5B0BF91E6C1F11796A26783FAEF30C717353CDF5335456D4C8A057F2FCBB39F6BA81AD5406BD634413D9C52</value>
+    </parameter>
+   
+    <parameter name="YandexPurse" list="false">
+        <value>410011373789086</value>
+    </parameter>
+    
+    <parameter name="yandexId" list="false">
+        <value>7E35884E9F3D0DC7ADE5A85F524D52D01B4CEB086650663C843939FE73AE733A</value>
+    </parameter>
+   
+    <parameter name="redirectUri" list="false">
+        <value>http://reshaka.ru/Reshaem/faces/redirected</value>
+    </parameter>
+    
+    <parameter name="WebmoneyLastMessageReceivedDate" list="false">
+        <value>05/13/2012 03:01:26</value>
+    </parameter>
+    
+    
+    
+</ReshakaConfig>

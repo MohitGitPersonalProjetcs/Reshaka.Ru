@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+            <h:form> 
+                <p:panel header="Вы #{webSession.login}" style="border-width: 0px; line-height: 25px;"   >
+                    <h:panelGrid columns="2" >
+                        <h:outputText value="Баланс :" style="font-size: small;"/>
+                        <h:panelGroup>
+                            <p:commandLink value="#{userBean.userBalance(webSession.id)}" onclick="replenishment_dlg.show();" />
+                            <img src="/Reshaem/images/rur.jpg" style="width: 17px;" />
+                        </h:panelGroup>
+                        
+                        <a href="#{request.contextPath}/faces/profile.xhtml" style="font-size: small;" >
+                            Мой профиль
+                        </a>
+                        <h:outputText value=""/>
+
+                        <a style="font-size: small;" href="#{request.contextPath}/faces/index2.xhtml#operation=reshakamyorder" onclick="window.location = '#{request.contextPath}/faces/index2.xhtml#operation=myorder' ;reshakaMyOrdersButtonClicked();"> Мои заказы </a>
+                        <h:outputText value=""/>
+                        
+                        <h:link outcome="ichat.xhtml" value="Мои сообщения" style="font-size:small;"/>
+                        <h:panelGroup style="font-size: large;"><h:outputText style="font-size: smaller; font-weight: bolder;" rendered="#{chatBean.hasNewMessages()}" value="(#{chatBean.newMessagesNumber})"/></h:panelGroup>
+                    </h:panelGrid>
+                </p:panel>
+
+
+                <p:remoteCommand name="reshakaMyOrdersFilter" process="@this" actionListener="#{showOrdersBean.establishOrdersOfReshaka(webSession.id)}" update=":main_panel" />
+
+
+            </h:form>
+        </ui:composition>
+    </body>
+</html>

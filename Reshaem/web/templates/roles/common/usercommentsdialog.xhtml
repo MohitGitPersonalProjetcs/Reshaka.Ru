@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+
+        <ui:composition>
+
+            <p:dialog header="Просмотр профиля пользователя" widgetVar="comments_dlg" position="top">
+
+                <h:panelGroup id="comment_dialog_content"  >
+
+
+
+                    <h:form>
+                        <p:scrollPanel mode="native" style="width:430px;height:265px" id="sc_comm">  
+                           
+                            <p:dataGrid id="comment_grid" columns="1" width="400" style="border-width: 0px;" value="#{userBean.commentsOfUser(selectedBean.user.id)}" var="comment" >
+
+                                <h:panelGrid columns="1" width="430" >
+                                    <h:outputText value="автор: #{orderUtilsBean.loginById(comment.authorId)}" style="color:red;" />
+                                    <h:outputText value="#{comment.text}" />
+                                </h:panelGrid>
+
+
+                            </p:dataGrid>
+
+                        </p:scrollPanel>
+
+
+                        <hr/>
+                        <h:panelGrid columns="1" width="430">
+                            <h:outputText value="Здесь вы можете оставить свой отзыв"  />
+                            <p:inputTextarea value="#{userBean.comment}" style="width: 100%;" autoResize="false" rows="3" />
+
+                        </h:panelGrid>
+
+                        <div style="text-align: right;">
+                            <p:commandButton value="Отправить" actionListener="#{userBean.addComment(selectedBean.user.id,webSession.id, userBean.comment)}" update=":comment_dialog_content" />
+                        </div>
+
+                    </h:form>
+
+                </h:panelGroup>
+
+
+
+            </p:dialog>
+
+            <script type="text/javascript">  
+                function handleOrderInfoRequest(xhr, status, args) {  
+                    order_info_dlg.hide();  
+                }  
+            </script>
+
+        </ui:composition>
+
+
+
+    </body>
+</html>

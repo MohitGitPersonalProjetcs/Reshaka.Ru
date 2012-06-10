@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition >
+            <h:panelGroup rendered="#{webSession.group == 1}">
+                <ui:include src="admin/admindialogs.xhtml"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{!webSession.signedIn}">
+                <ui:include src="guest/guestdialogs.xhtml"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{webSession.group==3 or webSession.group == 1}">
+                <ui:include src="reshaka/reshakadialogs.xhtml"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{webSession.group==2}">
+                <ui:include src="../order/OnlineHelpForm.xhtml"/>
+                <ui:include src="user/userdialogs.xhtml"/>
+                <ui:include src="../order/makeorderwizard2.xhtml"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{webSession.signedIn}">
+                <ui:include src="common/AddCommentAboutSystemDialog.xhtml"/>
+                <ui:include src="common/orderinfodialog.xhtml"/>
+<!--                <ui:include src="common/profileDialog.xhtml"/>-->
+<!--                <ui:include src="common/userinfodialog.xhtml"/>-->
+<!--                <ui:include src="common/usercommentsdialog.xhtml"/>-->
+                <ui:include src="common/replenishmentdialog.xhtml"/>
+            </h:panelGroup>
+
+
+            <h:panelGroup rendered="#{!webSession.signedIn}">
+                <ui:include src="common/AddCommentAboutSystemDialog.xhtml"/>
+                <ui:include src="guest/guestpartnerdialog.xhtml"/>
+            </h:panelGroup>
+
+        </ui:composition>
+    </body>
+</html>

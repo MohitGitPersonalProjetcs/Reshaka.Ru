@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+             <h:outputLink id="makeonline_link" value="javascript:void(0)" onclick="onlineButtonClicked()" title="Заказать online - помощь">
+                <div id="headerPanelsecond" onclick="onlineButtonClicked();">
+                    <h2>онлайн помощь</h2>
+                    <p>Закажите оперативную помощь на экзамене.</p>
+                </div>
+            </h:outputLink>
+            <h:link outcome="faq.xhtml">
+                <div id="headerPanelfast">
+                    <h2>FAQ</h2>
+                    <p>Часто задаваемые вопросы </p>
+                </div>
+            </h:link>
+            <h:outputLink id="makeorder_link" value="javascript:void(0)" onclick="orderButtonClicked()" title="Сделать заказ">
+                <div id="headerPanelthird" onclick="orderButtonClicked()">
+                    <h2>задание</h2>
+                    <p>Загрузите задание и наши специалисты помогут вам!</p>
+                </div>
+            </h:outputLink>
+        </ui:composition>
+    </body>
+</html>

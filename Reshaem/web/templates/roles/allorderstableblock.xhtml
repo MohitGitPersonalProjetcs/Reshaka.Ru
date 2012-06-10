@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>Orders table block</title>
+    </head>
+    <body>
+
+        <ui:composition>
+
+
+            <h:form prependId="false" rendered="#{webSession.signedIn}" >
+                <h:panelGroup >
+                    <h3>Все заказы системы</h3>
+                </h:panelGroup>
+
+                <br/>
+
+                <p:growl id="table_growl" showDetail="true" sticky="false" /> 
+
+                <div style=" width: 100%" >
+                    <h:panelGroup > 
+                        <p:selectOneRadio style="display: inline-block;"   onchange="updateTableCommand();"  id="optionsrad" value="#{showOrdersBean.radioNumber}">  
+                            <f:selectItem itemLabel="Все заказы" itemValue="-1" />  
+                            <!--     there was                       0 21 20-->
+                            <f:selectItem itemLabel="Оффлайн" itemValue="0" />  
+                            <f:selectItem itemLabel="Онлайн"  itemValue="1" /> 
+                        </p:selectOneRadio>
+                        <div style="text-align: right; width:500px; display: inline-block;">
+                            <h:link value="Вернуться к моим заказам" outcome="index2.xhtml" />
+
+
+                        </div>
+                    </h:panelGroup>
+
+                </div>
+                <p:dataTable   id="table_block" var="order" value="#{showOrdersBean.lazyModel}" paginator="true"
+                               rows="5"  
+                               paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink}"  
+                               rowStyleClass="#{orderUtilsBean.orderStatus(order.id)}"
+                               emptyMessage="В системе нет ни одного заказа"
+                               >  
+                    <!--common-->
+                    <p:column style="width:20px" headerText="INFO">  
+                        <p:commandLink process="@this"   oncomplete="order_info_dlg.show()" update=":order_dialog_content" >
+                            <p:graphicImage value="../images/info.png" width="20px"/>
+                            <f:setPropertyActionListener  value="#{order}" target="#{selectedBean.order}" />  
+                        </p:commandLink>
+
+                    </p:column> 
+
+                    <!--common-->
+
+                    <p:column id="orderid" headerText="ID"> 
+                        <center> #{order.id}</center>
+                    </p:column>  
+
+                    <!-- common                   -->
+                    <p:column id="employerid" headerText="Заказчик">  
+                        <center>
+
+                            <h:link value="#{order.employer.login}" target="_blank" outcome="profile.xhtml" >
+                                <f:param name="id" value="#{order.employer.id}" />
+                            </h:link>
+                        </center>
+                    </p:column>  
+
+                    <!--   depends on order type                 -->
+                    <p:column id="status" headerText="Статус">  
+                        <center>
+                            <h:panelGroup>
+                                <h:outputText rendered="#{(order.status != 1) and (order.status != 11)}" id="ord_stat1" value="#{orderUtilsBean.russianOrderStatus(order.id)}" /> 
+                                <h:outputText rendered="#{(order.status == 1) or (order.status == 11)}" id="ord_stat" value="Оценен#{orderUtilsBean.bracketsForRatedOrderStatus(order.id)}" /> 
+
+                                <p:tooltip rendered="#{(order.status == 1) or (order.status == 11)}" for="ord_stat" value="#{orderUtilsBean.tooltipTextForRatedOrderStatus(order.id)}" style="width: 200px;" />
+                                <p:tooltip rendered="#{(order.status != 1) and (order.status != 11)}" for="ord_stat1" value="#{orderUtilsBean.statusDescription(order.status)}" style="width: 200px;" />
+                            </h:panelGroup>
+
+
+                        </center>
+                    </p:column>  
+
+                    <p:column id="price" headerText="Цена">  
+                        <center>
+                            <h:outputText value="..." rendered="#{( (webSession.id != order.employer.id) and (webSession.group == 2)) }" />
+                            <h:outputText value="#{order.price}" rendered="#{(webSession.id == order.employer.id)or (webSession.group == 1) or (webSession.group == 3)}" /> 
+                        </center>
+                    </p:column> 
+
+
+
+                    <p:column id="deadline" >  
+                        <f:facet name="header">
+                            <h:outputText value="Срок" rendered="#{showOrdersBean.orderType == 0}" />
+                            <h:outputText value="Начало" rendered="#{showOrdersBean.orderType == 1}" />
+                            <h:outputText value="Дата" rendered="#{showOrdersBean.orderType == -1}" />
+                        </f:facet>
+                        <center>
+                            <h:outputText value="#{order.deadlineString}" />  
+                        </center>
+                    </p:column> 
+
+                    <p:column headerText="Продолжительность" rendered="#{showOrdersBean.orderType == 1}">
+                        <center>
+                            #{order.duration} мин.
+                        </center>
+                    </p:column>
+
+
+
+                    <p:column id="ord_tags" headerText="Ключевые слова">
+                        <center>
+                            <h:outputText id="ordar" value="#{showOrdersBean.shortTags(order.tags)}" />
+                        </center>
+                        <p:tooltip for="ordar" value="#{order.tags}" style=" max-width: 20em;" />
+                    </p:column>
+
+                    <p:column headerText="Тип">
+                        <center>
+                            <h:outputText style="color: red;" value="Online-помощь" rendered="#{order.type == 1}" />
+                            <h:outputText style="color: blue;" value="Заказ" rendered="#{order.type == 0}" />
+                        </center>
+                    </p:column>
+
+                </p:dataTable>  
+                <p:remoteCommand name="updateTableCommand" update=":main_panel" actionListener="#{showOrdersBean.radioListener()}"  />
+
+            </h:form>
+
+
+
+        </ui:composition>
+
+
+
+    </body>
+</html>

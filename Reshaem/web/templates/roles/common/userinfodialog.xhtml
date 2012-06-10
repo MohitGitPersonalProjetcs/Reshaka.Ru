@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+
+        <ui:composition>
+
+            <p:dialog header="Просмотр профиля пользователя" widgetVar="user_info_dlg" position="top">
+
+                <h:panelGroup id="user_dialog_content">
+                    <p:tabView cache="false" id="tab_view_u">
+
+                        <p:tab id="utab1" title="Общая информация">
+                            <h:form>
+                                <h:panelGrid columns="2" id="basic_data_u" width="430">
+                                    <h:outputText value="ID: " />  
+                                    <h:outputText value="#{selectedBean.user.id}" />
+
+                                    <h:outputText value="Login: " />  
+                                    <h:outputText value="#{selectedBean.user.login}" />
+
+                                    <h:outputText value="Password: " rendered="#{webSession.group ==1}" />  
+                                    <h:outputText value="#{selectedBean.user.password}" rendered="#{webSession.group ==1}" />
+                                    
+                                    <h:outputText value="Статус: " />  
+                                    <h:panelGroup>
+                                        <h:outputText rendered="#{selectedBean.user.userGroup == 2}" value="Пользователь" />
+                                        <h:outputText rendered="#{selectedBean.user.userGroup == 3}" value="Решающий" /> 
+                                    </h:panelGroup>
+
+                                    <h:outputText value="Дата регистрации: " />  
+                                    <h:outputText value="#{selectedBean.user.registrationDate}" />
+
+                                    <h:outputText value="Последняя активность: " />  
+                                    <h:outputText value="#{selectedBean.user.lastActivityDate}" />
+
+                                    <h:panelGroup>                                        
+                                        <h:outputText rendered="#{selectedBean.user.userGroup == 3}" value="Количество решенных задач:" />  
+                                        <h:outputText rendered="#{selectedBean.user.userGroup == 2}" value="Количество заказанных задач:" />
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>                                        
+                                        <h:outputText rendered="#{selectedBean.user.userGroup == 3}" value="#{selectedBean.user.solvedAmount}" />  
+                                        <h:outputText rendered="#{selectedBean.user.userGroup == 2}" value="#{selectedBean.user.orderedAmount}" />
+                                    </h:panelGroup>
+
+<!--                                    <p:commandLink oncomplete="comments_dlg.show()" value="Отзывы" style="color: green;" update=":comment_dialog_content" />-->
+
+                                    
+                                    
+                                </h:panelGrid>
+                                <hr/>
+
+                            </h:form>
+                        </p:tab>
+                        
+
+
+                        <p:tab id="utab2" title="Контакты" rendered="#{webSession.group == 1}">
+                            <h:form>
+                                <h:panelGrid columns="2" id="cont_data_u" width="430">
+                                    <h:outputText value="Phone: " />  
+                                    <h:outputText value="#{selectedBean.user.phone}" />
+
+                                    <h:outputText value="E-mail: " />  
+                                    <h:outputText value="#{selectedBean.user.email}" />
+
+                                    <h:outputText value="ICQ: " />  
+                                    <h:outputText value="#{selectedBean.user.icq}" />
+
+                                    <h:outputText value="Skype: " />  
+                                    <h:outputText value="#{selectedBean.user.skype}" />
+
+                                    <h:outputText value="Additioanl: " />  
+                                    <h:outputText value="#{selectedBean.user.additionalContacts}" />
+
+                                </h:panelGrid>
+                                <hr/>
+
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab title="Для админа" rendered="#{webSession.group == 1}">
+                            <p:growl showDetail="true"/>
+                            <h:form>
+
+                                <p:panel>
+                                    <h:panelGrid columns="2" id="admin_tools" width="430">
+
+                                        <h:outputText value="Роль:" />
+                                        <h:panelGroup>
+                                            <c:if test="#{userBean.userGroupById(selectedBean.user.id) == 2}">
+                                                Пользователь
+                                            </c:if>
+                                            <c:if test="#{userBean.userGroupById(selectedBean.user.id) == 3}">
+                                                Решака
+                                            </c:if>
+                                        </h:panelGroup>
+
+                                        <h:outputText value="" rendered="#{userBean.userGroupById(selectedBean.user.id) == 2}" />  
+                                        <p:commandButton value="Сделать решакой." style="color: green;" actionListener="#{adminToolsBean.makeReshakaFromUser(selectedBean.user.id)}" update="admin_tools" rendered="#{userBean.userGroupById(selectedBean.user.id) == 2}" />
+
+                                        <h:outputText value="Текущий счет: " />  
+                                        <h:outputText value="#{userBean.userBalance(selectedBean.user.id)}" style="color: green;" />
+
+                                        <h:panelGroup>
+                                            <p:inputText id="plus_m" value="#{adminToolsBean.plusMoney}"/>
+                                            <p:watermark for="plus_m" value="Сумма для пополнения"/>
+                                        </h:panelGroup>
+                                        <p:commandButton value="Пополнить" actionListener="#{adminToolsBean.replenishMoney(selectedBean.user.id, adminToolsBean.plusMoney)}" update="admin_tools" />
+
+                                        <h:panelGroup>
+                                            <p:inputText id="minus_m" value="#{adminToolsBean.minusMoney}"/>
+                                            <p:watermark for="minus_m" value="Сумма для списания"  />
+                                        </h:panelGroup>
+                                        <p:commandButton value="Списать" actionListener="#{adminToolsBean.withdrawMoney(selectedBean.user.id, adminToolsBean.minusMoney)}" update="admin_tools" />
+                                        
+                                        
+                                        <h:outputText value="Бан:"/> 
+                                        <p:commandButton style="color: red;" value="Забанить!" actionListener="#{adminToolsBean.banUser(selectedBean.user.id)}" />
+                                        
+                                    </h:panelGrid>
+                                </p:panel>
+                                <hr/>
+                                <p:panel>
+                                    <p:inputTextarea value="#{adminToolsBean.message}" style="width: 100%" />
+                                    <br/>
+                                    <p:commandButton value="Отправить сообщение" actionListener="#{adminToolsBean.sendMessage(selectedBean.user.id, adminToolsBean.message)}" />
+                                    <h:panelGrid columns="2" id="admin_tools0" width="430">
+
+                                    </h:panelGrid>
+
+                                </p:panel>
+
+                            </h:form>
+                        </p:tab>
+
+<!--                        <p:tab id="utab3" title="Рассылка" rendered="#{selectedBean.user.id == webSession.id}">
+                            <h:form>
+                                <h:outputText value="Присылать уведомления по почте:" />
+                                <h:panelGrid columns="2" id="mail_data_u" width="430">
+                                <h:outputText value="о новых сообщениях" />
+                                    <p:selectBooleanCheckbox value="#{selectedBean.settings.newMessage}"/>    
+
+                                    <h:outputText value="о новых заказах" rendered="#{webSession.group == 3}" />
+                                    <p:selectBooleanCheckbox value="#{selectedBean.settings.newProblem}" rendered="#{webSession.group == 3}" />  
+
+                                    <h:outputText value="об изменении статуса заказа" rendered="#{webSession.group == 2}" />
+                                    <p:selectBooleanCheckbox value="#{selectedBean.settings.newStatus}" rendered="#{webSession.group == 2}" />  
+
+
+                                </h:panelGrid>
+                                <hr/>
+                                <p:commandButton value="Сохранить изменения" actionListener="#{userBean.updateUserSettings(webSession.id, selectedBean.settings)}"/>
+                            </h:form>
+                        </p:tab>-->
+
+                    </p:tabView>
+
+                </h:panelGroup>
+
+
+
+            </p:dialog>
+
+            <script type="text/javascript">  
+                function handleOrderInfoRequest(xhr, status, args) {  
+                    order_info_dlg.hide();  
+                }  
+            </script>
+
+        </ui:composition>
+
+
+
+    </body>
+</html>

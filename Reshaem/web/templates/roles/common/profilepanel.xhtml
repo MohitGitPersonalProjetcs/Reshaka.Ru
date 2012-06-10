@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+            <div style="display: inline-block; width: 750px;" >
+                <p:tabView >
+                    <p:tab title="Мой профиль" rendered="#{(param['id'] == null) or (webSession.thisId(param['id'])) or (webSession.group == 1)}" >
+                        <h:form>
+                            <h:panelGrid columns="2" id="basic_data" width="430">
+                                <h:outputText value="Псевдоним:" title="Это имя будут видеть другие пользователи. Вы можете сменить его только один раз! "/>  
+                                <h:panelGroup>
+                                    <p:inputText id="nicks" value="#{editProfileBean.login}"
+                                                 required="true" readonly="#{!userBean.canChangeNickname(webSession.id)}" />  
+                                    <p:tooltip style="width: 160px;" for="nicks" value="Это имя будут видеть другие пользователи. Вы можете сменить его только один раз! " />
+                                </h:panelGroup>
+                                <h:outputText value="Логин:" title="Используется для входа на сайт (не виден другим пользователям)"/>  
+                                <p:inplace editor="true">  
+                                    <p:inputText value="#{editProfileBean.email}"  
+                                                 required="true" label="text" />  
+                                </p:inplace> 
+
+                                <h:outputText value="Телефон:" title="(виден администратору)"/>  
+                                <p:inplace editor="true">  
+                                    <p:inputMask value="#{editProfileBean.phone}" mask="(999) 999-9999" 
+                                                 required="false" label="text" />  
+                                </p:inplace> 
+
+                                <h:outputText value="ICQ:" title="(виден администратору)"/>  
+                                <p:inplace editor="true">  
+                                    <p:inputText value="#{editProfileBean.icq}"  
+                                                 required="false" label="text" />  
+                                </p:inplace> 
+
+                                <h:outputText value="Skype:" title="(виден администратору)"/>  
+                                <p:inplace editor="true">  
+                                    <p:inputText value="#{editProfileBean.skype}"  
+                                                 required="false" label="text" />  
+                                </p:inplace>
+
+                                <h:outputText value="Образование" rendered="#{webSession.group == 3}" />
+                                <h:panelGroup>
+                                    <p:inplace editor="true" rendered="#{webSession.group == 3}">  
+                                        <p:inputText value="#{editProfileBean.education}"  
+                                                     required="false" label="text" />  
+                                    </p:inplace>
+                                </h:panelGroup>
+
+                                <h:outputText value="Возраст" rendered="#{webSession.group == 3}" />
+                                <p:inplace editor="true" rendered="#{webSession.group == 3}">  
+                                    <p:inputText value="#{editProfileBean.age}"  
+                                                 required="false" label="text" />  
+                                </p:inplace>
+
+                                <h:outputText value="Город" rendered="#{webSession.group == 3}" />
+                                <p:inplace editor="true" rendered="#{webSession.group == 3}">  
+                                    <p:inputText value="#{editProfileBean.city}"  
+                                                 required="false" label="text" />  
+                                </p:inplace>
+
+                            </h:panelGrid>
+                            <hr/>
+                            <div style="text-align: right;">
+                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="basic_data, :growl"/>
+                                <p:commandButton value="Применить" actionListener="#{editProfileBean.apply}" process="@form" update="basic_data, :growl"/>
+                            </div>
+                            <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size: smaller; color: red;"/>
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab id="tab3" title="Аватар" rendered="false">
+                        <h:form enctype="multipart/form-data">
+                            <h:panelGrid id="current_avatar" width="430" columns="2">
+                                <h:outputText value="Ваш текущий аватар:"/>
+                                <p:graphicImage width="200" value="#{editProfileBean.currentAvatar}"/>
+                            </h:panelGrid> 
+                            <h:panelGroup id="upload_avatar_panel">
+                                Выберите изображение.
+                                <p:fileUpload auto="true" multiple="false" fileUploadListener="#{editProfileBean.uploadAvatar}" 
+                                              sizeLimit="1000000"  update=":growl"/>
+                                <p:commandButton update="current_avatar,:growl" value="Применить" actionListener="#{editProfileBean.applyUploadedAvatar}"/>
+                            </h:panelGroup>
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab id="tab2" title="Дополнительно" rendered="#{(param['id'] == null) or (webSession.thisId(param['id'])) or (webSession.group == 1)}" >
+                        <h:form>
+                            <h:panelGrid style="height: 12em;" columns="1" id="extra_data" width="430">
+                                <h:outputText value="Контакты:" title="(видны администратору)"/>  
+                                <p:inputTextarea id="extra_contacts" value="#{editProfileBean.additionalContacts}" style="width: 420px;"/>  
+
+                                <h:outputText value="Дополнительная информация:" title="(видна администратору)"/>  
+                                <p:inputTextarea id="extra_info" value="#{editProfileBean.additionalInformation}" style="width: 420px;"/>  
+
+                            </h:panelGrid>
+                            <hr/>
+                            <div style="text-align: right;">
+                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="extra_data, :growl"/>
+                                <p:commandButton value="Применить" actionListener="#{editProfileBean.apply}" process="@form" update="extra_data, :growl"/>
+                            </div>
+                            <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size: smaller; color: red;"/>
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab id="tab4" title="Смена пароля" rendered="#{(param['id'] == null) or (webSession.thisId(param['id'])) or (webSession.group == 1)}" >
+                        <h:form>
+                            <h:panelGrid style="height: 12em;" columns="2" id="pwd_data" width="430">
+                                <h:outputText value="Логин:" />  
+                                <h:outputText value="#{editProfileBean.email}"/>  
+
+                                <h:outputText value="Старый пароль:" />  
+                                <p:password value="#{editProfileBean.oldPassword}"  
+                                            label="text" feedback="false" />  
+
+                                <h:outputText value="Новый пароль:" />   
+                                <p:password value="#{editProfileBean.password}" id="pwd1"  
+                                            required="true" label="text" match="pwd2" />  
+
+                                <h:outputText value="Подтверждение:" />  
+                                <p:password value="#{editProfileBean.password}"  
+                                            required="true" label="text" id="pwd2" />  
+
+                            </h:panelGrid>
+                            <hr/>
+                            <div style="text-align: right;">
+                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="pwd_data, :growl"/>
+                                <p:commandButton value="Применить" actionListener="#{editProfileBean.applyPassword}" update="pwd_data, :growl"/>
+                            </div>
+                            <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size:smaller; color: red;"/>
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab id="tab5" title="Open ID" rendered="#{(param['id'] == null) or (webSession.thisId(param['id'])) or (webSession.group == 1)}" >
+                        <h:form>
+                            <h:panelGrid style="height: 12em;" columns="3" id="open_id_data" width="430">
+
+                                <h:outputText value="Vkontakte" />    
+                                <h:outputText value="#{editProfileBean.vkontakte}" style="color: green;"/> 
+                                <div>
+                                    <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=vkontakte&amp;lang=ru" >
+                                        <img src="images/vkontakte.png" alt="Вконтакте" title="Связать с Вконтакте"/>
+                                    </a>
+                                </div>
+
+                                <h:outputText value="Facebook" />      
+                                <h:outputText value="#{editProfileBean.facebook}" style="color: green;" />   
+                                <div>
+                                    <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=facebook&amp;lang=ru" >
+                                        <img src="images/facebook.png" alt="Facebook" title="Связать с Facebook"/>
+                                    </a>
+                                </div>
+
+                                <h:outputText value="Яндекс" />      
+                                <h:outputText value=" #{editProfileBean.yandex}" style="color: green;" />  
+                                <div>
+                                    <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=yandex&amp;lang=ru" >
+                                        <img src="images/yandex.png" alt="Yandex" title="Связать с Яндекс"/>
+                                    </a>
+                                </div>
+
+                                <h:outputText value="Mail.Ru" /> 
+                                <h:outputText value="#{editProfileBean.mailru}" style="color: green;"  />  
+                                <div>
+                                    <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=mailru&amp;lang=ru" >
+                                        <img src="images/mailru.png" alt="Mail.Ru" title="Связать с Mail.Ru"/>
+                                    </a>
+                                </div>
+
+                                <h:outputText value="Google" />          
+                                <h:outputText value="#{editProfileBean.gmail}" style="color: green;"  />  
+                                <div>
+                                    <a href="https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;provider=google&amp;lang=ru" >
+                                        <img src="images/google.png" alt="Google" title="Связать с Gmail"/>
+                                    </a>
+                                </div>
+
+                            </h:panelGrid>
+
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab id="utab1" title="Общая информация" rendered="#{(param['id'] != null) and (!webSession.thisId(param['id']))}" >
+                        <h:form>
+                            <h:panelGrid style="height: 12em;" columns="2" id="basic_data_u" width="430">
+                                <h:outputText value="ID: " />  
+                                <h:outputText value="#{profileBean.id}" />
+
+                                <h:outputText value="Login: " />  
+                                <h:outputText style="font-weight: bold;" value="#{profileBean.login}" />
+
+                                <h:outputText value="Password: " rendered="#{webSession.group ==1}" />  
+                                <h:outputText value="#{profileBean.password}" rendered="#{webSession.group ==1}" />
+
+                                <h:outputText value="Статус: " />  
+                                <h:panelGroup>
+                                    <h:outputText rendered="#{profileBean.userGroup == 2}" value="Пользователь" />
+                                    <h:outputText rendered="#{profileBean.userGroup == 3}" value="Решающий" /> 
+                                </h:panelGroup>
+
+                                <h:outputText value="Дата регистрации: " />  
+
+                                <h:outputText value="#{profileBean.registrationDate}">
+                                    <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
+                                </h:outputText>
+
+
+                                <h:outputText value="Последняя активность: " />  
+                                <h:outputText value="#{profileBean.lastActivityDate}">
+                                    <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
+                                </h:outputText>
+
+                                <h:panelGroup>                                        
+<!--                                    <h:outputText rendered="#{profileBean.userGroup == 3}" value="Количество решенных задач:" />  -->
+                                    <h:outputText rendered="#{profileBean.userGroup == 2}" value="Количество заказанных задач:" />
+                                </h:panelGroup>
+
+                                <h:panelGroup>                                        
+<!--                                    <h:outputText rendered="#{profileBean.userGroup == 3}" value="#{profileBean.solvedAmount}" />  -->
+                                    <h:outputText rendered="#{profileBean.userGroup == 2}" value="#{profileBean.orderedAmount}" />
+                                </h:panelGroup>
+
+                                <h:outputText value="Образование:" rendered="#{userBean.userGroupById(profileBean.id) == 3}" />
+                                <h:outputText value="#{profileBean.education}" rendered="#{userBean.userGroupById(profileBean.id) == 3}" />
+
+                                <h:outputText value="Возраст:" rendered="#{userBean.userGroupById(profileBean.id) == 3}" />
+                                <h:outputText value="#{profileBean.age}" rendered="#{userBean.userGroupById(profileBean.id) == 3}" />
+
+                                <h:outputText value="Город:" rendered="#{userBean.userGroupById(profileBean.id) == 3}" />
+                                <h:outputText value="#{profileBean.city}" rendered="#{userBean.userGroupById(profileBean.id) == 3}" />
+
+                                <!--                                    <p:commandLink oncomplete="comments_dlg.show()" value="Отзывы" style="color: green;" update=":comment_dialog_content" />-->
+
+
+
+                            </h:panelGrid>
+                            <hr/>
+                            <div style="text-align: right;">
+                                <h:outputLink style="color: blue;" styleClass="ChatLink" value="ichat.xhtml?friend=#{profileBean.id}" target="_blank">Перейти в чат</h:outputLink>
+                            </div>
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab title="Отзывы" rendered="#{profileBean.canViewCommentsTab() or (webSession.group == 1 )}" >
+                        <h:form>
+                            <h:panelGroup id="comment_gr">
+
+                                <p:scrollPanel mode="native" style="height: 250px;">
+                                    <c:forEach items="#{showCommentsBean.comments}" var="comment">
+                                        <div>
+                                            <h:outputText style="color: red;" value="#{orderUtilsBean.loginById(comment.authorId)}" />
+                                            /
+                                            <h:outputText value="#{comment.creationDate}">
+                                                <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
+                                            </h:outputText>
+                                        </div>
+                                        <div style="font-style: italic;" >
+                                            #{comment.text}
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <p:commandButton process="@this" rendered="#{webSession.group == 1}" actionListener="#{showCommentsBean.deleteComment(comment.id)}"  value="Удалить комментарий" />
+                                        </div>
+
+                                        <br/>
+                                    </c:forEach>
+
+                                </p:scrollPanel>
+
+                                <p:panel rendered="#{!profileBean.readOnlyComments()}">
+
+                                    <p:inputTextarea rendered="#{!profileBean.readOnlyComments()}" style="width: 98%;" value="#{showCommentsBean.text}"/>
+                                    <div style="text-align: right">
+                                        <p:commandButton rendered="#{!profileBean.readOnlyComments()}" value="Добавить комментарий" update="comment_gr"  actionListener="#{showCommentsBean.addComment(webSession.id)}" />
+                                    </div>
+
+
+                                </p:panel>
+
+                            </h:panelGroup>
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab title="Для админа" rendered="#{webSession.group == 1}">
+                        <p:growl showDetail="true"/>
+                        <h:form>
+
+                            <p:panel>
+                                <h:panelGrid columns="2" id="admin_tools" width="430">
+
+                                    <h:outputText value="ID" />
+                                    <h:outputText value="#{selectedBean.user.id}" />
+
+                                    <h:outputText value="Роль:" />
+                                    <h:panelGroup>
+                                        <c:if test="#{userBean.userGroupById(selectedBean.user.id) == 2}">
+                                            Пользователь
+                                        </c:if>
+                                        <c:if test="#{userBean.userGroupById(selectedBean.user.id) == 3}">
+                                            Решака
+                                        </c:if>
+                                    </h:panelGroup>
+
+                                    <h:outputText value="" rendered="#{userBean.userGroupById(selectedBean.user.id) == 2}" />  
+                                    <p:commandButton value="Сделать решакой." style="color: green;" actionListener="#{adminToolsBean.makeReshakaFromUser(selectedBean.user.id)}" update="admin_tools" rendered="#{userBean.userGroupById(selectedBean.user.id) == 2}" />
+
+                                    <h:outputText value="Текущий счет: " />  
+                                    <h:outputText value="#{userBean.userBalance(selectedBean.user.id)}" style="color: green;" />
+
+                                    <h:panelGroup>
+                                        <p:inputText id="plus_m" value="#{adminToolsBean.plusMoney}"/>
+                                        <p:watermark for="plus_m" value="Сумма для пополнения"/>
+                                    </h:panelGroup>
+                                    <p:commandButton value="Пополнить" actionListener="#{adminToolsBean.replenishMoney(selectedBean.user.id, adminToolsBean.plusMoney)}" update="admin_tools" />
+
+                                    <h:panelGroup>
+                                        <p:inputText id="minus_m" value="#{adminToolsBean.minusMoney}"/>
+                                        <p:watermark for="minus_m" value="Сумма для списания"  />
+                                    </h:panelGroup>
+                                    <p:commandButton value="Списать" actionListener="#{adminToolsBean.withdrawMoney(selectedBean.user.id, adminToolsBean.minusMoney)}" update="admin_tools" />
+
+
+                                    <h:outputText value="Бан:"/> 
+                                    <p:commandButton style="color: red;" value="Забанить!" actionListener="#{adminToolsBean.banUser(selectedBean.user.id)}" />
+
+                                </h:panelGrid>
+                            </p:panel>
+                            <hr/>
+                            <p:panel>
+                                <p:inputTextarea value="#{adminToolsBean.message}" style="width: 100%" />
+                                <br/>
+                                <p:commandButton value="Отправить сообщение" actionListener="#{adminToolsBean.sendMessage(selectedBean.user.id, adminToolsBean.message)}" />
+                                <h:panelGrid columns="2" id="admin_tools0" width="430">
+
+                                </h:panelGrid>
+
+                            </p:panel>
+
+                        </h:form>
+                    </p:tab>
+
+                    <p:tab title="Рассылка" rendered="#{webSession.group == 3}">
+                        <h:form>
+                            Настройка почтовых уведомлений
+                            <h:panelGroup  id="basic_data2">
+
+                                <!--                            <h:panelGrid columns="2" >-->
+                                <h:panelGrid columns="2"    >
+                                    <h:outputText value="Новое сообщение в чате" />
+                                    <p:selectBooleanCheckbox value="#{editProfileBean.settings.newMessage}"  />
+
+                                    <h:outputText value="Новый статус выбранного заказа" />
+                                    <p:selectBooleanCheckbox value="#{editProfileBean.settings.newStatus}" />
+
+                                </h:panelGrid>
+
+
+                                <h:outputText value="Отметьте галочкой предметы, по которым вы хотите получать уведомления"/>
+                                <p:scrollPanel mode="native"  style="height: 100px;">
+                                    <p:selectManyCheckbox converter="subjectConverter2"  value="#{editProfileBean.subjects}"  
+                                                          layout="pageDirection">  
+                                        <f:selectItems value="#{requestBean.allSubjects}" itemLabel="#{subject.subjectName}" var="subject" />  
+                                    </p:selectManyCheckbox> 
+                                </p:scrollPanel>
+
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}"  update="basic_data2, :growl"/>
+                                    <p:commandButton value="Применить" actionListener="#{editProfileBean.apply}" process="@form" update="basic_data2, :growl"/>
+                                </div>
+
+                                <!--                            </h:panelGrid>-->
+
+                            </h:panelGroup>
+                        </h:form>
+                    </p:tab>
+
+                </p:tabView>
+
+
+                <br/>
+
+                <h:form id="pr_ord_form" prependId="false" rendered="#{(param['id'] != null) and (!webSession.thisId(param['id']))}" >
+                    <center>
+                        <h:panelGroup >
+                            <h3>Заказы</h3>
+                        </h:panelGroup>
+                    </center>
+                    <br/>
+
+                    <p:growl id="table_growl" showDetail="true" sticky="false" /> 
+
+                    <p:dataTable   id="table_block" var="order" value="#{showOrdersBean.lazyModel}" paginator="true"
+                                   rows="5"  
+                                   paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink}"  
+                                   rowStyleClass="#{orderUtilsBean.orderStatus(order.id)}"
+
+                                   emptyMessage="Нет ни одного заказа"  
+                                   >  
+                        <!--common-->
+                        <p:column style="width:20px" headerText="INFO">  
+                            <p:commandLink   oncomplete="order_info_dlg.show()" update=":order_dialog_content" >
+                                <p:graphicImage value="../images/info.png" width="20px"/>
+                                <f:setPropertyActionListener  value="#{order}" target="#{selectedBean.order}" />  
+                            </p:commandLink>
+
+                        </p:column> 
+
+                        <!--common-->
+
+                        <p:column id="orderid" headerText="ID"> 
+                            <center> #{order.id}</center>
+                        </p:column>  
+
+                        <!-- common                   -->
+                        <!--                    <p:column id="employerid" headerText="Заказчик">  
+                                                <center>
+                                                    <p:commandLink process="@this" value="#{order.employer.login}" oncomplete="user_info_dlg.show()" update=":user_dialog_content" >
+                                                        <f:setPropertyActionListener value="#{orderUtilsBean.userById(order.employer.id)}" target="#{selectedBean.user}" />
+                                                    </p:commandLink>
+                                                    <h:link value="#{order.employer.login}" target="_blank" outcome="profile.xhtml" >
+                                                        <f:param name="id" value="#{order.employer.id}" />
+                                                    </h:link>
+                                                </center>
+                                            </p:column>  -->
+
+                        <!--   depends on order type                 -->
+                        <p:column id="status" headerText="Статус">  
+                            <center>
+                                <h:panelGroup>
+                                    <h:outputText id="ord_stat" value="#{orderUtilsBean.russianOrderStatus(order.id)}" /> 
+                                    <p:tooltip for="ord_stat" value="#{orderUtilsBean.statusDescription(order.status)}" style="width: 200px;" />
+                                </h:panelGroup>
+
+
+                            </center>
+                        </p:column>  
+
+                        <p:column id="price" headerText="Цена">  
+                            <center>
+                                <h:outputText value="..." rendered="#{( (webSession.id != order.employer.id) and (webSession.group == 2)) }" />
+                                <h:outputText value="#{order.price}" rendered="#{(webSession.id == order.employer.id)or (webSession.group == 1) or (webSession.group == 3)}" /> 
+                            </center>
+                        </p:column> 
+
+
+
+                        <p:column id="deadline" >  
+                            <f:facet name="header">
+                                <h:outputText value="Срок" rendered="#{showOrdersBean.orderType == 0}" />
+                                <h:outputText value="Начало" rendered="#{showOrdersBean.orderType == 1}" />
+                                <h:outputText value="Дата" rendered="#{showOrdersBean.orderType == -1}" />
+                            </f:facet>
+                            <center>
+                                <h:outputText value="#{order.deadlineString}" />  
+                            </center>
+                        </p:column> 
+
+                        <p:column headerText="Продолжительность" rendered="#{showOrdersBean.orderType == 1}">
+                            <center>
+                                #{order.duration} мин.
+                            </center>
+                        </p:column>
+
+
+
+                        <!--                    <p:column id="subject" headerText="Предмет"> 
+                                                <center>
+                                                    <h:outputText value="#{order.subject.subjectName}" />  
+                                                </center>
+                                            </p:column> -->
+
+                        <p:column id="ord_tags" headerText="Ключевые слова">
+                            <center>
+                                <h:outputText id="ordar" value="#{showOrdersBean.shortTags(order.tags)}" />
+                            </center>
+                            <p:tooltip for="ordar" value="#{order.tags}" style="max-width: 20em;" />
+                        </p:column>
+
+
+                        <p:column headerText="Тип">
+                            <center>
+                                <h:outputText style="color: red;" value="Online-помощь" rendered="#{order.type == 1}" />
+                                <h:outputText style="color: blue;" value="Заказ" rendered="#{order.type == 0}" />
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>  
+                    <p:remoteCommand name="updateTableCommand" update="table_block" actionListener="#{showOrdersBean.radioListener()}"  />
+
+                </h:form>
+
+            </div>
+        </ui:composition>
+    </body>
+</html>

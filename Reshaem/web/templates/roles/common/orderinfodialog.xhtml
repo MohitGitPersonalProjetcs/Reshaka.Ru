@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <ui:composition>
+
+            <p:dialog header="Информация о заказе" widgetVar="order_info_dlg" position="top">
+
+                <h:panelGroup id="order_dialog_content">
+                    <p:tabView cache="false" id="tab_view_o">
+
+                        <p:tab id="tab1" title="Информация о заказе" rendered="#{((webSession.signedIn) and (webSession.id != selectedBean.order.employer.id )) or ((webSession.id == selectedBean.order.employer.id) and (selectedBean.order.status != 0) and (selectedBean.order.status != 10))  }">
+                            <h:form>
+                                <h:panelGrid columns="2" id="basic_data" width="430">
+
+                                    <h:outputText value="Тип заказа" />
+                                    <h:panelGroup>
+                                        <h:outputText value="Обычный заказ" style="color: red;" rendered="#{selectedBean.order.type == 0}" />
+                                        <h:outputText value="Онлайн - помощь" style="color: red;" rendered="#{selectedBean.order.type == 1}" />
+                                    </h:panelGroup>
+
+                                    <h:outputText value="ID заказа: " />  
+                                    <h:outputText value="#{selectedBean.order.id}" />
+
+                                    <h:outputText value="Заказчик: " />  
+
+
+                                    <h:link target="_blank" outcome="profile.xhtml" value="#{selectedBean.order.employer.login}" style="color: blue;">
+                                        <f:param name="id" value="#{selectedBean.order.employer.id}"/>
+                                    </h:link>
+
+
+
+                                    <h:outputText value="Теги:" />
+                                    <h:outputText value="#{selectedBean.order.tags}" />
+
+                                    <h:outputText value="Дата подачи: " />  
+
+                                    <h:outputText value="#{selectedBean.order.hireDate}">
+                                        <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
+                                    </h:outputText>
+
+                                    <h:panelGroup>
+                                        <h:outputText value="Срок: " rendered="#{selectedBean.order.type == 0}" />  
+                                        <h:outputText value="Начало: " rendered="#{selectedBean.order.type == 1}" /> 
+                                    </h:panelGroup>
+
+
+                                    <h:outputText value="#{selectedBean.order.deadline}">
+                                        <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
+                                    </h:outputText>
+
+                                    <h:outputText value="Продолжительность: " rendered="#{selectedBean.order.type == 1}" />  
+                                    <h:outputText value="#{selectedBean.order.duration} минут" rendered="#{selectedBean.order.type == 1}" /> 
+
+
+
+                                    <h:panelGroup>
+                                        <h:outputText value="Условие: " rendered="#{selectedBean.order.type == 0}" />  
+                                        <h:outputText value="Примеры задач: " rendered="#{selectedBean.order.type == 1}" /> 
+                                    </h:panelGroup>
+
+                                    <h:link style="color: blue;" value="Скачать файл" outcome="download" target="_blank">
+                                        <f:param name="id" value="#{selectedBean.order.conditionId}"/>
+                                    </h:link>
+
+                                    <h:outputText value="Решение:"  rendered="#{selectedBean.order.type == 0}"/>
+                                    <h:panelGroup rendered="#{selectedBean.order.type == 0}" >
+
+                                        <h:outputText value="Не доступно" rendered="#{!(((selectedBean.order.employer.id == webSession.id ) and (selectedBean.order.status == 5)) or ((selectedBean.order.employee.id == webSession.id ) and (selectedBean.order.status == 5)) )}"/>
+                                        <h:link value="Скачать файл" rendered="#{((selectedBean.order.employer.id == webSession.id ) and (selectedBean.order.status == 5)) or ((selectedBean.order.employee.id == webSession.id ) and (selectedBean.order.status == 5)) }" outcome="download" target="_blank">
+                                            <f:param name="id" value="#{selectedBean.order.solutionId}"/>
+                                        </h:link>
+                                    </h:panelGroup>
+
+                                </h:panelGrid>
+
+                                <h:panelGroup rendered="#{selectedBean.order.status == 1}">
+
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{selectedBean.order.status == 3}">
+                                    <hr/>
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="Сейчас заказ решает: " />
+
+                                        <h:link target="_blank" outcome="profile.xhtml" value="#{orderUtilsBean.loginById(selectedBean.order.employee.id)}" style="color: blue;">
+                                            <f:param name="id" value="#{selectedBean.order.employee.id}"/>
+                                        </h:link>
+
+<!--                                        <h:outputText value="#{orderUtilsBean.loginById(selectedBean.order.employee.id)}"/> -->
+                                    </h:panelGrid>
+
+
+
+                                </h:panelGroup>
+
+
+
+                                <h:panelGroup rendered="#{selectedBean.order.status == 5}">
+                                    <hr/>
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="Заказ решён этим человеком: " />
+
+                                        <h:link target="_blank" outcome="profile.xhtml" value="#{orderUtilsBean.loginById(selectedBean.order.employee.id)}" style="color: blue;">
+                                            <f:param name="id" value="#{selectedBean.order.employee.id}"/>
+                                        </h:link>
+
+<!--                                        <h:outputText value="#{orderUtilsBean.loginById(selectedBean.order.employee.id)}"/> -->
+                                    </h:panelGrid>
+                                </h:panelGroup>
+
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <!--                                    <button onclick="order_info_dlg.hide();">OK</button>-->
+                                    <!--                                    <p:commandButton value="OK" onclick="handleOrderInfoRequest(xhr, status, args)" />-->
+                                </div> 
+
+
+
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab1s" title="Редактирование заказа" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }">
+                            <h:form>
+                                <h:panelGrid columns="2" id="basic_data_edit" width="430">
+                                    <h:outputText value="ID заказа: " />  
+                                    <h:outputText value="#{selectedBean.order.id}" />
+
+                                    <h:outputText value="Теги:" />
+                                    <h:panelGroup>
+                                        <p:inplace editor="true">
+                                            <h:inputText value="#{selectedBean.order.tags}" />
+                                        </p:inplace>
+                                    </h:panelGroup>
+
+
+                                    <h:outputText value="Дата подачи: " />  
+
+                                    <h:outputText value="#{selectedBean.order.hireDate}">
+                                        <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
+                                    </h:outputText>
+
+
+                                    <h:panelGroup>
+                                        <h:outputText value="Срок: " rendered="#{selectedBean.order.type == 0}" />  
+                                        <h:outputText value="Начало: " rendered="#{selectedBean.order.type == 1}" /> 
+                                    </h:panelGroup> 
+
+                                    <p:inplace editor="true">  
+                                        <p:calendar mindate="#{makeOrderBean.minDate}" value="#{selectedBean.order.deadline}" pattern="MM/dd/yyyy HH:mm"  />  
+                                    </p:inplace>
+
+                                    <h:outputText value="Продолжительность: " rendered="#{selectedBean.order.type == 1}" />  
+                                    <h:panelGroup rendered="#{selectedBean.order.type == 1}">
+                                        <p:inplace editor="true">
+                                            <h:inputText value="#{selectedBean.order.duration}"  />
+                                        </p:inplace>
+                                        <h:outputText value=" минут" />
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <h:outputText value="Условие: " rendered="#{selectedBean.order.type == 0}" />  
+                                        <h:outputText value="Примеры задач: " rendered="#{selectedBean.order.type == 1}" /> 
+                                    </h:panelGroup>
+                                    <h:link value="Скачать файл" outcome="download" target="_blank">
+                                        <f:param name="id" value="#{selectedBean.order.conditionId}"/>
+                                    </h:link>
+
+
+
+                                    <h:outputText value="Удалить заказ: " style="color: red;" />
+                                    <p:commandButton value="Удалить!" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();"  />
+
+                                </h:panelGrid>
+
+                                <hr/>   
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Изменить !" actionListener="#{orderUtilsBean.updateOrder(selectedBean.order)}"  update="basic_data_edit, :growl" />
+                                </div>
+
+
+
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab2" title="Описание">
+                            <h:form>
+                                <h:panelGrid columns="1" id="extra_data" width="430">
+
+                                    <h:outputText value="Описание" />  
+                                    <p:inputTextarea id="extra_info" value="#{selectedBean.order.description}" style="width: 420px;" readonly="#{!((webSession.id == selectedBean.order.employer.id) and (selectedBean.order.status == 0))}" />  
+
+                                </h:panelGrid>
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Изменить !" actionListener="#{orderUtilsBean.updateOrder(selectedBean.order)}" rendered="#{((webSession.id == selectedBean.order.employer.id) and (selectedBean.order.status == 0))}"  update="extra_data, :growl" />
+                                </div>
+
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab4" title="Я могу решить!" rendered="#{ ( (webSession.group==3)or(webSession.group==1)) and ( (selectedBean.order.status == 0) or  (selectedBean.order.status == 1) or (selectedBean.order.status == 10) or (selectedBean.order.status == 11) )}">
+                            <h:form>
+                                <h:panelGrid columns="2" id="extra_data" width="430">
+                                    <h:outputText value="Цена заказчика:" />
+                                    <h:outputText value="#{selectedBean.order.price}" />
+
+                                </h:panelGrid>
+
+                                <h:panelGroup rendered="#{selectedBean.order.status==1}">
+                                    <hr/>
+                                    Вот что предлагают другие решаки :
+                                    <p:dataTable value="#{orderUtilsBean.offersByOrderId(selectedBean.order.id)}" var="offer" >
+                                        <p:column headerText="Решающий">
+                                            #{orderUtilsBean.loginById(offer.userId)}
+                                        </p:column>
+                                        <p:column headerText="Цена">
+                                            #{offer.price}
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGroup>
+
+                                <hr/>
+                                <h:panelGrid columns="2">
+                                    <h:outputText value="Минимальная цена, которую вы можете предложить:"/>
+                                    <h:outputText id="min_price_label" value="#{orderUtilsBean.minPrice(selectedBean.order.id)} RUR" style="color: red;" />
+                                    <p:tooltip for="min_price_input" value="Ваша заявка не будет принята, если вы введете сумму, меньшую данной" />
+                                </h:panelGrid>
+
+                                <h:panelGroup>
+                                    <h:outputText value="Итак, я решу это за " rendered="#{selectedBean.order.type == 0}"/>
+                                    <h:outputText value="Итак, я помогу за " rendered="#{selectedBean.order.type == 1}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <h:inputText id="min_price_input" value="#{orderUtilsBean.plug}" style="width: 50px;">
+                                        <!--                                        <f:validateRegex pattern="[0-9]*[\.0-9]" />-->
+                                    </h:inputText>
+                                    RUR
+                                </h:panelGroup>
+
+
+
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Подать заявку !" update=":main_panel" actionListener="#{orderUtilsBean.addOffer(selectedBean.order.id,webSession.id, orderUtilsBean.plug)}" oncomplete="handleOrderInfoRequest(xhr, status, args)"/>
+                                </div>
+
+                            </h:form>
+                        </p:tab>
+
+
+                        <p:tab id="tab5"  rendered="#{ ((selectedBean.order.status == 1)or (selectedBean.order.status == 11))and((webSession.group == 1)or(webSession.group == 2))and(selectedBean.order.employer.id == webSession.id)}" title="Выбрать решаку!">
+                            <h:form prependId="false">
+                                <h:panelGrid width="330" columns="1" rendered="#{(selectedBean.order.status == 1) or (selectedBean.order.status == 11)}" >
+                                    <p:tooltip for="fillUp_o" value="Пополнить баланс" />
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="Мой баланс:"/>
+                                        <p:commandLink id="fillUp_o" value="#{userBean.userBalance(webSession.id)}" style="color:red;"/>
+                                    </h:panelGrid>
+
+
+
+                                    <hr/>
+                                    Вам хотят помочь:
+                                    <p:dataTable value="#{orderUtilsBean.offersByOrderId(selectedBean.order.id)}" var="offer">
+                                        <p:column headerText="Решающий" style="width: 75px;">
+
+                                            <h:link target="_blank" outcome="profile.xhtml" value="#{orderUtilsBean.loginById(offer.userId)}" style="color: red;">
+                                                <f:param name="id" value="#{offer.userId}"/>
+                                            </h:link>
+
+
+                                        </p:column>
+                                        <p:column headerText="Цена" style="width: 45px;">
+                                            #{offer.price}
+                                        </p:column>
+                                        <p:column headerText="Беру" style="width: 25px;" >
+                                            <h:panelGroup>
+                                                <p:commandButton update=":main_panel" actionListener="#{dealBean.startDeal(selectedBean.order.id, offer.id)}" 
+                                                                 id="plus_o" value="+"
+                                                                 disabled="#{!dealBean.canStartDeal(webSession.id, offer.id)}" 
+                                                                 oncomplete="handleOrderInfoRequest(xhr, status, args)"
+                                                                 rendered="#{selectedBean.order.type == 0}"
+                                                                 />
+
+                                                <p:commandButton update=":main_panel" actionListener="#{dealBean.startOnlineDeal(selectedBean.order.id, offer.id)}" 
+                                                                 id="plus_o1" value="+"
+                                                                 disabled="#{!dealBean.canStartOnlineDeal(webSession.id, offer.id)}" 
+                                                                 oncomplete="handleOrderInfoRequest(xhr, status, args)"
+                                                                 rendered="#{selectedBean.order.type == 1}"
+                                                                 />
+
+                                            </h:panelGroup>
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                </h:panelGrid>
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <!--                                    <p:commandButton value="OK" onclick="handleOrderInfoRequest(xhr, status, args)"/>-->
+                                </div>
+
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab6"  rendered="#{ ((webSession.group == 1)or(webSession.group == 2))and(selectedBean.order.employer.id == webSession.id)}" title="Состояние заказа">
+                            <h:form prependId="false">
+                                <h:panelGrid columns="2" width="430">
+                                    <h:outputText value="Состояние :"/>
+                                    <h:outputText value="#{orderUtilsBean.russianOrderStatus(selectedBean.order.id)}" />  
+                                </h:panelGrid>
+
+                                <h:panelGroup rendered="#{selectedBean.order.status == 3}">
+                                    <hr/>
+                                    <h:panelGrid columns="2">
+                                        <h:outputText value="Сейчас заказ решает: " />
+                                        <h:outputText value="#{orderUtilsBean.loginById(selectedBean.order.employee.id)}"/> 
+                                    </h:panelGrid>
+
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{selectedBean.order.status == 4}">
+                                    <hr/>
+                                    <h:panelGrid id="tab7_id_p" columns="2">
+                                        <h:outputText value="Заказ решён этим человеком: " />
+                                        <h:outputText value="#{orderUtilsBean.loginById(selectedBean.order.employee.id)}"/> 
+                                        <h:outputText value="Теперь вы можете оплатить вторую половину стоимости и скачать решение" style="color: red;" />
+                                        <br/>
+
+                                        <p:commandButton value="Оплатить!" update=":main_panel" actionListener="#{dealBean.makeFinalPayment(selectedBean.order.id)}" rendered="#{dealBean.canFinishDeal(selectedBean.order.id,webSession.id )}" />
+                                    </h:panelGrid>
+
+                                </h:panelGroup>
+                                <hr/>
+                                <div style="text-align: right;">
+                                    <p:commandButton value="OK" onclick="handleOrderInfoRequest(xhr, status, args)"/>
+                                </div>
+
+
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab id="tab7" title="Выложить решение" rendered="#{(selectedBean.order.status == 3) and (selectedBean.order.employee.id == webSession.id) and (selectedBean.order.type == 0)}">
+                            <h:form id="tab7_form" prependId="false">
+                                <h:panelGroup id="submit_solution_tab">
+                                    <p:commandButton  value="Загрузить файлы" style="color:blue;" onclick="solution_dlg_upload.show()"  />
+                                    <p:commandButton update=":main_panel"  style="color:red;" oncomplete="order_info_dlg.hide()" value="Подтвердить!!!" actionListener="#{dealBean.submitSolution(selectedBean.order.id, webSession.id)}"/>
+                                </h:panelGroup>
+                            </h:form>
+                        </p:tab>
+
+
+                    </p:tabView>
+                </h:panelGroup>
+
+
+            </p:dialog>
+
+            <script type="text/javascript">  
+                function handleOrderInfoRequest(xhr, status, args) {  
+                    order_info_dlg.hide();  
+                }  
+            </script>
+
+        </ui:composition>
+    </body>
+</html>

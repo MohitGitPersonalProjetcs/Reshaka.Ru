@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+
+        <ui:composition>
+
+            <p:dialog resizable="false" header="Ваши пожелания и предложения по улучшению системы" widgetVar="sys_comments_dlg" position="top" >
+                <h:form>
+                    <h:panelGroup rendered="#{!webSession.signedIn}">
+                        <h:panelGrid columns="2" >
+                            <h:outputText value="Ваше имя " />
+                            <p:inputText value="#{feedbacksBean.username}" />
+                        </h:panelGrid>
+                    </h:panelGroup>
+                    
+                    <h:outputText value="Ваше пожелание или отзыв"  />
+                    
+                    <br/>
+                    <p:inputTextarea value="#{feedbacksBean.text}" style="width: 95%; height: 100px;"  />
+                    <hr/>
+<!--                    <div style="text-align: left">Просмотреть все отзывы</div>-->
+                    <div style="text-align: right;">
+                        <p:commandButton oncomplete="sys_comments_dlg.hide();" value="Отправить" actionListener="#{feedbacksBean.addComment()}" update=":growl" />
+                    </div>
+                </h:form>
+            </p:dialog>
+
+        </ui:composition>
+
+    </body>
+</html>

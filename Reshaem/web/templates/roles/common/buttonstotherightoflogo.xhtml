@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <head>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+
+        <ui:composition>
+            <h:panelGroup id="auth_panel" >
+                <h:panelGroup id="login_panel" rendered="#{!webSession.signedIn}">
+                    <li class="NOTactive"> <!-- active -->
+
+                        <h:outputLink style="color: blue; text-decoration: underline;" id="login_link" value="javascript:void(0)" onclick="clearUrlParameters();dlg_login.show(); initOpenIdIframe();" title="login">     
+                            Вход
+                        </h:outputLink> 
+
+                    </li>
+                </h:panelGroup>
+
+                <h:panelGroup id="logout_panel" rendered="#{webSession.signedIn}">
+                    <li class="NOTactive"><span>
+
+                            <h:form prependId="false"> 
+                                <p:commandLink action="#{userBean.logOut(null)}" value="Выход" ajax="false" style="color:red; text-decoration: underline;"/>
+                            </h:form>
+
+
+                        </span>
+                    </li>
+                </h:panelGroup>
+            </h:panelGroup>
+
+
+            <li><h:link outcome="contacts.xhtml" value="Контакты"/></li>
+            <li><h:link outcome="guarantees.xhtml" value="Гарантии" rendered="#{webSession.signedIn}" /></li>
+            <li><h:link outcome="payments.xhtml" value="Оплата"/></li>
+            <li><h:link outcome="prices.xhtml" value="Цены"/></li>
+            <li><h:link outcome="rules.xhtml" value="Правила" /></li>
+
+
+            <!--        Переделать для каждой роли    -->
+            <h:panelGroup rendered="#{!webSession.signedIn}">           
+                <li><a onclick="guest_partner_dlg.show();" href="#">Партнёр</a></li>
+            </h:panelGroup>
+
+        </ui:composition>
+
+
+
+
+
+    </body>
+</html>

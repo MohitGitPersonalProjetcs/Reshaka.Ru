@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://java.sun.com/jsf/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:panelGroup id="makeorder_dlgs" style="top:1px;" >
+
+
+        <p:dialog id="makeorder_dialog" position="top" 
+                  header="Новая задача"  
+                  widgetVar="dlg_makeorder" 
+                  modal="true" resizable="false" 
+                  hideEffect="fade" width="650" 
+                  onHide="clearOrderFiles(); hideOrderUploadControl(); clearUrlParameters();"
+                  onShow="showOrderUploadControl();">    
+
+            <h:form id="wizard_form1" prependId="false" enctype="multipart/form-data">                      
+                <ui:include src="makeorderform2.xhtml"/>
+                <p:panel style="text-align: right; border-width: 0px;">
+                    <p:commandButton update=":main_panel" 
+                                     oncomplete="handleOfflineRequest(xhr, status, args);" 
+                                     actionListener="#{makeOrderBean.submitOrder}" 
+                                     id="confirm_button" 
+                                     value="Отправить заказ"  />
+                </p:panel>
+
+
+
+
+
+
+            </h:form>
+        </p:dialog>
+    </h:panelGroup>
+
+
+    <script type="text/javascript">  
+        function handleWizardRequest(xhr, status, args) {   
+            dlg_makeorder.hide();
+                      
+        } 
+        
+        function handleOfflineRequest(xhr, status, args) {   
+
+            if(args.validationFailed || !args.offline) {  
+                jQuery('#dlg_makeorder').effect("shake", { times:3 }, 100);
+            } else {  
+                dlg_makeorder.hide();
+                clearUrlParameters();
+                greetings(xhr, status, args);
+                
+            }  
+        }
+        
+    </script>
+
+</ui:composition>
+

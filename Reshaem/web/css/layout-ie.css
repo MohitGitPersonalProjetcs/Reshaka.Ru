@@ -1,0 +1,13 @@
+/* 
+    Document   : layout-ie
+    Created on : Feb 6, 2012, 5:29:40 PM
+    Author     : Danon
+    Description:
+        IE-Fix style sheet.
+*/
+
+* html #wrapper,
+* html #footer {
+	width: expression((documentElement.clientWidth||document.body.clientWidth)<600?'600px':'');
+}
+
