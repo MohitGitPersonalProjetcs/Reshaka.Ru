@@ -29,8 +29,11 @@
                 margin-top: 0; /* Убираем отступ сверху */
             }
             #chatheader { /* Верхний блок */
-                background: #0080c0; /* Цвет фона */
-                /*padding: 10px;  Поля вокруг текста */
+                win-width: 740px;
+                padding-left: 5px; /* Поля вокруг текста */
+                top: -5px;
+                position: fixed;
+                width: 100%;
             }
             #chatsidebar { /* Правая колонка */
                 float: right; /* Обтекание слева */
@@ -38,14 +41,15 @@
                 width: 180px; /* Ширина колонки */
                 padding: 5px; /* Поля вокруг текста */
                 margin: 0px 10px 20px 5px; /* Значения отступов */
+                background-color: white;
             }
             #chatcontent { /* Левая колонка */
                 margin: 0px 210px 20px 5px; /* Значения отступов */
                 padding: 5px; /* Поля вокруг текста */
                 /*border: 1px solid #333;  Параметры рамки */
-                height: 97%;
                 min-height: 440px;
-                min-width: 500px;
+                min-width: 490px;
+                top: 100px;
             }
             #chatfooter { /* Нижний блок */
                 background: #333; /* Цвет фона */
@@ -210,6 +214,13 @@
             // Handler for .ready() called.
             setInterval("nextMessage()", 2000); //update the chart every 2000 ms    
             nextMessage();
+            $('#chatMessageText').keydown(function (e) {
+                if (e.ctrlKey) 
+                    if(e.keyCode == 13) {
+                        $('#chatMessageSubmitButton').click();
+                    }
+                });
+            
         });           
         
         var myLogin = '#{webSession.login}';
@@ -243,9 +254,8 @@
                     + '\t<div class="msg-text">'+msgs[i].text+' '+ att
                     + '</div>'+del+'</div>';    
                 $('#chatMessages').append(html);
+                window.scrollTo(0, document.body.scrollHeight);
             }
-            if(messagesPanel!=undefined)
-                setTimeout('messagesPanel.scrollY('+(msgs.length*2)+');', 1);
         }
         
         function handleChangeUser(xhr, status, args) {
@@ -257,7 +267,7 @@
 
     <h:body rendered="#{webSession.signedIn}">
         <!--        <div id="chatheader"></div>-->
-        <div id="chatsidebar">
+        <div id="chatsidebar" style="position: fixed; right: 5px; z-index: 50;">
             <div id="userlist">
                 <p>
                     <c:if test="#{webSession.group != 1}">
@@ -291,81 +301,92 @@
                 </h:form>
             </div>
         </div>
-        <div id="chatcontent">
-            <h3>Добро пожаловать в чат, #{webSession.login}!</h3>
-            <h:panelGrid columns="2" width="100%">
-                <h:panelGroup style="display: block; width: 100%; font-size: smaller;">
-                    Ваш собеседник:
-                    <b><h:link outcome="profile.xhtml" target="_blank" value="#{chatBean.friend.login}" rendered="#{chatBean.friend.id!=null}">
-                            <f:param name="id" value="#{chatBean.friend.id}"/>
-                        </h:link>
-                       <h:outputText value="не выбран" rendered="#{chatBean.friend.id==null}"/></b></h:panelGroup>
-                <h:panelGroup style="display: block; width: 100%; font-size: smaller; text-align: right;">
-                    <h:selectOneRadio id="periodradio" required="false" value="#{chatBean.period}" style="width: auto; float: right;" onchange="window.location='chat.xhtml?period='+this.value+'&amp;friend=#{chatBean.friendId}';">  
-                        <f:selectItem id="period_one_day" itemLabel="1 день" itemValue="1"/>  
-                        <f:selectItem id="period_week" itemLabel="Неделя"  itemValue="7"/>
-                        <f:selectItem id="period_month" itemLabel="Месяц"  itemValue="30"/>
-                        <f:selectItem id="period_all" itemLabel="Все"  itemValue="10000"/>
-                    </h:selectOneRadio>
-                    <div style="clear: right;"></div>
-                </h:panelGroup>
-            </h:panelGrid>
-            <p:scrollPanel style="height: 80%; min-height: 350px; " mode="native" widgetVar="messagesPanel">
-                <div id="chatMessages" style="minwidth: 500px;">
-                    <!--                    <div style="color: green; font-weight: bolder;">Сообщения чата:</div>-->
-                </div>
-            </p:scrollPanel>
-            <h:panelGroup rendered="#{chatBean.friendId!=null}">
-                <h:form prependId="false" id="chat_send_message_form" enctype="multipart/form-data">
-                    <table style="width: 100%;">
-                        <tbody>
-                            <tr>
-                                <td><h:outputText value="Сообщение:" title="Введите ваше сообщение и нажмите ENTER" style="font-weight: bolder;"/></td>
-                                <td style="width: 80%; padding-right: 1em;"><h:inputTextarea required="true" style="width: 100%;" rows="2" value="#{chatBean.text}"/></td>
-                                <td><p:commandButton value="Отправить!" process="@form" actionListener="#{chatBean.sendMessage}" oncomplete="clearChatFiles();" update="chat_send_message_form, :recent_users_list"/></td>
-                                <td><p:commandButton value="Файл..." onclick="dlg_upload.show();"/></td>
-                                <td><h:panelGroup id="uploadedFilesCount"><h:outputText rendered="#{chatBean.fileUploadController.files.size()!=0}"  value="(#{chatBean.fileUploadController.files.size()})"/></h:panelGroup></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p:dialog widgetVar="dlg_upload" modal="true" header="Прикрепить файлы..." onShow="showUploadControl();" onHide="hideUploadControl();">
-
-                        <p:remoteCommand name="showUploadControl" process="@this" actionListener="#{chatBean.showUploadControl}" 
-                                         async="false" update="uploadControl"/>
-
-                        <p:remoteCommand name="hideUploadControl" process="@this" actionListener="#{chatBean.hideUploadControl}" 
-                                         async="false" update="uploadControl"/>
-                        <p:remoteCommand name="clearChatFiles" process="@this" actionListener="#{chatBean.fileUploadController.clearFiles}" 
-                                         async="false" update="uploadedFilesCount"/>
-                        Перетащите файлы сюда либо добавьте их через проводник. Затем нажмите <strong>Загрузить</strong>.<br/>
-                        По завершении загрузки нажмите кнопку <strong>Закрыть</strong>.<br/>
-                        <h:panelGroup id="uploadControl">
-                            <p:fileUpload rendered="#{chatBean.displayUploadControl}" mode="advanced" uploadLabel="Загрузить" cancelLabel="Отмена" label="Обзор..." 
-                                          auto="false" multiple="true" update="fileUploadGrowl, uploadedFilesCount" 
-                                          fileUploadListener="#{chatBean.fileUploadController.handleFileUpload}"/>
-                        </h:panelGroup>
-                        <p:commandButton value="Закрыть" onclick="dlg_upload.hide();"/>
-                        <p:growl id="fileUploadGrowl" showDetail="true"/>
-                    </p:dialog>
-
-
-                </h:form>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{chatBean.friendId==null}">
-                Отображены все ваши сообщения за выбранный период, т.к. не выбран собеседник.<br/>
-                Вы можете выбрать собеседника из списка недавних диалогов либо в поиске. 
-            </h:panelGroup>
-            <h:form>
-                <p:remoteCommand name="nextMessage" process="@this" actionListener="#{chatBean.requestNewMessages}" 
-                                 oncomplete="updateMessages(xhr, status, args);" async="false"/>
-                <p:poll async="true" autoStart="true" listener="#{chatBean.dummy}" process="@this" update=":recent_users_list" interval="5"/>
-            </h:form> 
+        <div id="chatheader">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="border-bottom-style: solid; border-bottom-width: 1px; background-color: white;">
+                        <div style="width:100%;">
+                            <h3>Добро пожаловать в чат, #{webSession.login}!</h3>
+                            <h:panelGrid columns="2" width="100%">
+                                <h:panelGroup style="display: block; width: 100%; font-size: smaller;">
+                                    Ваш собеседник:
+                                    <b><h:link outcome="profile.xhtml" target="_blank" value="#{chatBean.friend.login}" rendered="#{chatBean.friend.id!=null}">
+                                            <f:param name="id" value="#{chatBean.friend.id}"/>
+                                        </h:link>
+                                        <h:outputText value="не выбран" rendered="#{chatBean.friend.id==null}"/>
+                                    </b>
+                                </h:panelGroup>
+                                <h:panelGroup style="display: block; width: 100%; font-size: smaller; text-align: right;">
+                                    <h:selectOneRadio id="periodradio" required="false" value="#{chatBean.period}" style="width: auto; float: right;" onchange="window.location='chat.xhtml?period='+this.value+'&amp;friend=#{chatBean.friendId}';">  
+                                        <f:selectItem id="period_one_day" itemLabel="1 день" itemValue="1"/>  
+                                        <f:selectItem id="period_week" itemLabel="Неделя"  itemValue="7"/>
+                                        <f:selectItem id="period_month" itemLabel="Месяц"  itemValue="30"/>
+                                        <f:selectItem id="period_all" itemLabel="Все"  itemValue="10000"/>
+                                    </h:selectOneRadio>
+                                    <div style="clear: right;"></div>
+                                </h:panelGroup>
+                            </h:panelGrid></div></td><td style="width: 210px;"></td></tr></table>
         </div>
-        <!--        <div id="chatfooter">Copyright 2012. Reshaka.Ru</div> -->
+        <div id="chatcontent">
+            <div id="stub1" style="height: 100px;"></div>
+            <div style="height: 80%; min-height: 350px; ">
+                <div id="chatMessages" style="minwidth: 500px;">
+                </div>
+            </div>
+            <div id="stub2" style="height: 80px;"></div>
+        </div>
+        <h:panelGroup style="position: fixed; bottom: 25px; background-color: white;" rendered="#{chatBean.friendId!=null}">
+            <h:form prependId="false" id="chat_send_message_form" enctype="multipart/form-data">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td><h:outputText value="Сообщение:" title="Введите ваше сообщение и нажмите Ctrl+ENTER" style="font-weight: bolder;"/>
+                                <br/><div style="font-size: 10px; color: gray;">Ctr + Enter</div>
+                            </td>
+                            <td style="width: 80%; padding-right: 1em;"><h:inputTextarea required="true" id="chatMessageText" style="width: 100%;" rows="2" value="#{chatBean.text}"/></td>
+                            <td><p:commandButton id="chatMessageSubmitButton" value="Отправить!" process="@form" actionListener="#{chatBean.sendMessage}" oncomplete="clearChatFiles(); document.getElementById('chatMessageText').focus();" update="chat_send_message_form, :recent_users_list"/></td>
+                            <td><p:commandButton value="Файл..." onclick="dlg_upload.show();"/></td>
+                            <td><h:panelGroup id="uploadedFilesCount"><h:outputText rendered="#{chatBean.fileUploadController.files.size()!=0}"  value="(#{chatBean.fileUploadController.files.size()})"/></h:panelGroup></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p:dialog widgetVar="dlg_upload" modal="true" header="Прикрепить файлы..." onShow="showUploadControl();" onHide="hideUploadControl();">
+
+                    <p:remoteCommand name="showUploadControl" process="@this" actionListener="#{chatBean.showUploadControl}" 
+                                     async="false" update="uploadControl"/>
+
+                    <p:remoteCommand name="hideUploadControl" process="@this" actionListener="#{chatBean.hideUploadControl}" 
+                                     async="false" update="uploadControl"/>
+                    <p:remoteCommand name="clearChatFiles" process="@this" actionListener="#{chatBean.fileUploadController.clearFiles}" 
+                                     async="false" update="uploadedFilesCount"/>
+                    Перетащите файлы сюда либо добавьте их через проводник. Затем нажмите <strong>Загрузить</strong>.<br/>
+                    По завершении загрузки нажмите кнопку <strong>Закрыть</strong>.<br/>
+                    <h:panelGroup id="uploadControl">
+                        <p:fileUpload rendered="#{chatBean.displayUploadControl}" mode="advanced" uploadLabel="Загрузить" cancelLabel="Отмена" label="Обзор..." 
+                                      auto="false" multiple="true" update="fileUploadGrowl, uploadedFilesCount" 
+                                      fileUploadListener="#{chatBean.fileUploadController.handleFileUpload}"/>
+                    </h:panelGroup>
+                    <p:commandButton value="Закрыть" onclick="dlg_upload.hide();"/>
+                    <p:growl id="fileUploadGrowl" showDetail="true"/>
+                </p:dialog>
+
+
+            </h:form>
+        </h:panelGroup>
+        <h:panelGroup style="position: fixed; bottom: 20px; padding-bottom: 10px; background-color: white;" rendered="#{chatBean.friendId==null}">
+            Отображены все ваши сообщения за выбранный период, т.к. не выбран собеседник.<br/>
+            Вы можете выбрать собеседника из списка недавних диалогов либо в поиске. 
+        </h:panelGroup>
+        <h:form>
+            <p:remoteCommand name="nextMessage" process="@this" actionListener="#{chatBean.requestNewMessages}" 
+                             oncomplete="updateMessages(xhr, status, args);" async="false"/>
+            <p:poll async="true" autoStart="true" listener="#{chatBean.dummy}" process="@this" update=":recent_users_list" interval="5"/>
+        </h:form> 
+        <div id="chatfooter" style="position: fixed; bottom: 0px; width: 100%;">Copyright 2012. Reshaka.Ru</div>
     </h:body>
     <h:body rendered="#{!webSession.signedIn}">
         Вы не вошли в систему. Пожалуйста, 
         <a href="#" onclick="window.parent.location = '#{request.contextPath}/faces/ichat.xhtml#operation=login'; window.parent.location.reload();">авторизуйтесь</a>.
-        
+
     </h:body>
 </html>
