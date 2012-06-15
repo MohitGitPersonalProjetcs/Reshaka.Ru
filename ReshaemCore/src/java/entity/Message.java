@@ -29,6 +29,12 @@ import javax.persistence.*;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
     
+    public static final String REMOVED_BY_ADMIN = "admin";
+    public static final String REMOVED_BY_SENDER = "sender";
+    public static final String REMOVED_BY_RECEIVER = "receiver";
+    public static final String REMOVED_BY_BOTH = "both";
+    public static final String REMOVED_BY_NONE = null;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
@@ -56,6 +62,9 @@ public class Message implements Serializable {
     
     @Column(name="read_status")
     private boolean read;
+    
+    @Column(name="removed_by")
+    private String removedBy;
     
     public Long getId() {
         return id;
@@ -119,6 +128,14 @@ public class Message implements Serializable {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public String getRemovedBy() {
+        return removedBy;
+    }
+
+    public void setRemovedBy(String removedBy) {
+        this.removedBy = removedBy;
     }
     
     @Override
