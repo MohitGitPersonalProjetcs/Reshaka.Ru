@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
+import ejb.util.URLUtils;
 import entity.Order;
 import entity.User;
 import java.util.Date;
@@ -16,8 +12,9 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
-import javax.ejb.MessageDriven;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -26,13 +23,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.primefaces.model.SortOrder;
 
 /**
  *
  * @author rogvold
  */
-@Stateless
+@Stateless @TransactionAttribute(value= TransactionAttributeType.SUPPORTS)
 public class MailManager implements MailManagerLocal {
 
     @Resource(name = "mail/myMailSession")
@@ -49,7 +45,6 @@ public class MailManager implements MailManagerLocal {
 
     @Asynchronous
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
     public void sendMail(String to, String theme, String text) {
         try {
 
@@ -99,7 +94,6 @@ public class MailManager implements MailManagerLocal {
 
     @Asynchronous
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
     public void newOrderDistribution(Long orderId) {
         Order order = em.find(Order.class, orderId);
         System.out.println("order = " + order);
@@ -128,14 +122,13 @@ public class MailManager implements MailManagerLocal {
 
     @Asynchronous
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
     public void sendStatusChange(Long orderId) {
         Order order = em.find(Order.class, orderId);
         String text = "", theme = "";
         int a = order.getStatus();
         switch (a) {
             case 1:
-                theme = "заказ оценён";
+                theme = "Reshaka.Ru: заказ оценён";
                 text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
                         + "\n\n Ваш заказ (ID = " + order.getId() + ")"
                         + " оценён нашими специалистами."
@@ -147,9 +140,9 @@ public class MailManager implements MailManagerLocal {
                 }
                 break;
             case 3:
-                theme = "внесена предоплата";
+                theme = "Reshaka.Ru: внесена предоплата";
                 text = "Здравствуйте, " + order.getEmployee().getLogin() + " !"
-                        + "\n\n Внесена предоплата за заказа ID = " + order.getId() + " ."
+                        + "\n\n Внесена предоплата за заказа ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId),"_blank", ""+orderId) + " ."
                         + "Можете приступать к решению."
                         + "\n\n\n C Уважением, Reshaka.RU"
                         + "\n\n P.S. Вы можете отписаться от рассылки на нашем сайте reshaka.ru в разделе \"Мой профиль\"";
@@ -158,9 +151,9 @@ public class MailManager implements MailManagerLocal {
                 }
                 break;
             case 4:
-                theme = "заказ выполнен";
+                theme = "Reshaka.Ru: заказ выполнен";
                 text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-                        + "\n\n Ваш заказ (ID = " + order.getId() + ")"
+                        + "\n\n Ваш заказ (ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId),"_blank", ""+orderId) + ")"
                         + " выполнен."
                         + "\n Теперь вы можете оплатить вторую половину заказа, после чего Вам будет доступно решение."
                         + "\n\n\n C Уважением, Reshaka.RU"
@@ -172,7 +165,7 @@ public class MailManager implements MailManagerLocal {
             case 5:
                 theme = "заказ оплачен";
                 text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-                        + "\n\n Ваш заказ (ID = " + order.getId() + ")"
+                        + "\n\n Ваш заказ (ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId),"_blank", ""+orderId) + ")"
                         + " оплачен."
                         + "\n Теперь вы можете скачать решение."
                         + "\n\n\n C Уважением, Reshaka.RU"
@@ -187,7 +180,6 @@ public class MailManager implements MailManagerLocal {
 
     @Asynchronous
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
     public void sendMailToAdmin(String theme, String text) {
         User user = em.find(User.class, confMan.getMainAdminId());
         sendMail(user.getEmail(), theme, text);

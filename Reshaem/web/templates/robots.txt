@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /Reshaem
+Allow: /Reshaem/faces/
+Disallow: /Reshaem/templates
+Disallow: /Reshaem/js/
+Disallow: /Reshaem/vkontakte
+Disallow: /Reshaem/images
+Crawl-delay: 2

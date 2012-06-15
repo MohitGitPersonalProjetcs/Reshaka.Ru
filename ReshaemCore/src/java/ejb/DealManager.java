@@ -1,10 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
+import ejb.util.URLUtils;
 import entity.Offer;
 import entity.Order;
 import entity.User;
@@ -176,6 +173,8 @@ public class DealManager implements DealManagerLocal {
                 return "Solved";
             case 5:
                 return "Payed";
+            case 6:
+                return "Expired";
             case 10:
                 return "NewOnline";
             case 11:
@@ -186,6 +185,8 @@ public class DealManager implements DealManagerLocal {
                 return "PrepayedOnline";
             case 14:
                 return "DoneOnline";
+            case 15:
+                return "ExpiredOnline";
         }
         return "";
     }
@@ -302,13 +303,13 @@ public class DealManager implements DealManagerLocal {
 
             //sending message to employee from admin 
             String text;
-            text = "Внесена предоплата за \"Онлайн - помошь\" . Номер заказа :" + order.getId() + " ."
-                    + "\n Дата: " + order.getDeadlineString() + " ."
-                    + "\n Продолжительность: " + order.getDuration() + " минут."
-                    + "\n Будьте на связи в указанное время. ";
-
-            messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), text, "Вас выбрали исполнителем на онлайн - помощь (ID заказа = " + order.getId() + "). Будьте вовремя в указанное время", order.getConditionId());
-            //TODO(Sabir): sendMail...
+            text = "Внесена предоплата за \"Онлайн - помошь\" на "+URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshak.Ru") +"\n"
+                    + "Номер заказа: " +URLUtils.createLink(URLUtils.getOrderURL(order.getId()), "_blank", order.getId()+"") + ".\n"
+                    + "Дата: " + order.getDeadlineString() + " .\n"
+                    + "Продолжительность: " + order.getDuration() + " минут.\n"
+                    + "Будьте на связи в указанное время. ";
+            messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), "notification", "Вас выбрали исполнителем на онлайн - помощь (ID заказа = " + order.getId() + "). Будьте вовремя в указанное время", order.getConditionId());
+            mailMan.sendMail(order.getEmployee().getEmail(), "Reshaka.Ru Online-помощь: вас выбрали исполнителем", text);
         }
     }
 
