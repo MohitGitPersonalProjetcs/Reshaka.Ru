@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -11,16 +7,29 @@ and open the template in the editor.
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <head>
-        <title>TODO supply a title</title>
+        <title>Поздравление с первым заказом</title>
     </head>
     <body>
-        <h:form>
-            <h:panelGrid columns="2">
-            <img src="/Reshaem/images/applause.gif" width="40"/> 
-            <h:panelGroup style="font-weight: bold; text-align: center;"> Поздравляем с первым заказом!  </h:panelGroup>
-            <br/>
-            Здесь будет описание дальнейших действий
-            </h:panelGrid>
-        </h:form>
+        <ui:composition>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <p:graphicImage width="150" alt="Information icon" value="/images/information-350px.png"/>
+                    <h:panelGroup style="font-weight: bold;"> 
+                        <p><strong>Поздравляем с первым заказом!</strong></p>
+                        <p style="font-weight: lighter;">
+                            Уважаемый пользователь, Вы только что в первый раз сделали заказ на Reshaka.Ru.
+                            Через несколько минут ваш заказ будет просмотрен и оценен нашими специалистами.
+                        </p>
+                        <p></p>
+                        <p style="font-weight: lighter;">    
+                            Подробнее о дальнейших действиях вы можете узнать в 
+                                <h:link style="color: blue;" outcome="rules.xhtml" value="Руководстве">
+                                    <f:param name="referer" value="first-order"/>
+                                </h:link>.
+                        </p>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:form>
+        </ui:composition>
     </body>
 </html>

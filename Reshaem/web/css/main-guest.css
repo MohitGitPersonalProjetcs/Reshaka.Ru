@@ -82,6 +82,28 @@ ul{list-style-type:none;}
     padding-left: 10px;
 }
 
+.sposob-inform {
+    padding: 13px 25px 0 200px;
+    color: #999;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.sp-im {
+    position: absolute;
+    left: 33px;
+    top: 2px;
+    width: 157px;
+    height: 109px;
+    overflow: hidden;
+    text-align: center;
+}
+.last {
+    margin-bottom: 0px !important;
+    padding-bottom: 0px;
+    margin-right: 0px !important;
+}
+
 #paySystemsTable .tableTitle {
     color: white;
     font-weight: bold;

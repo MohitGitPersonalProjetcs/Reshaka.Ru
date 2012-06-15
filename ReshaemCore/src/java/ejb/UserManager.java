@@ -1,5 +1,6 @@
 package ejb;
 
+import ejb.util.URLUtils;
 import entity.*;
 import java.util.Random;
 import java.security.MessageDigest;
@@ -600,7 +601,7 @@ public class UserManager implements UserManagerLocal {
             user = em.merge(user);// try to use merge instead of persist
             user.setLogin("user" + user.getId());
             user = em.merge(user);
-            String text = "Здравствуйте, теперь вы зарегистрированы на сайте Reshaka.Ru!"
+            String text = "Здравствуйте, теперь вы зарегистрированы на сайте "+URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshaka.Ru") +"!"
                     + "\n\n Логин: " + user.getEmail() + "\n"
                     + "Пароль: " + user.getPassword() + ""
                     + "\n\n\n C уважением, администрация Reshaka.Ru";
@@ -778,7 +779,7 @@ public class UserManager implements UserManagerLocal {
         user = em.merge(user);
         user.setLogin("reshaka" + Long.toString(user.getId()));
 
-        String text = "Здравствуйте, теперь вы зарегистрированы на сайте Reshaka.Ru в качестве решателя!"
+        String text = "Здравствуйте, теперь вы зарегистрированы на сайте "+URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshaka.Ru")+" в качестве решателя!"
                 + "\n\nЛогин: " + user.getEmail() + "\n"
                 + "Пароль: " + user.getPassword() + ""
                 + "\n\nВы можете поменять пароль в разделе \"Мой профиль\" "
@@ -802,7 +803,7 @@ public class UserManager implements UserManagerLocal {
         user.setPassword(newPass);
         em.merge(user);
         String text = "Ваш новый пароль: " + newPass + " .\n"
-                + "С уважением, администрация Reshaka.Ru";
+                + "С уважением, администрация "+URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshaka.Ru")+".";
 
         mailMan.sendMail(email, "Восстановление пароля", text);
     }

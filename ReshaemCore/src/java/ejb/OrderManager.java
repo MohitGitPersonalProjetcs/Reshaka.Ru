@@ -626,12 +626,16 @@ public class OrderManager implements OrderManagerLocal {
 //        if (log.isTraceEnabled()) {
 //            log.trace(">> getSubjectByOrderId(): orderId =  " + orderId);
 //        }
-        if (orderId== null) return null;
+        if (orderId == null) {
+            return null;
+        }
         Order order = em.find(Order.class, orderId);
 //        if (log.isTraceEnabled()) {
 //            log.trace("getSubjectByOrderId(): order =  " + order);
 //        }
-        if (order == null) return null;
+        if (order == null) {
+            return null;
+        }
         Subject subject = order.getSubject();
 //        if (log.isTraceEnabled()) {
 //            log.trace("getSubjectByOrderId(): subject =  " + subject);

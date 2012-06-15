@@ -83,6 +83,6 @@ public interface OrderManagerLocal {
     
     public Subject getSubjectByOrderId(Long orderId);
     
-    
+
 
 }
