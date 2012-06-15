@@ -106,9 +106,10 @@ public class DealManager implements DealManagerLocal {
 
 
         // deleting all other offers
-        List<Offer> offers = new ArrayList();
-        offers.add(offer);
-        order.setOffers(offers);
+
+//        List<Offer> offers = new ArrayList();
+//        offers.add(offer);
+//        order.setOffers(offers);
         em.merge(order);
 
         makePrepayment(orderId);
@@ -273,9 +274,9 @@ public class DealManager implements DealManagerLocal {
         order.setPrice(offer.getPrice());
         order.setStatus(12); //agreed
         // deleting all other offers
-        List<Offer> offers = new ArrayList();
-        offers.add(offer);
-        order.setOffers(offers);
+//        List<Offer> offers = new ArrayList();
+//        offers.add(offer);
+//        order.setOffers(offers);
         em.merge(order);
 
         makeOnlinePrepayment(orderId);
@@ -327,5 +328,45 @@ public class DealManager implements DealManagerLocal {
         em.merge(order);
 
         //TODO(Sabir) sendMail
+    }
+
+    //half-payed order
+    @Override
+    public void rejectOfflineOffer(Long orderId) {
+        Order order = em.find(Order.class, orderId);
+        List<Offer> offers = order.getOffers();
+        List<Offer> newOffers = new ArrayList();
+        for (Offer off : offers) {
+            if (off.getUserId().equals(order.getEmployee().getId())) {
+                continue;
+            }
+            newOffers.add(off);
+        }
+        order.setOffers(newOffers);
+        if (newOffers.isEmpty()) {
+            order.setStatus(Order.NEW_OFFLINE_ORDER_STATUS);
+        } else {
+            order.setStatus(Order.RATED_OFFLINE_ORDER_STATUS);
+        }
+        monMan.transferMoney(confMan.getMainAdminId(), confMan.getMainAdminId(), order.getEmployer().getId(), order.getPrice() / 2.0, "reshaka (id =  " + order.getEmployee().getId() + ") rejected from offer (orderId = " + orderId.toString() + ") ");
+        order.setEmployee(null);
+        em.merge(order);
+
+        //     
+
+//        monMan.transferMoney(empr.getId(), empr.getId(), confMan.getMainAdminId(), order.getPrice() / 2.0, "prepayment");
+
+    }
+
+    @Override
+    public boolean canRejectOffer(Long orderId, Long userId) {
+        Order order = em.find(Order.class, orderId);
+        if (order.getStatus() != Order.HALF_PAYED_OFFLINE_ORDER_STATUS) {
+            return false; //correct status 
+        }
+        if (!order.getEmployer().getId().equals(userId)) {
+            return false; // permission denied
+        }
+        return true;
     }
 }
