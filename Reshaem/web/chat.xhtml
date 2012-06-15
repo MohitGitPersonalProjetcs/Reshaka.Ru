@@ -208,10 +208,11 @@
         </style>
     </h:head>
 
-    <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
-    <script type="text/javascript">
+    <c:if test="#{webSession.signedIn}">
+        <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
+        <script type="text/javascript">
         
-        var chatMessageKeydown = function (e) {
+            var chatMessageKeydown = function (e) {
                 if (e.ctrlKey) {
                     if(e.keyCode == 13) {
                         $('#chatMessageSubmitButton').click();
@@ -219,55 +220,53 @@
                 }
             };
         
-        $(document).ready(function() {
-            // Handler for .ready() called.
-            setInterval("nextMessage()", 2000); //update the chart every 2000 ms    
-            nextMessage();
-            $('#chatMessageText').keydown(chatMessageKeydown);
-    });           
+            $(document).ready(function() {
+                // Handler for .ready() called.
+                setInterval("nextMessage()", 2000); //update the chart every 2000 ms    
+                nextMessage();
+                $('#chatMessageText').keydown(chatMessageKeydown);
+            });           
+            
+        var myLogin = '#{webSession.login}';
+            var myRole = #{webSession.group};
         
-    var myLogin = '#{webSession.login}';
-    var myRole = #{webSession.group};
+            function deleteMessage(id) {
+                alert('You cannot delete message with ID='+id+' at the moment. The operation is not supported.');
+            }
         
-    function deleteMessage(id) {
-        alert('You cannot delete message with ID='+id+' at the moment. The operation is not supported.');
-    }
-        
-    function updateMessages(xhr, status, args) {
-        if(!args.ok) return;
-        var msgs = eval('('+ args.messages +')');
-        for(i in msgs) {
-            if(msgs[i].fromUserLogin == undefined) continue;
+            function updateMessages(xhr, status, args) {
+                if(!args.ok) return;
+                var msgs = eval('('+ args.messages +')');
+                for(i in msgs) {
+                    if(msgs[i].fromUserLogin == undefined) continue;
                 
-            var c = 'right';
-            if(msgs[i].fromUserLogin!=myLogin) { c = 'right'; }
-            else { c = 'left'; }
+                    var c = 'right';
+                    if(msgs[i].fromUserLogin!=myLogin) { c = 'right'; }
+                    else { c = 'left'; }
                 
-            var del = '';
-            if(myRole==1 || msgs[i].fromUserLogin==myLogin)
-                del = '<div style="text-align: right; font-size: smaller;"><a href="javascript:void()" onclick="deleteMessage('+msgs[i].messageId+');">Удалить</a></div>';
+                    var del = '';
+                    if(myRole==1 || msgs[i].fromUserLogin==myLogin)
+                        del = '<div style="text-align: right; font-size: smaller;"><a href="javascript:void()" onclick="deleteMessage('+msgs[i].messageId+');">Удалить</a></div>';
                 
-            var att = '';
-            if(msgs[i].attachmentId!=null)
-                att = '<br/><span style="font-size: smaller;">Сообщение содержит прикрепленный файл:<strong> <a href="download.xhtml?id='
-                + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
+                    var att = '';
+                    if(msgs[i].attachmentId!=null)
+                        att = '<br/><span style="font-size: smaller;">Сообщение содержит прикрепленный файл:<strong> <a href="download.xhtml?id='
+                        + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
 
-            var html = '<div class="chat-message">'
-                + '<div class="'+c+'"><label title="Отправлено '+msgs[i].dateSent+' пользователю '+msgs[i].toUserLogin+'"><strong>'+msgs[i].fromUserLogin+'</strong></label>:</div>'
-                + '\t<div class="msg-text">'+msgs[i].text+' '+ att
-                + '</div>'+del+'</div>';    
-            $('#chatMessages').append(html);
-            window.scrollTo(0, document.body.scrollHeight);
-        }
-    }
+                    var html = '<div class="chat-message">'
+                        + '<div class="'+c+'"><label title="Отправлено '+msgs[i].dateSent+' пользователю '+msgs[i].toUserLogin+'"><strong>'+msgs[i].fromUserLogin+'</strong></label>:</div>'
+                        + '\t<div class="msg-text">'+msgs[i].text+' '+ att
+                        + '</div>'+del+'</div>';    
+                    $('#chatMessages').append(html);
+                    window.scrollTo(0, document.body.scrollHeight);
+                }
+            }
         
-    function handleChangeUser(xhr, status, args) {
-        changeUser(window, args.friend);
-    }
-
-        
-    </script>
-
+            function handleChangeUser(xhr, status, args) {
+                changeUser(window, args.friend);
+            }  
+        </script>
+    </c:if>
     <h:body rendered="#{webSession.signedIn}">
         <!--        <div id="chatheader"></div>-->
         <div id="chatsidebar" style="position: fixed; right: 5px; z-index: 50;">
@@ -388,8 +387,10 @@
         <div id="chatfooter" style="position: fixed; bottom: 0px; width: 100%;">Copyright 2012. Reshaka.Ru</div>
     </h:body>
     <h:body rendered="#{!webSession.signedIn}">
+        <script type="text/javascript">
+            window.resizeTo(740, 20);
+        </script>
         Вы не вошли в систему. Пожалуйста, 
-        <a href="#" onclick="window.parent.location = '#{request.contextPath}/faces/ichat.xhtml#operation=login'; window.parent.location.reload();">авторизуйтесь</a>.
-
+        <a href="javascript:void(0);" onclick="window.parent.location = '#{request.contextPath}/faces/ichat.xhtml?#operation=login';">авторизуйтесь</a>.
     </h:body>
 </html>
