@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package web.view.subjects;
 
 import ejb.OrderManagerLocal;
@@ -10,7 +6,6 @@ import ejb.UserManagerLocal;
 import entity.Order;
 import entity.Subject;
 import entity.User;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;

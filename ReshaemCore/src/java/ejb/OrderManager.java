@@ -582,27 +582,16 @@ public class OrderManager implements OrderManagerLocal {
     @Override
     public Order updateOrder(Order order, List<UploadedFile> files) {
         //System.out.println("ejb - submitOrder - order = " + order);
+        if (log.isTraceEnabled()) {
+            log.trace(">>updateOrder(): order =  "+ order + " ; files = " + files);
+        }
         if (files != null) {
             Attachment att = am.uploadFiles(order.getEmployer(), files, order.getTags());
             if (att != null) {
                 order.setConditionId(att.getId());
             }
         }
-//        User empr = em.find(User.class, order.getEmployer().getId());
-//        empr.setOrderedAmount(empr.getOrderedAmount() + 1); //TODO(Sabir): bad style(((
-//        em.merge(empr);
         em.merge(order);
-//        em.persist(order);
-
-//
-//        System.out.println("distribution from order manager : order = " + order);
-//        mailMan.newOrderDistribution(order.getId()); // send messages to all employees
-//        try {
-//            Subject sub = em.find(Subject.class, order.getSubject().getId());
-//            order.setSubject(sub);
-//            em.merge(order);
-//        } catch (Exception exc) { // hardcode ((((
-//        }
 
         return order;
     }

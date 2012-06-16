@@ -119,7 +119,7 @@ and open the template in the editor.
 
                     <p:column id="ord_tags" headerText="Ключевые слова">
                         <center>
-                            <h:outputText id="ordar" value="#{showOrdersBean.shortTags(order.tags)}" />
+                            <h:outputText id="ordar" value="#{showOrdersBean.shortTags(order)}" />
                         </center>
                         <p:tooltip for="ordar" value="#{order.tags}" style=" max-width: 20em;" />
                     </p:column>

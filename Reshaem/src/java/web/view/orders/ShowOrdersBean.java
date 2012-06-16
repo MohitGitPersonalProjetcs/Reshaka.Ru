@@ -1,25 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package web.view.orders;
 
 import web.utils.StringUtils;
-import web.utils.HttpUtils;
-import ejb.BusinessLogicLocal;
-import ejb.DealManagerLocal;
 import ejb.OrderManagerLocal;
 import ejb.UserManagerLocal;
 import entity.Order;
 import entity.User;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -40,17 +29,9 @@ public class ShowOrdersBean {
     @EJB
     UserManagerLocal userMan;
 
-    private static final Logger log = Logger.getLogger(ShowOrdersBean.class.getName());
-
     private LazyOrderDataModel<Order> lazyModel;
 
-    private List<Order> orders;
-
     private int radioNumber = -1;
-
-    private int orderType;
-
-    private Long id;
 
     @PostConstruct
     private void init() {
@@ -87,12 +68,17 @@ public class ShowOrdersBean {
         return lazyModel;
     }
 
-    public String shortTags(String tags) {
-        String s = StringUtils.getFirstWord(tags);
-        if (tags.indexOf(",") > 0) {
-            s = s + ",...";
+    public String shortTags(Order order) {
+        String tags = order.getSubject().getSubjectName();
+//        String tags = order.getTags();
+//        String s = StringUtils.getFirstWord(tags);
+//        if (tags.indexOf(",") > 0) {
+//            s = s + ",...";
+//        }
+        if (order.getTags() != null) {
+            tags += ",...";
         }
-        return s;
+        return tags;
     }
 
     public void radioListener() {

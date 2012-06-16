@@ -298,7 +298,7 @@ public class MakeOrderBean implements Serializable {
         Date date = new Date();
         order.setHireDate(date);
 
-        tagsText = order.getSubject().getSubjectName() + ", " + tagsText;
+//        tagsText = order.getSubject().getSubjectName() + ", " + tagsText;
         order.setTags(tagsText);
         tagMan.addTags(tagsText);
         //order.setType(0);
@@ -360,7 +360,7 @@ public class MakeOrderBean implements Serializable {
         //System.out.println("subject = " + subject);
         Date date = new Date();
         order.setHireDate(date);
-        tagsText = order.getSubject().getSubjectName() + ", " + tagsText;
+//        tagsText = order.getSubject().getSubjectName() + ", " + tagsText;
         order.setTags(tagsText);
         tagMan.addTags(tagsText);
 

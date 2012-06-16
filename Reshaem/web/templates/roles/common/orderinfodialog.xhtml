@@ -21,7 +21,7 @@ and open the template in the editor.
                 <h:panelGroup id="order_dialog_content">
                     <p:tabView cache="false" id="tab_view_o">
 
-                        <p:tab id="tab1" title="Информация о заказе" rendered="#{((webSession.signedIn) and (webSession.id != selectedBean.order.employer.id )) or ((webSession.id == selectedBean.order.employer.id) and (selectedBean.order.status != 0) and (selectedBean.order.status != 10))  }">
+                        <p:tab id="tab1" title="Информация о заказе" rendered="#{((webSession.signedIn) and (webSession.id != selectedBean.order.employer.id )) or ((webSession.id == selectedBean.order.employer.id) and (selectedBean.order.status != 0) and (selectedBean.order.status != 10)) or ((webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) )) }">
                             <h:form>
                                 <h:panelGrid columns="2" id="basic_data" width="430">
 
@@ -128,12 +128,16 @@ and open the template in the editor.
                                     <!--                                    <p:commandButton value="OK" onclick="handleOrderInfoRequest(xhr, status, args)" />-->
                                 </div> 
 
-
-
+                                <h:link outcome="offlineOrderEditor.xhtml" value="Редактировать" style="color: blue;" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }">
+                                    <f:param name="id" value="#{selectedBean.order.id}"/>
+                                </h:link>
+                                <div style="text-align: right;">
+                                    <p:commandButton value="Удалить!" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }"  />
+                                </div>
                             </h:form>
                         </p:tab>
 
-                        <p:tab id="tab1s" title="Редактирование заказа" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }">
+                        <p:tab id="tab1s" title="Редактирование заказа" rendered="false">
                             <h:form>
                                 <h:panelGrid columns="2" id="basic_data_edit" width="430">
                                     <h:outputText value="ID заказа: " />  
