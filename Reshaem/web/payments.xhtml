@@ -31,28 +31,123 @@
         <ui:define name="tablesblock">
             <h3>Способы оплаты</h3>
             <br/>
-<!--            <div align="center">
-                <table id="paySystemsTable"  cellspacing="0" cellpadding="0" width="95%">
-                    <tr bgcolor="#426994">
-                        <td class="tableTitle">Платежная система</td>
-                        <td class="tableTitle">Как оплатить?</td>
-                        <td class="tableTitle">Номер кошелька</td>
-                    </tr>
-                    <tr>
-                        <td><img src="/Reshaem/images/logo_wm.png"/><a href="http://www.webmoney.ru" rel="nofollow" target="_blank"><br/>Webmoney</a></td>
-                       
-                        <td style="text-align:justify;">
-                            <div style="width: 400px;">
-                                sdgsdgsfgsdgsfgsdgsfgsdgsfgsdgs
-                            </div>
-                        </td>
-                       
-                        <td><span style="margin-left:5px;font-family:Verdana;font-weight:bold;">R</span></td>
-                    </tr>
+
+            <h:panelGroup>
+                <!--            <h:panelGrid columns="2">-->
+                <div style="width: 780px; display: block;">
+                    <span style="width: 320px; display: inline-block; margin-left: 20px;" onclick="replenishment_dlg.show();moneyTabs.select(0);">
+
+                        <img src="images/yandex_money_logo.png"  />
+
+                        <span style="display: inline-block; top: -20px; position: relative;" >
+                            <a href="javascript: void()" style="font-size: 1.2em;" > Яндекс деньги</a>
+                            <br/>
+                            <span style=" font-size: 1.2em; position: relative; top:1px;display: inline-block; width: 190px; line-height: 1;" >
+                                Пополнение счета через Яндекс-кошелек
+                            </span>
+                        </span>
+
+                    </span>
+
+                    <span style="  font-size: 1.2em; width: 320px; display: inline-block; margin-left: 20px;" onclick="replenishment_dlg.show();moneyTabs.select(1);" >
+                        <img src="images/webmoney_logo.png"  />
+                        <span style="display: inline-block; top: -20px; position: relative;" >
+                            <a href="javascript:void()"> Webmoney</a>
+                            <br/>
+                            <span style=" position: relative; top:1px;display: inline-block; width: 190px; line-height: 1;" >
+                                Пополнение счета через Webmoney
+                            </span>
+                        </span>
+                    </span>
+
+                    <span style="  font-size: 1.2em;  width: 320px; display: inline-block; margin-left: 20px;" onclick="replenishment_dlg.show();moneyTabs.select(2);" >
+                        <img src="images/qiwi_money_logo.png"  />
+                        <span style="display: inline-block; top: -20px; position: relative;" >
+                            <a href="javascript:void()"> Qiwi-кошелек</a>
+                            <br/>
+                            <span style=" position: relative; top:1px;display: inline-block; width: 190px; line-height: 1;" >
+                                Пополнение через кошелек
+                            </span>
+                        </span>
+                    </span>
+
+                    <span style="  font-size: 1.2em;  width: 320px; display: inline-block; margin-left: 20px;" onclick="replenishment_dlg.show();moneyTabs.select(3);" >
+                        <img src="images/another_money_logo.png"  />
+                        <span style="display: inline-block; top: -20px; position: relative;" >
+                            <a href="javascript:void()">Другие способы</a>
+                            <br/>
+                            <span style=" position: relative; top:1px;display: inline-block; width: 190px; line-height: 1;" >
+                                Пополнение счета другими способами
+                            </span>
+                        </span>
+                    </span>
 
 
-                </table>			
-            </div>-->
+                    <!--                <span style="width: 50%; display: inline-block; margin-left: 20px;">
+                                        <img src="images/qiwi_money_logo.png" />
+                                        <span style="display: inline-block; top: -20px; position: relative;" >
+                                            <a href="javascript:void()"> Qiwi-кошелек</a>
+                                            <br/>
+                                            <span style=" position: relative; top:1px;display: inline-block; width: 60%; line-height: 1;" >
+                                                Пополнение через кошелек
+                                            </span>
+                                        </span>
+                                    </span>
+                    
+                    
+                                    <span style="width: 50%; display: inline-block; margin-left: 20px;">
+                                        <img src="images/sberbank_money_logo.png" />
+                                        <span style="display: inline-block; top: -20px; position: relative;" >
+                                            <a href="javascript:void()"> Сбербанк</a>
+                                            <br/>
+                                            <span style=" position: relative; top:1px;display: inline-block; width: 60%; line-height: 1;" >
+                                                Пополнение счета через сбербанк
+                                            </span>
+                                        </span>
+                                    </span>-->
+
+                </div>
+            </h:panelGroup>
+            <!--            </h:panelGrid>-->
+
+
+            <!--            <div class="sposob-inform">
+                            text
+            
+            
+                            <div class="sp-im">
+                                <img src="images/yandex_money_logo.png" />
+            
+                            </div>    
+            
+            
+                        </div>-->
+
+
+
+
+            <!--            <div align="center">
+                            <table id="paySystemsTable"  cellspacing="0" cellpadding="0" width="95%">
+                                <tr bgcolor="#426994">
+                                    <td class="tableTitle">Платежная система</td>
+                                    <td class="tableTitle">Как оплатить?</td>
+                                    <td class="tableTitle">Номер кошелька</td>
+                                </tr>
+                                <tr>
+                                    <td><img src="/Reshaem/images/logo_wm.png"/><a href="http://www.webmoney.ru" rel="nofollow" target="_blank"><br/>Webmoney</a></td>
+                                   
+                                    <td style="text-align:justify;">
+                                        <div style="width: 400px;">
+                                            sdgsdgsfgsdgsfgsdgsfgsdgsfgsdgs
+                                        </div>
+                                    </td>
+                                   
+                                    <td><span style="margin-left:5px;font-family:Verdana;font-weight:bold;">R</span></td>
+                                </tr>
+            
+            
+                            </table>			
+                        </div>-->
 
 
         </ui:define>

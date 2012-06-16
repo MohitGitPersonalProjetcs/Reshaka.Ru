@@ -20,7 +20,7 @@ and open the template in the editor.
             <p:dialog onHide="clearRepFiles();hideRepUploadControl();" onShow="showRepUploadControl();" header="Пополнение баланса" widgetVar="replenishment_dlg" position="top" rendered="#{webSession.group == 2}" >
 
                 <h:panelGroup id="replenishment_dialog_content">
-                    <p:tabView cache="false" id="tab_view_r">
+                    <p:tabView cache="false" widgetVar="moneyTabs" id="tab_view_r">
 
                         <p:tab id="tab1" title="Яндекс Деньги" rendered="#{webSession.group == 2}">
                             <h:form >
@@ -54,29 +54,6 @@ and open the template in the editor.
                         </p:tab>
 
                         <p:tab id="tab2" title="Webmoney" rendered="#{webSession.group == 2}">
-                            <!--                            <h:form >-->
-                            <!--                                <h:panelGrid columns="3" id="webmoney_replenishment" width="430">-->
-                            <!--                                    <h:outputText value="Сумма: " />  -->
-                            <!--                                    <p:inputText>-->
-                            <!--                                        <p:ajax event="keyup" update="qwerty" />-->
-                            <!--                                    </p:inputText>-->
-                            <!--                                    <h:outputLink target="blank_" id="qwerty2"  style="color: purple;" onclick="replenishment_dlg.hide()" >Пополнить </h:outputLink>-->
-
-
-                            <!--                                </h:panelGrid>-->
-                            <!--                            <h:commandLink  value="test"  action="https://merchant.webmoney.ru/lmi/payment.asp" >
-                                                            <f:param name="LMI_PAYMENT_AMOUNT" value="1" />
-                                                            <f:param name="LMI_PAYMENT_DESC" value="test"/>
-                                                            <f:param  name="LMI_PAYMENT_NO" value="1"/>
-                                                            <f:param  name="LMI_PAYEE_PURSE" value="R125208907646"/>
-                                                            <f:param  name="LMI_SIM_MODE" value="0"/>
-                                                        </h:commandLink>-->
-
-<!--                            <p:inputText value="#{replenishmentBean.test}">
-                                <p:ajax event="keyup" update="html_inj" />
-                            </p:inputText>-->
-
-
                             <form id="ppayp" name="ppappa" method="POST" action="https://merchant.webmoney.ru/lmi/payment.asp">
                                 Сумма:
 
@@ -113,6 +90,14 @@ and open the template in the editor.
                             </p:scrollPanel>
 
                         </p:tab>
+
+
+                        <p:tab id="tab2a" title="QIWI" rendered="#{webSession.group == 2}">
+                            Скоро будет доступно.
+
+                        </p:tab>
+
+
 
                         <p:tab id="tab3" title="Заявка на ввод"  rendered="#{webSession.group == 2}">
                             <h:form>
@@ -166,6 +151,13 @@ and open the template in the editor.
 
                     </p:tabView>
                 </h:panelGroup>
+
+
+                
+
+
+
+
 
 
             </p:dialog>
