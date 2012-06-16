@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.Deflater;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -56,20 +55,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
                 throw new IOException("File too large.");
             }
 
-            Attachment a = new Attachment();
-            a.setName(fileName);
-            a.setMimeType(contentType);
-//            Set<User> uset = new HashSet();
-//            uset.add(user);
-//            a.setUser(uset);
-
-            File root = new File(DEFAULT_UPLOAD_DIRECTORY, user.getLogin());
-            root.mkdirs();
-            File tmpFile = File.createTempFile("upload_", ".bin", root);
-            FileUtils.writeToFile(tmpFile, contents);
-            a.setSize((long) contents.length);
-            a.setMD5(FileUtils.getMD5(tmpFile));
-            a.setFileName(user.getLogin() + "/" + tmpFile.getName());
+            Attachment a = prepareAttachment(fileName, contentType, user, contents, tags);
 
             em.persist(a);
 
@@ -83,7 +69,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
                 log.trace("<< uploadFile(): " + a);
             }
             return a;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             log.error("uploadFile(): Failed to upload file.", ex);
             return null;
         }
@@ -99,7 +85,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
      */
     @Override
     public Attachment uploadFiles(User user, List<UploadedFile> files, String tags) {
-               
+
         if (log.isTraceEnabled()) {
             log.trace(">> uploadFiles(): " + files);
         }
@@ -114,49 +100,9 @@ public class AttachmentManager implements AttachmentManagerLocal {
             }
             return null;
         }
-        if (files.size() == 1) {
-            if (log.isTraceEnabled()) {
-                log.trace("uploadFiles() : Single file is being uploaded. Delegating to uploadFile()");
-            }
-            return uploadFile(files.get(0).getFileName(), files.get(0).getContentType(), user, files.get(0).getContents(), tags);
-        }
 
         try {
-            // create zip file
-            log.trace("Creating zip-file");
-
-            File root = new File(DEFAULT_UPLOAD_DIRECTORY, user.getLogin());
-            root.mkdirs();
-            File file = File.createTempFile("upload_", ".zip", root);
-            try (ZipOutputStream zos = new ZipOutputStream(file)) {
-                zos.setEncoding("utf-8");
-                zos.setMethod(ZipOutputStream.DEFLATED);
-                zos.setLevel(Deflater.BEST_COMPRESSION);
-
-                for (UploadedFile uf : files) {
-                    addFileToZip(zos, uf, uf.getFileName());
-                }
-            }
-
-            if (log.isDebugEnabled()) {
-                log.debug("uploadFiles(): Files are saved at " + file);
-            }
-
-            if (file.length() > MAX_ZIP_SIZE) {
-                file.delete();
-                throw new IOException("File too large.");
-            }
-
-            // Create and persist attachment
-            Attachment att = new Attachment();
-//            Set<User> uset = new HashSet();
-//            uset.add(user);
-//            att.setUser(uset);
-            att.setName(file.getName());
-            att.setMimeType("application/zip");
-            att.setSize(file.length());
-            att.setMD5(FileUtils.getMD5(file));
-            att.setFileName(user.getLogin() + "/" + file.getName());
+            Attachment att = prepareAttachment(user, files, tags);
 
             em.persist(att);
 
@@ -169,7 +115,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
                 log.trace("<< uploadFiles(): " + att);
             }
             return att;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             log.error("uploadFiles(): Failed to upload files. ", ex);
             return null;
         }
@@ -342,8 +288,9 @@ public class AttachmentManager implements AttachmentManagerLocal {
         }
         try {
             User u = null;
-            if(userId!=null)
+            if (userId != null) {
                 u = em.getReference(User.class, userId);
+            }
             return checkDownloadRights(u,
                     em.getReference(Attachment.class, attachmentId));
         } catch (Exception ex) {
@@ -374,22 +321,26 @@ public class AttachmentManager implements AttachmentManagerLocal {
             }
             return null;
         }
-
         boolean canShare = false;
-        for (User u : att.getUser()) {
-            if (u.getId() == who) {
+        try {
+            //canShare |= um.isAdmin(who);
+            User actor = em.find(User.class, who);
+            if(actor!=null&&actor.getUserGroup()==1)
                 canShare = true;
-                break;
+        } catch (Exception ex) {}
+        if(!canShare)
+            for (User u : att.getUser()) {
+                if (u.getId() == who) {
+                    canShare = true;
+                    break;
+                }
             }
-        }
-        //TODO: canShare |= um.isAdmin();
         if (!canShare) {
             if (log.isTraceEnabled()) {
                 log.trace("<< shareFile(): null - operation is not permitted");
             }
             return null;
         }
-
         User w = em.find(User.class, with);
         if (w == null) {
             if (log.isTraceEnabled()) {
@@ -401,5 +352,109 @@ public class AttachmentManager implements AttachmentManagerLocal {
         em.persist(att);
 
         return att;
+    }
+
+    @Override
+    public Attachment reuploadFiles(User user, Long attachmentId, List<UploadedFile> files, String tags) {
+        if (attachmentId == null) {
+            return uploadFiles(user, files, tags);
+        }
+        if (!checkUploadRights(user)) {
+            return null;
+        }
+        Attachment original = em.find(Attachment.class, attachmentId);
+        if (original == null) {
+            return null;
+        }
+        
+        Attachment newAttachment = new Attachment();
+        newAttachment.setUser(original.getUser());
+        removeAttachmentFromDisk(original);
+        em.remove(original);
+        original = prepareAttachment(user, files, tags);
+        original.setId(attachmentId);
+        return em.merge(original);
+    }
+    
+    private void removeAttachmentFromDisk(Attachment a) {
+        // TODO: removeAttachmentFromDisk()
+        return;
+    }
+
+    private Attachment prepareAttachment(String fileName, String contentType, User user, byte[] contents, String tags) {
+        try {
+            Attachment a = new Attachment();
+            a.setName(fileName);
+            a.setMimeType(contentType);
+            File root = new File(DEFAULT_UPLOAD_DIRECTORY, user.getLogin());
+            root.mkdirs();
+            File tmpFile = File.createTempFile("upload_", ".bin", root);
+            FileUtils.writeToFile(tmpFile, contents);
+            a.setSize((long) contents.length);
+            a.setMD5(FileUtils.getMD5(tmpFile));
+            a.setFileName(user.getLogin() + "/" + tmpFile.getName());
+            return a;
+        } catch (Exception ex) {
+            return null;
+        }
+
+    }
+
+    private Attachment prepareAttachment(User user, List<UploadedFile> files, String tags) {
+        if (files.isEmpty()) {
+            if (log.isDebugEnabled()) {
+                log.debug("List of files is empty! Nothing to compress.");
+            }
+            return null;
+        }
+        if (files.size() == 1) {
+            if (log.isTraceEnabled()) {
+                log.trace("prepareAttachment() : Single file is being uploaded. Delegating to uploadFile()");
+            }
+            return prepareAttachment(files.get(0).getFileName(), files.get(0).getContentType(), user, files.get(0).getContents(), tags);
+        }
+
+        try {
+            // create zip file
+            log.trace("prepareAttachment(): Creating zip-file");
+
+            File root = new File(DEFAULT_UPLOAD_DIRECTORY, user.getLogin());
+            root.mkdirs();
+            File file = File.createTempFile("upload_", ".zip", root);
+            try (ZipOutputStream zos = new ZipOutputStream(file)) {
+                zos.setEncoding("utf-8");
+                zos.setMethod(ZipOutputStream.DEFLATED);
+                zos.setLevel(Deflater.BEST_COMPRESSION);
+
+                for (UploadedFile uf : files) {
+                    addFileToZip(zos, uf, uf.getFileName());
+                }
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("prepareAttachment(): Files are saved at " + file);
+            }
+
+            if (file.length() > MAX_ZIP_SIZE) {
+                file.delete();
+                throw new IOException("File too large.");
+            }
+
+            // Create attachment
+            Attachment att = new Attachment();
+            att.setName(file.getName());
+            att.setMimeType("application/zip");
+            att.setSize(file.length());
+            att.setMD5(FileUtils.getMD5(file));
+            att.setFileName(user.getLogin() + "/" + file.getName());
+
+            if (log.isTraceEnabled()) {
+                log.trace("<< prepareAttachment()");
+            }
+            return att;
+        } catch (IOException ex) {
+            log.error("prepareAttachment(): Failed to upload files. ", ex);
+            return null;
+        }
     }
 }

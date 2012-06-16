@@ -45,8 +45,20 @@ public interface AttachmentManagerLocal {
      */
     Attachment getUploadedFile(Long userId, long id);
     
+    /**
+     * Checks if a user with specified userId can download the file with attachmentId.
+     * If userId is null, method returns true only if attachment is avatar of file of condition.
+     * @param userId user id
+     * @param attachmentId attachment id
+     * @return true if user can download file, false if not or file does not exist
+     */
     boolean checkDownloadRights(Long userId, Long attachmentId);
     
+    /**
+     * Returns all attachments of the user with specified userId
+     * @param userId user id
+     * @return List of files or null in case of error
+     */
     List<Attachment> getAttachmentsByUserId(Long userId);
 
     /**
@@ -57,4 +69,20 @@ public interface AttachmentManagerLocal {
      * @return Attachment entity if succeeded or null if operation failed
      */
     Attachment shareFile(Long attachmentId, long who, Long with);
+
+    /**
+     * TODO: (danon) implement removeInvalidEntries in attachment manager
+     */
+    public void removeInvalidEntries();
+    
+    /**
+     * Substitutes attachment, that already exists, with new files
+     * Files are archived on disk within one file and information is modified in DB.
+     * Original files in existing attachment are removed
+     * @param user Owner of upload
+     * @param files List of uploaded files
+     * @param tags Tags (not implemented yet) // TODO
+     * @return Attachment entity if succeeded or null if operation failed.
+     */
+    Attachment reuploadFiles(User user, Long attachmentId, List<UploadedFile> files, String tags);
 }

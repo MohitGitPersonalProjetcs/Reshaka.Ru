@@ -2,8 +2,14 @@
 /ReshaemCore/nbproject/private/
 /ReshaemEE/nbproject/private/
 /ReshaemCore/build/
+<<<<<<< HEAD
 /ReshaemCore/dist/
 /Reshaem/build/
 /ReshaemEE/build/
+=======
+/Reshaem/build/
+/ReshaemEE/build/
+/ReshaemCore/dist/
+>>>>>>> 8c7d1fe2504dea15d85ef28d04ffb6944eb40ec0
 /Reshaem/dist/
 /ReshaemEE/dist/
