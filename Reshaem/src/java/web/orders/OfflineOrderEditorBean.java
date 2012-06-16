@@ -52,6 +52,8 @@ public class OfflineOrderEditorBean implements Serializable {
 
     private transient HttpSession session = null;
 
+    private Long vsid;
+
     private List<Subject> allSubjects;
 
     private Order order;
@@ -95,8 +97,14 @@ public class OfflineOrderEditorBean implements Serializable {
 
     @PostConstruct
     private void init() {
+        vsid = null;
+        try {
+            vsid = Long.parseLong(HttpUtils.getRequestParam("id"));
+        } catch (Exception exc) {
+        }
         if (shouldShowEditor() == true) {
-            order = orderMan.getOrderById(Long.parseLong(HttpUtils.getRequestParam("id")));
+
+            order = orderMan.getOrderById(vsid);
             System.out.println("order.id = " + order.getId());
 
             order.setSubject(orderMan.getSubjectByOrderId(order.getId()));
@@ -229,7 +237,7 @@ public class OfflineOrderEditorBean implements Serializable {
 
         try {
 
-            Long id = Long.parseLong(sid);
+            Long id = vsid;
             return (orderMan.userOwnsThisOrder(((User) SessionListener.getSessionAttribute("user", false)).getId(), id));
         } catch (Exception exc) {
             System.out.println("shouldShowEditor(): error occured exc = " + exc.toString() + " sid = " + sid);
