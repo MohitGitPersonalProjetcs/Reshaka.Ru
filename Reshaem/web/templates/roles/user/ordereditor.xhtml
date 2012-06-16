@@ -21,6 +21,7 @@ and open the template in the editor.
                 </h:panelGroup>
             </h3>
             <br/>
+            <p:growl id="growl_1" showDetail="true" sticky="true"/>
             <h:form>
                 <h:panelGroup id="makeorder_form" style="top:1px;" rendered="#{offlineOrderEditorBean.shouldShowEditor()}" >
 
@@ -41,7 +42,7 @@ and open the template in the editor.
                     </h:panelGrid>
 
                     <h:panelGrid columns="2">
-                        <p:selectOneMenu style="width:180px;" value="#{OfflineOrderEditorBean.subject}" converter="subjectConverter" effectDuration="1">  
+                        <p:selectOneMenu style="width:180px;" value="#{offlineOrderEditorBean.subject}" converter="subjectConverter" effectDuration="1">  
                             <f:selectItems value="#{offlineOrderEditorBean.allSubjects}" var="subject" itemLabel="#{subject.subjectName}"/>  
                         </p:selectOneMenu> 
 
@@ -85,9 +86,12 @@ and open the template in the editor.
 
 
                     <p:remoteCommand name="clearOrderFiles"  process="@this" actionListener="#{offlineOrderEditorBean.fileUploadController.clearFiles}" update="uploadedOrderFiles"/>
-                 <p:commandButton value="Применить изменения" actionListener="#{offlineOrderEditorBean.updateOrder}" />
+
                 </h:panelGroup>
-               
+                <br/>
+                <div style="text-align: right;">
+                    <p:commandButton value="Применить изменения"  actionListener="#{offlineOrderEditorBean.updateOrder}" update=":growl_1" />
+                </div>
             </h:form>
             <br/>
         </ui:composition>

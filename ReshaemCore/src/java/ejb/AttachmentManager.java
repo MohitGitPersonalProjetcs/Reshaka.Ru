@@ -367,12 +367,11 @@ public class AttachmentManager implements AttachmentManagerLocal {
             return null;
         }
         
-        Attachment newAttachment = new Attachment();
-        newAttachment.setUser(original.getUser());
+        Set<User> u = original.getUser();
         removeAttachmentFromDisk(original);
-        em.remove(original);
         original = prepareAttachment(user, files, tags);
         original.setId(attachmentId);
+        original.setUser(u);
         return em.merge(original);
     }
     

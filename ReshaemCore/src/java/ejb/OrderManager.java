@@ -585,8 +585,9 @@ public class OrderManager implements OrderManagerLocal {
         if (log.isTraceEnabled()) {
             log.trace(">>updateOrder(): order =  "+ order + " ; files = " + files);
         }
-        if (files != null) {
-            Attachment att = am.uploadFiles(order.getEmployer(), files, order.getTags());
+        if ((files != null )&&(files.isEmpty() == false)) {
+            Attachment att = am.reuploadFiles(order.getEmployer(), order.getConditionId(), files, order.getTags());
+//            Attachment att = am.uploadFiles(order.getEmployer(), files, order.getTags());
             if (att != null) {
                 order.setConditionId(att.getId());
             }

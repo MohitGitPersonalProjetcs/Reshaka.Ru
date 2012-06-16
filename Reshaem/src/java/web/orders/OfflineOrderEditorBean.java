@@ -82,13 +82,6 @@ public class OfflineOrderEditorBean implements Serializable {
 
     public OfflineOrderEditorBean() {
         ticked = false;
-//        if (shouldShowEditor() == true) {
-//            order = orderMan.getOrderById(Long.parseLong(HttpUtils.getRequestParam("id")));
-//        } else {
-//            order = new Order();
-//            System.out.println("order = new Order();");
-//        }
-
         fileUploadController = new FileUploadController();
         subjects = new ArrayList<>();
     }
@@ -155,7 +148,7 @@ public class OfflineOrderEditorBean implements Serializable {
     }
 
     public void setDeadline(Date deadline) {
-        System.out.println("try to set deadline ..." + deadline);
+//        System.out.println("try to set deadline ..." + deadline);
         order.setDeadline(deadline);
     }
 
@@ -418,63 +411,29 @@ public class OfflineOrderEditorBean implements Serializable {
         if (order.getDescription() == null) {
             order.setDescription(" ");
         }
+        System.out.println("updateOrder occured! ");
 
-//        FacesContext fc = FacesContext.getCurrentInstance();
-//        RequestContext rc = RequestContext.getCurrentInstance();
-
-//        if ((order.getDeadline() == null) && ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName())))) {
-//            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать срок и предмет"));
-//            rc.addCallbackParam("offline", false);
-//            return;
-//        }
-//
-//        if (order.getDeadline() == null) {
-//            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли ввести срок"));
-//            rc.addCallbackParam("offline", false);
-//            return;
-//        }
-//
-//        if ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName()))) {
-//            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать предмет"));
-//            rc.addCallbackParam("offline", false);
-//            return;
-//        }
-
-
-
-//        System.out.println("submit order from bean getUser() = " + getUser());
-
-//        order.setEmployer(getUser());
-        //System.out.println("subject = " + subject);
-//        Date date = new Date();
-//        order.setHireDate(date);
-
-//        tagsText = order.getSubject().getSubjectName() + ", " + tagsText;
         order.setTags(tagsText);
         tagMan.addTags(tagsText);
-        //order.setType(0);
-//        order.setStatus(0);
 
+        try{
         Order ord = orderMan.updateOrder(order, fileUploadController.getFiles());
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"INFO","Заказ успешно обновлен"));
+        }catch (Exception exc){
+            System.out.println("Exception occured while updating order");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Ошибка","Заказ не обновлен."));
+        }
+        
         if (order == null) {
             System.out.println("ERROR occured while submiting order");
         }
 
-//        try {
-//            System.out.println("try to understand if this order is the first////");
-//            if (userMan.getUserById(getUser().getId()).getOrderedAmount() == 1) {
-//                System.out.println("FIRST ORDER -> Greetings!!! ");
-//                RequestContext.getCurrentInstance().addCallbackParam("first", true);
-//            } else {
-//                System.out.println("order is not the first ");
-//                RequestContext.getCurrentInstance().addCallbackParam("first", false);
-//            }
-//        } catch (Exception exc) {
-//            System.out.println("exception occured during submitOrder (understanding first or not)");
-//        }
-//        rc.addCallbackParam("offline", true);
     }
 
+    public void testEvent(){
+        System.out.println("test!!!");
+    }
+    
     public boolean shouldShowFilesList() {
 //        System.out.println(fileUploadController.getFiles());
         return !fileUploadController.getFiles().isEmpty();
