@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <body>
+        <ui:composition template="templates/template.xhtml">
+
+            <ui:define name="vk_tabs">
+                <ui:include src="templates/tabs.xhtml">
+                    <ui:param name="tab_no" value="2" />
+                </ui:include>
+            </ui:define>
+
+            <ui:define name="content">
+
+                <h3>
+                    Мои заказы
+                </h3>
+
+                <h:dataTable value="#{testBean.list}" var="entity" class="wikiTable">
+                    <h:column>
+                        <f:facet name="header">
+                            Name
+                        </f:facet>
+                        #{entity.name}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Info
+                        </f:facet>
+                        #{entity.info}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Age
+                        </f:facet>
+                        #{entity.age}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            Address
+                        </f:facet>
+                        #{entity.address}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Address
+                        </f:facet>
+                        #{entity.address}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Address
+                        </f:facet>
+                        #{entity.address}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            Address
+                        </f:facet>
+                        #{entity.address}
+                    </h:column>
+
+                </h:dataTable>
+
+
+            </ui:define>
+
+            <ui:define name="footer">
+                <ui:include src="templates/footer.xhtml" />
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <f:view xmlns:h="http://java.sun.com/jsf/html"
+            xmlns:p="http://primefaces.org/ui"
+            xmlns:f="http://java.sun.com/jsf/core" 
+            xmlns:c="http://java.sun.com/jsp/jstl/core"
+            xmlns:ui="http://java.sun.com/jsf/facelets">
+        <h:head>
+            <link href="#{request.contextPath}/css/VkCSS.css" rel="stylesheet" type="text/css" />
+        </h:head>
+
+        <h:body>
+
+<!--            <div style="display: block; width: 770px; height: 600px;  border-width: 1px; border-color: #2B587A; border-style: solid;">-->
+                <div class="header" style="overflow: visible;">
+                    <a href="javascript:void();" target="_top" class="logo"></a>
+                </div>
+
+                <ui:insert name="vk_tabs">
+
+                </ui:insert>
+
+                <ui:insert name="content">
+                    
+                </ui:insert>
+
+                <ui:insert name="footer">
+
+                </ui:insert>
+
+<!--            </div>-->
+        </h:body>
+    </f:view>
+</html>
