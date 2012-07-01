@@ -4,6 +4,7 @@ import ejb.OrderManagerLocal;
 import ejb.SubjectManagerLocal;
 import ejb.TagManagerLocal;
 import ejb.UserManagerLocal;
+import ejb.util.ReshakaUploadedFile;
 import entity.Order;
 import entity.Subject;
 import entity.Tag;
@@ -22,7 +23,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.UploadedFile;
 import web.FileUploadController;
 import web.utils.HttpUtils;
 import web.utils.SessionListener;
@@ -68,7 +68,7 @@ public class OfflineOrderEditorBean implements Serializable {
 
     private String tagsText;
 
-    public List<UploadedFile> getUploadedFiles() {
+    public List<ReshakaUploadedFile> getUploadedFiles() {
         return fileUploadController.getFiles();
     }
 
@@ -439,7 +439,7 @@ public class OfflineOrderEditorBean implements Serializable {
         return !fileUploadController.getFiles().isEmpty();
     }
 
-    public List<UploadedFile> uploadedFiles() {
+    public List<ReshakaUploadedFile> uploadedFiles() {
         System.out.println("size= " + fileUploadController.getFiles().size());
         return fileUploadController.getFiles();
     }

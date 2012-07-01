@@ -1,11 +1,9 @@
 package web.orders;
 
-import ejb.BusinessLogicLocal;
 import entity.Order;
 import entity.User;
 import java.util.Date;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import web.UserBean;
 
@@ -17,9 +15,6 @@ import web.UserBean;
 public class OrderBean {
 
     private Order entity;
-
-    @EJB
-    BusinessLogicLocal logic;
     
 //    public OrderBean(int subjectId, int price, int orderId, int solutionId, int conditionId, String deadline, int status, String comment, int type) {
 //        this.subjectId = subjectId;

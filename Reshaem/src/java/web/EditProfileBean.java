@@ -26,6 +26,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import web.utils.HttpUtils;
 import web.utils.SessionListener;
+import web.utils.Tools;
 
 /**
  * This bean is needed for changing user personal data
@@ -379,10 +380,11 @@ public class EditProfileBean {
 //            throw new FacesException("Error in writing captured image.");
 //        }
 //    }
+    
     public void applyUploadedAvatar(ActionEvent evt) {
         System.out.println("applyUploadedAvatar occured!!!");
         FacesContext fc = FacesContext.getCurrentInstance();
-        this.user = um.updateAvatar(user.getId(), uploadedAvatar);
+        this.user = um.updateAvatar(user.getId(), Tools.convertUploadedFile(uploadedAvatar));
         HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
         SessionListener.setSessionAttribute(session, "user", user);
         //loadFromSession(evt);

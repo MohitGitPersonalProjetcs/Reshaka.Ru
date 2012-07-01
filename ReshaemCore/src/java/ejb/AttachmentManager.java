@@ -2,6 +2,7 @@ package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
 import ejb.util.FileUtils;
+import ejb.util.ReshakaUploadedFile;
 import entity.Attachment;
 import entity.User;
 import java.io.File;
@@ -19,7 +20,6 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
-import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -84,7 +84,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
      * @return ID of attachment in the database or null if operation failed.
      */
     @Override
-    public Attachment uploadFiles(User user, List<UploadedFile> files, String tags) {
+    public Attachment uploadFiles(User user, List<ReshakaUploadedFile> files, String tags) {
 
         if (log.isTraceEnabled()) {
             log.trace(">> uploadFiles(): " + files);
@@ -159,7 +159,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
      *
      * @throws IOException
      */
-    private void addFileToZip(ZipOutputStream zipOut, UploadedFile file, String name) throws IOException {
+    private void addFileToZip(ZipOutputStream zipOut, ReshakaUploadedFile file, String name) throws IOException {
         if (log.isTraceEnabled()) {
             log.trace(">> addFileToZip(): " + file);
         }
@@ -325,16 +325,19 @@ public class AttachmentManager implements AttachmentManagerLocal {
         try {
             //canShare |= um.isAdmin(who);
             User actor = em.find(User.class, who);
-            if(actor!=null&&actor.getUserGroup()==1)
+            if (actor != null && actor.getUserGroup() == 1) {
                 canShare = true;
-        } catch (Exception ex) {}
-        if(!canShare)
+            }
+        } catch (Exception ex) {
+        }
+        if (!canShare) {
             for (User u : att.getUser()) {
                 if (u.getId() == who) {
                     canShare = true;
                     break;
                 }
             }
+        }
         if (!canShare) {
             if (log.isTraceEnabled()) {
                 log.trace("<< shareFile(): null - operation is not permitted");
@@ -355,7 +358,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     }
 
     @Override
-    public Attachment reuploadFiles(User user, Long attachmentId, List<UploadedFile> files, String tags) {
+    public Attachment reuploadFiles(User user, Long attachmentId, List<ReshakaUploadedFile> files, String tags) {
         if (attachmentId == null) {
             return uploadFiles(user, files, tags);
         }
@@ -366,7 +369,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
         if (original == null) {
             return null;
         }
-        
+
         Set<User> u = original.getUser();
         removeAttachmentFromDisk(original);
         original = prepareAttachment(user, files, tags);
@@ -374,7 +377,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
         original.setUser(u);
         return em.merge(original);
     }
-    
+
     private void removeAttachmentFromDisk(Attachment a) {
         // TODO: removeAttachmentFromDisk()
         return;
@@ -399,7 +402,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
 
     }
 
-    private Attachment prepareAttachment(User user, List<UploadedFile> files, String tags) {
+    private Attachment prepareAttachment(User user, List<ReshakaUploadedFile> files, String tags) {
         if (files.isEmpty()) {
             if (log.isDebugEnabled()) {
                 log.debug("List of files is empty! Nothing to compress.");
@@ -410,7 +413,14 @@ public class AttachmentManager implements AttachmentManagerLocal {
             if (log.isTraceEnabled()) {
                 log.trace("prepareAttachment() : Single file is being uploaded. Delegating to uploadFile()");
             }
-            return prepareAttachment(files.get(0).getFileName(), files.get(0).getContentType(), user, files.get(0).getContents(), tags);
+            try {
+                return prepareAttachment(files.get(0).getFileName(), files.get(0).getContentType(), user, files.get(0).getContents(), tags);
+            } catch (IOException ex) {
+                if (log.isTraceEnabled()) {
+                    log.trace("prepareAttachment() : I/O exception" + ex);
+                }
+                return null;
+            }
         }
 
         try {
@@ -425,7 +435,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
                 zos.setMethod(ZipOutputStream.DEFLATED);
                 zos.setLevel(Deflater.BEST_COMPRESSION);
 
-                for (UploadedFile uf : files) {
+                for (ReshakaUploadedFile uf : files) {
                     addFileToZip(zos, uf, uf.getFileName());
                 }
             }

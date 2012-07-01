@@ -1,19 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
+import ejb.util.ReshakaSortOrder;
+import ejb.util.ReshakaUploadedFile;
 import entity.Offer;
 import entity.Order;
 import entity.Subject;
 import entity.User;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.ejb.Local;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -49,15 +44,15 @@ public interface OrderManagerLocal {
 
     public void persistEntity(Object o);
 
-    public Order submitOrder(Order order, List<UploadedFile> files);
+    public Order submitOrder(Order order, List<ReshakaUploadedFile> files);
     
-    public Order updateOrder(Order order, List<UploadedFile> files);
+    public Order updateOrder(Order order, List<ReshakaUploadedFile> files);
 
     public Order submitSolution(Long userId, Long orderId,Long solutionId);
 
     public void mergeEntity(Object o);
     
-    public List<Order> getFilteredOrders(Map<String, String> filters, int first, int pageSize , String sortField, SortOrder sortOrder);
+    public List<Order> getFilteredOrders(Map<String, String> filters, int first, int pageSize , String sortField, ReshakaSortOrder sortOrder);
     
     public void deleteOrder(Long orderId);
     
@@ -73,9 +68,9 @@ public interface OrderManagerLocal {
     
     public int getSolvedOrdersAmountOfReshaka(Long reshakaId);
     
-    public List<Order> getOrders(Map<String, String> filters,Long userId, int orderType, int first, int pageSize, String sortField, SortOrder sortOrder);
+    public List<Order> getOrders(Map<String, String> filters,Long userId, int orderType, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder);
     
-     public int getOrdersCount(Map<String, String> filters,Long userId, int orderType, int first, int pageSize, String sortField, SortOrder sortOrder);
+     public int getOrdersCount(Map<String, String> filters,Long userId, int orderType, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder);
 
     public boolean userOwnsThisOrder(Long userId, Long orderId);
     

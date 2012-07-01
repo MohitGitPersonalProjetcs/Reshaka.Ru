@@ -1,10 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
+import ejb.util.ReshakaSortOrder;
+import ejb.util.ReshakaUploadedFile;
 import entity.*;
 import java.util.*;
 import javax.ejb.EJB;
@@ -13,8 +11,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -185,11 +181,11 @@ public class OrderManager implements OrderManagerLocal {
         System.out.println("get all orders occured");
         Map filter = new HashMap();
         //filter.put("type", "0");
-        return getFilteredOrders(filter, 0, 1000000, "id", SortOrder.DESCENDING);
+        return getFilteredOrders(filter, 0, 1000000, "id", ReshakaSortOrder.DESCENDING);
     }
 
     @Override
-    public Order submitOrder(Order order, List<UploadedFile> files) {
+    public Order submitOrder(Order order, List<ReshakaUploadedFile> files) {
         //System.out.println("ejb - submitOrder - order = " + order);
         if (files != null) {
             Attachment att = am.uploadFiles(order.getEmployer(), files, order.getTags());
@@ -256,7 +252,7 @@ public class OrderManager implements OrderManagerLocal {
      */
     @Override
     @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
-    public List<Order> getFilteredOrders(Map<String, String> filters, int first, int pageSize, String sortField, SortOrder sortOrder) {
+    public List<Order> getFilteredOrders(Map<String, String> filters, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select o from Order o where 'plug' = 'plug' ";
         String filterProperty, filterValue;
         System.out.println("filters = " + filters);
@@ -273,13 +269,13 @@ public class OrderManager implements OrderManagerLocal {
             if (sortField != null) {
                 jpqlString += " order by o." + sortField + " ";
                 if (sortOrder != null) {
-                    if (sortOrder == SortOrder.ASCENDING) {
+                    if (sortOrder == ReshakaSortOrder.ASCENDING) {
                         jpqlString += "ASC";
                     }
-                    if (sortOrder == SortOrder.DESCENDING) {
+                    if (sortOrder == ReshakaSortOrder.DESCENDING) {
                         jpqlString += "DESC";
                     }
-                    if (sortOrder == SortOrder.UNSORTED) {
+                    if (sortOrder == ReshakaSortOrder.UNSORTED) {
                         jpqlString += "ASC";
                     }
                 }
@@ -334,7 +330,7 @@ public class OrderManager implements OrderManagerLocal {
         //User user = em.find(User.class, userId);
         Map<String, String> map = new HashMap();
         map.put("employer.id", Long.toString(userId));
-        return getFilteredOrders(map, 0, 100000, "id", SortOrder.DESCENDING);
+        return getFilteredOrders(map, 0, 100000, "id", ReshakaSortOrder.DESCENDING);
     }
 
     @Override
@@ -342,7 +338,7 @@ public class OrderManager implements OrderManagerLocal {
     public List<Order> getOnlineOrders() {
         Map<String, String> map = new HashMap();
         map.put("type", "1");
-        return getFilteredOrders(map, 0, 100000, "id", SortOrder.DESCENDING);
+        return getFilteredOrders(map, 0, 100000, "id", ReshakaSortOrder.DESCENDING);
     }
 
     @Override
@@ -373,7 +369,7 @@ public class OrderManager implements OrderManagerLocal {
         Map<String, String> map = new HashMap();
         map.put("type", "1");
         map.put("employer.id", Long.toString(userId));
-        return getFilteredOrders(map, 0, 100000, "id", SortOrder.DESCENDING);
+        return getFilteredOrders(map, 0, 100000, "id", ReshakaSortOrder.DESCENDING);
     }
 
     @Override
@@ -393,7 +389,7 @@ public class OrderManager implements OrderManagerLocal {
         Map<String, String> map = new HashMap();
         map.put("type", "0");
         map.put("employer.id", Long.toString(userId));
-        return getFilteredOrders(map, 0, 100000, "id", SortOrder.DESCENDING);
+        return getFilteredOrders(map, 0, 100000, "id", ReshakaSortOrder.DESCENDING);
     }
 
     @Override
@@ -402,7 +398,7 @@ public class OrderManager implements OrderManagerLocal {
         System.out.println("get all orders occured");
         Map filter = new HashMap();
         filter.put("type", "0");
-        return getFilteredOrders(filter, 0, 1000000, "id", SortOrder.DESCENDING);
+        return getFilteredOrders(filter, 0, 1000000, "id", ReshakaSortOrder.DESCENDING);
     }
 
     @Override
@@ -425,7 +421,7 @@ public class OrderManager implements OrderManagerLocal {
      * @return List of Orders
      */
     @Override
-    public List<Order> getOrders(Map<String, String> filters, Long userId, int orderType, int first, int pageSize, String sortField, SortOrder sortOrder) {
+    public List<Order> getOrders(Map<String, String> filters, Long userId, int orderType, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         int userGroup = userMan.getGroupById(userId);
         // depends on userGroup
         String jpqlString = "";
@@ -469,13 +465,13 @@ public class OrderManager implements OrderManagerLocal {
             if (sortField != null) {
                 jpqlString += " order by " + base + sortField + " ";
                 if (sortOrder != null) {
-                    if (sortOrder == SortOrder.ASCENDING) {
+                    if (sortOrder == ReshakaSortOrder.ASCENDING) {
                         jpqlString += "ASC";
                     }
-                    if (sortOrder == SortOrder.DESCENDING) {
+                    if (sortOrder == ReshakaSortOrder.DESCENDING) {
                         jpqlString += "DESC";
                     }
-                    if (sortOrder == SortOrder.UNSORTED) {
+                    if (sortOrder == ReshakaSortOrder.UNSORTED) {
                         jpqlString += "ASC";
                     }
                 }
@@ -513,7 +509,7 @@ public class OrderManager implements OrderManagerLocal {
      * @return size of List of Orders
      */
     @Override
-    public int getOrdersCount(Map<String, String> filters, Long userId, int orderType, int first, int pageSize, String sortField, SortOrder sortOrder) {
+    public int getOrdersCount(Map<String, String> filters, Long userId, int orderType, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         int userGroup = userMan.getGroupById(userId);
         // depends on userGroup
         String jpqlString = "";
@@ -557,13 +553,13 @@ public class OrderManager implements OrderManagerLocal {
             if (sortField != null) {
                 jpqlString += " order by " + base + sortField + " ";
                 if (sortOrder != null) {
-                    if (sortOrder == SortOrder.ASCENDING) {
+                    if (sortOrder == ReshakaSortOrder.ASCENDING) {
                         jpqlString += "ASC";
                     }
-                    if (sortOrder == SortOrder.DESCENDING) {
+                    if (sortOrder == ReshakaSortOrder.DESCENDING) {
                         jpqlString += "DESC";
                     }
-                    if (sortOrder == SortOrder.UNSORTED) {
+                    if (sortOrder == ReshakaSortOrder.UNSORTED) {
                         jpqlString += "ASC";
                     }
                 }
@@ -580,7 +576,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    public Order updateOrder(Order order, List<UploadedFile> files) {
+    public Order updateOrder(Order order, List<ReshakaUploadedFile> files) {
         //System.out.println("ejb - submitOrder - order = " + order);
         if (log.isTraceEnabled()) {
             log.trace(">>updateOrder(): order =  "+ order + " ; files = " + files);

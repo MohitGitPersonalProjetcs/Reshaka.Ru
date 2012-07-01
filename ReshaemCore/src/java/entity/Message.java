@@ -12,9 +12,9 @@ import javax.persistence.*;
 @Entity @Table(name="Messages")
 @NamedQueries({
     @NamedQuery(name="Message.findIncomingBetween",
-                query="SELECT m FROM Message m WHERE m.toUser = :owner and m.dateSent > :afterDate and m.dateSent < :beforeDate order by m.dateSent"),
+                query="SELECT m FROM Message m WHERE m.toUser = :owner and m.dateSent > :afterDate and m.dateSent < :beforeDate or m.read = false order by m.dateSent"),
     @NamedQuery(name="Message.findIncomingFromUserBetween",
-                query="SELECT m FROM Message m WHERE m.toUser = :owner and m.fromUser = :fromUser and m.dateSent > :afterDate and m.dateSent < :beforeDate order by m.dateSent"),
+                query="SELECT m FROM Message m WHERE m.toUser = :owner and m.fromUser = :fromUser and m.dateSent > :afterDate and m.dateSent < :beforeDate or m.read = false order by m.dateSent"),
     @NamedQuery(name="Message.findOutcomingBetween",
                 query="SELECT m FROM Message m WHERE m.fromUser = :owner and m.dateSent > :afterDate and m.dateSent < :beforeDate order by m.dateSent"),
     @NamedQuery(name="Message.findOutcomingToUserBetween",

@@ -2,11 +2,13 @@ package web;
 
 import ejb.AttachmentManager;
 import ejb.AttachmentManagerLocal;
+import ejb.util.ReshakaUploadedFile;
 import entity.Attachment;
 import entity.User;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -20,8 +22,8 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
 import web.utils.SessionListener;
+import web.utils.Tools;
 
 /**
  *
@@ -36,20 +38,30 @@ public class FileUploadController implements Serializable {
 
     private static Logger log = Logger.getLogger(FileUploadController.class);
 
-    private List<UploadedFile> files;
+    private List<ReshakaUploadedFile> files;
 
     private Attachment attachment;
     
     private boolean displayUploadControl = false;
 
     public FileUploadController() {
-        files = new LinkedList<>();
+        files = Collections.synchronizedList(new LinkedList<ReshakaUploadedFile>());
     }
 
     public void handleFileUpload(FileUploadEvent event) {
         System.out.println("File is uploaded");
-        UploadedFile uf = event.getFile();
-        files.add(uf);
+        ReshakaUploadedFile uf = Tools.convertUploadedFile(event.getFile());
+        
+        // check for duplicate name
+        for(ReshakaUploadedFile f : files) {
+            if(f.getFileName().equalsIgnoreCase(uf.getFileName())) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "File is not uploaded",
+                "Duplicate file name " + event.getFile().getFileName() + ".");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
+        
         if (log.isTraceEnabled()) {
             log.trace("FileUploadEvent(): uf = " + uf);
         }
@@ -69,6 +81,8 @@ public class FileUploadController implements Serializable {
     public Attachment getFileInfo() {
         FacesContext fc = FacesContext.getCurrentInstance();
         User user = (User) SessionListener.getSessionAttribute("user", true);
+        if(user==null)
+            return new Attachment();
         if (attachment == null) {
             return new Attachment();
         }
@@ -109,7 +123,7 @@ public class FileUploadController implements Serializable {
         }
     }
 
-    public List<UploadedFile> getFiles() {
+    public List<ReshakaUploadedFile> getFiles() {
         return files;
     }
 

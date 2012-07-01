@@ -2,6 +2,7 @@ package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
 import data.SimpleUser;
+import ejb.util.ReshakaUploadedFile;
 import entity.Attachment;
 import entity.Message;
 import entity.User;
@@ -16,7 +17,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
-import org.primefaces.model.UploadedFile;
 
 /**
  * A simple implementation of Message manager EJB. It provides some methods for
@@ -246,7 +246,7 @@ public class MessageManager implements MessageManagerLocal {
     }
 
     @Override
-    public Message sendMessageAndUpload(long userFrom, Long userTo, String subject, String text, List<UploadedFile> files) {
+    public Message sendMessageAndUpload(long userFrom, Long userTo, String subject, String text, List<ReshakaUploadedFile> files) {
         if (log.isTraceEnabled()) {
             log.trace(">> sendMessageAndUpload()");
         }

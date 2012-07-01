@@ -4,6 +4,7 @@ import ejb.OrderManagerLocal;
 import ejb.SubjectManagerLocal;
 import ejb.TagManagerLocal;
 import ejb.UserManagerLocal;
+import ejb.util.ReshakaUploadedFile;
 import entity.Order;
 import entity.Subject;
 import entity.Tag;
@@ -13,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -23,7 +23,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.FlowEvent;
 import org.primefaces.model.UploadedFile;
 import web.FileUploadController;
 import web.utils.SessionListener;
@@ -67,7 +66,7 @@ public class MakeOrderBean implements Serializable {
 
     private String tagsText;
 
-    public List<UploadedFile> getUploadedFiles() {
+    public List<ReshakaUploadedFile> getUploadedFiles() {
         return fileUploadController.getFiles();
     }
 
@@ -390,7 +389,7 @@ public class MakeOrderBean implements Serializable {
         return !fileUploadController.getFiles().isEmpty();
     }
 
-    public List<UploadedFile> uploadedFiles() {
+    public List<ReshakaUploadedFile> uploadedFiles() {
         System.out.println("size= " + fileUploadController.getFiles().size());
         return fileUploadController.getFiles();
     }

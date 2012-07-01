@@ -1,19 +1,15 @@
 package web.view.orders;
 
-import web.utils.StringUtils;
 import ejb.OrderManagerLocal;
 import ejb.UserManagerLocal;
 import entity.Order;
 import entity.User;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import org.apache.log4j.Logger;
-import web.view.subjects.LazyOrderDataModel;
 
 /**
  *

@@ -1,8 +1,9 @@
-package web.view.subjects;
+package web.view.orders;
 
 import ejb.OrderManagerLocal;
 import ejb.SubjectManagerLocal;
 import ejb.UserManagerLocal;
+import ejb.util.ReshakaSortOrder;
 import entity.Order;
 import entity.Subject;
 import entity.User;
@@ -99,7 +100,7 @@ public class LazyOrderDataModel<T extends Object> extends LazyDataModel<Order> {
     public List<Order> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
         initUserIds();
         initResultUserId();
-        List<Order> data = orderMan.getOrders(filters, resultUserId, orderType, first, pageSize, "id", SortOrder.DESCENDING);
+        List<Order> data = orderMan.getOrders(filters, resultUserId, orderType, first, pageSize, "id", ReshakaSortOrder.DESCENDING);
         int dataSize = orderMan.getOrdersCount(filters, resultUserId, orderType, first, pageSize, null, null);
         this.setRowCount(dataSize);
         return data;

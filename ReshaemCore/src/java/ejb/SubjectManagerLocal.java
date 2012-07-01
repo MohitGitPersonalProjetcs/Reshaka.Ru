@@ -1,17 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
-import entity.Order;
+import ejb.util.ReshakaSortOrder;
 import entity.Subject;
 import entity.User;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.ejb.Local;
-import org.primefaces.model.SortOrder;
 
 /**
  *
@@ -38,7 +32,7 @@ public interface SubjectManagerLocal {
 
     public List<User> getUsersListBySubjectId(Long subjectId);
 
-    public List<Subject> getFilteredSubjects(Map<String, String> filters, int first, int pageSize, String sortField, SortOrder sortOrder);
+    public List<Subject> getFilteredSubjects(Map<String, String> filters, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder);
 
-    public int getFilteredSubjectsCount(Map<String, String> filters, String sortField, SortOrder sortOrder);
+    public int getFilteredSubjectsCount(Map<String, String> filters, String sortField, ReshakaSortOrder sortOrder);
 }

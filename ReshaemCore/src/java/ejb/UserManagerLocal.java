@@ -1,15 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
+import ejb.util.ReshakaSortOrder;
+import ejb.util.ReshakaUploadedFile;
 import entity.*;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Local;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -48,17 +44,13 @@ public interface UserManagerLocal {
 
     public Attachment getUserAvatar(Long avatarId);
 
-    public User updateAvatar(Long id, UploadedFile uploadedAvatar);
+    public User updateAvatar(Long id, ReshakaUploadedFile uploadedAvatar);
 
     public User getUserById(Long userId);
     
-    public List<User> getFilteredUsers(Map<String, String> filters, int first, int pageSize , String sortField, SortOrder sortOrder);
+    public List<User> getFilteredUsers(Map<String, String> filters, int first, int pageSize , String sortField, ReshakaSortOrder sortOrder);
     
     public void setUserStatus(Long userId, int status);
-    
-//    public void addComment(Long userId, Long authorId, String text);
-//    
-//    public List<Comment> getComments(Long userId);
 
     void updateUserSettings(long userId, UserSettings userSettings);
     

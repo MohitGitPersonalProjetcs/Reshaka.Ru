@@ -1,8 +1,9 @@
 package ejb;
 
+import ejb.util.ReshakaSortOrder;
+import ejb.util.ReshakaUploadedFile;
 import ejb.util.URLUtils;
 import entity.*;
-import java.util.Random;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -14,8 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -289,7 +288,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
-    public User updateAvatar(Long id, UploadedFile uploadedAvatar) {
+    public User updateAvatar(Long id, ReshakaUploadedFile uploadedAvatar) {
         if (log.isTraceEnabled()) {
             log.trace(">> updateAvatar(): userId=" + id);
         }
@@ -330,7 +329,7 @@ public class UserManager implements UserManagerLocal {
 //                .createItem("avatar", uploadedAvatar.getContentType(), false, uploadedAvatar.getFileName());
 //        
 //        UploadedFile f = new DefaultUploadedFile(item);
-        List<UploadedFile> l = new LinkedList<>();
+        List<ReshakaUploadedFile> l = new LinkedList<>();
         l.add(uploadedAvatar);
 
         Attachment a = am.uploadFiles(em.find(User.class, id), l, "avatar");
@@ -364,7 +363,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
-    public List<User> getFilteredUsers(Map<String, String> filters, int first, int pageSize, String sortField, SortOrder sortOrder) {
+    public List<User> getFilteredUsers(Map<String, String> filters, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select u from User u where 'plug' = 'plug' ";
         String filterProperty, filterValue;
         try {
@@ -380,13 +379,13 @@ public class UserManager implements UserManagerLocal {
             if (sortField != null) {
                 jpqlString += " order by u." + sortField + " ";
                 if (sortOrder != null) {
-                    if (sortOrder == SortOrder.ASCENDING) {
+                    if (sortOrder == ReshakaSortOrder.ASCENDING) {
                         jpqlString += "ASC";
                     }
-                    if (sortOrder == SortOrder.DESCENDING) {
+                    if (sortOrder == ReshakaSortOrder.DESCENDING) {
                         jpqlString += "DESC";
                     }
-                    if (sortOrder == SortOrder.UNSORTED) {
+                    if (sortOrder == ReshakaSortOrder.UNSORTED) {
                         jpqlString += "ASC";
                     }
                 }
@@ -690,19 +689,19 @@ public class UserManager implements UserManagerLocal {
     public List<User> getAllUsers() {
         Map<String, String> map = new HashMap();
         map.put("userGroup", "3");
-        return getFilteredUsers(map, 0, 1000000, null, SortOrder.UNSORTED);
+        return getFilteredUsers(map, 0, 1000000, null, ReshakaSortOrder.UNSORTED);
     }
 
     @Override
     public List<User> getAllReshakas() {
         Map<String, String> map = new HashMap();
         map.put("userGroup", "3");
-        return getFilteredUsers(map, 0, 1000000, null, SortOrder.UNSORTED);
+        return getFilteredUsers(map, 0, 1000000, null, ReshakaSortOrder.UNSORTED);
     }
 
     @Override
     public List<User> getAllRegisteredUsers() {
-        return getFilteredUsers(null, 0, 1000000, null, SortOrder.UNSORTED);
+        return getFilteredUsers(null, 0, 1000000, null, ReshakaSortOrder.UNSORTED);
     }
 
     @Override

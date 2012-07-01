@@ -1,12 +1,12 @@
 package ejb;
 
 import data.SimpleUser;
+import ejb.util.ReshakaUploadedFile;
 import entity.Message;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
-import org.primefaces.model.UploadedFile;
 
 /**
  * Local interface for SessionManager EJB.
@@ -18,7 +18,7 @@ public interface MessageManagerLocal {
     
     Message sendMessage(long userFrom, Long userTo, String subject, String text, Long attachment);
     
-    Message sendMessageAndUpload(long userFrom, Long userTo, String subject, String text, List<UploadedFile> files);
+    Message sendMessageAndUpload(long userFrom, Long userTo, String subject, String text, List<ReshakaUploadedFile> files);
     
     List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate);
     

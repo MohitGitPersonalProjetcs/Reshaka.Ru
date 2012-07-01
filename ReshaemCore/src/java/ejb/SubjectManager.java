@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
-import entity.Order;
+import ejb.util.ReshakaSortOrder;
 import entity.Subject;
 import entity.User;
 import java.util.*;
@@ -14,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
-import org.primefaces.model.SortOrder;
 
 /**
  *
@@ -26,9 +21,8 @@ public class SubjectManager implements SubjectManagerLocal {
     private static Logger log = Logger.getLogger(AttachmentManager.class.getName());
     @PersistenceContext(unitName = "ReshaemCorePU")
     EntityManager em;
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
-
+    
+    
     @Override
     public Map<Long, String> getAllSubjectsMap() {
         Query q = em.createNamedQuery("findMySubjects");
@@ -138,7 +132,7 @@ public class SubjectManager implements SubjectManagerLocal {
 
     @Override
     @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
-    public List<Subject> getFilteredSubjects(Map<String, String> filters, int first, int pageSize, String sortField, SortOrder sortOrder) {
+    public List<Subject> getFilteredSubjects(Map<String, String> filters, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select s from Subject s where 'plug' = 'plug' ";
         String filterProperty, filterValue;
         System.out.println("filters = " + filters);
@@ -155,13 +149,13 @@ public class SubjectManager implements SubjectManagerLocal {
             if (sortField != null) {
                 jpqlString += " order by s." + sortField + " ";
                 if (sortOrder != null) {
-                    if (sortOrder == SortOrder.ASCENDING) {
+                    if (sortOrder == ReshakaSortOrder.ASCENDING) {
                         jpqlString += "ASC";
                     }
-                    if (sortOrder == SortOrder.DESCENDING) {
+                    if (sortOrder == ReshakaSortOrder.DESCENDING) {
                         jpqlString += "DESC";
                     }
-                    if (sortOrder == SortOrder.UNSORTED) {
+                    if (sortOrder == ReshakaSortOrder.UNSORTED) {
                         jpqlString += "ASC";
                     }
                 }
@@ -204,7 +198,7 @@ public class SubjectManager implements SubjectManagerLocal {
 
     @Override
     @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
-    public int getFilteredSubjectsCount(Map<String, String> filters, String sortField, SortOrder sortOrder) {
+    public int getFilteredSubjectsCount(Map<String, String> filters, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select count(s) from Subject s where 'plug' = 'plug' ";
         String filterProperty, filterValue;
         System.out.println("filters = " + filters);
@@ -221,13 +215,13 @@ public class SubjectManager implements SubjectManagerLocal {
             if (sortField != null) {
                 jpqlString += " order by s." + sortField + " ";
                 if (sortOrder != null) {
-                    if (sortOrder == SortOrder.ASCENDING) {
+                    if (sortOrder == ReshakaSortOrder.ASCENDING) {
                         jpqlString += "ASC";
                     }
-                    if (sortOrder == SortOrder.DESCENDING) {
+                    if (sortOrder == ReshakaSortOrder.DESCENDING) {
                         jpqlString += "DESC";
                     }
-                    if (sortOrder == SortOrder.UNSORTED) {
+                    if (sortOrder == ReshakaSortOrder.UNSORTED) {
                         jpqlString += "ASC";
                     }
                 }

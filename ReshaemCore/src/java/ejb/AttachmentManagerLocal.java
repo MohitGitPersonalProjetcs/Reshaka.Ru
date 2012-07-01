@@ -1,10 +1,10 @@
 package ejb;
 
+import ejb.util.ReshakaUploadedFile;
 import entity.Attachment;
 import entity.User;
 import java.util.List;
 import javax.ejb.Local;
-import org.primefaces.model.UploadedFile;
 
 /**
  * Local interface for AttachmentManager EJB.
@@ -35,7 +35,7 @@ public interface AttachmentManagerLocal {
      * @param tags Tags (not implemented yet) // TODO
      * @return Attachment entity if succeeded or null if operation failed.
      */
-    Attachment uploadFiles(User user, List<UploadedFile> files, String tags);
+    Attachment uploadFiles(User user, List<ReshakaUploadedFile> files, String tags);
     
     /**
      * Returns information about uploaded file with specified id
@@ -84,5 +84,5 @@ public interface AttachmentManagerLocal {
      * @param tags Tags (not implemented yet) // TODO
      * @return Attachment entity if succeeded or null if operation failed.
      */
-    Attachment reuploadFiles(User user, Long attachmentId, List<UploadedFile> files, String tags);
+    Attachment reuploadFiles(User user, Long attachmentId, List<ReshakaUploadedFile> files, String tags);
 }
