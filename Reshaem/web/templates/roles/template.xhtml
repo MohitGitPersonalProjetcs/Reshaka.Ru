@@ -129,7 +129,9 @@
                     <!-- here will be all javascripts -->
                 </ui:insert>
                 <h:form>
-                    <p:poll update=":rightcol" process="@this" interval="30" async="true"/>
+                    <c:if test="#{webSession.signedIn}">
+                        <p:poll update=":rightcol" process="@this" interval="30" async="true"/>
+                    </c:if>
                     <p:poll async="true" process="@this" interval="10" autoStart="true" listener="#{webSession.updateParameters}"/>
                 </h:form>
             </h:panelGroup>
