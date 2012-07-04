@@ -149,6 +149,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     /**
      * Remove invalid entries from the database and remove redundant files
      */
+    @Override
     public void removeInvalidEntries() {
         log.info("Checking validity of Attachments table");
         // TODO: Remove invalid entries from Attachments and remove redundant files
@@ -258,14 +259,8 @@ public class AttachmentManager implements AttachmentManagerLocal {
             if (log.isTraceEnabled()) {
                 log.trace("checkDownloadRights(): file owners >> " + a.getUser().size());
             }
-            for (User usr : a.getUser()) {
-                if (usr.getId().equals(u.getId())) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("<< checkDownloadRights(): true // owner of the file");
-                    }
-                    return true;
-                }
-            }
+            if(isOwner(u, a))
+                return true;
         } catch (Exception ex) {
             if (log.isTraceEnabled()) {
                 log.trace("checkDownloadRights(): false // exception while processing owners list", ex);
@@ -405,7 +400,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     private Attachment prepareAttachment(User user, List<ReshakaUploadedFile> files, String tags) {
         if (files.isEmpty()) {
             if (log.isDebugEnabled()) {
-                log.debug("List of files is empty! Nothing to compress.");
+                log.debug("prepareAttachment() : List of files is empty! Nothing to compress.");
             }
             return null;
         }
@@ -465,5 +460,59 @@ public class AttachmentManager implements AttachmentManagerLocal {
             log.error("prepareAttachment(): Failed to upload files. ", ex);
             return null;
         }
+    }
+
+    @Override
+    public Attachment renameAttachment(Long userId, long attachmentId, String name) {
+        if (log.isDebugEnabled()) {
+            log.debug(">> renameAttachment() : userId =" + userId + ", attachmentId=" + attachmentId);
+        }
+        if (userId == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("<< renameAttachment() : null // operation is not permitted");
+            }
+            return null;
+        }
+
+        User u = em.find(User.class, userId);
+        if (u == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("<< renameAttachment() : null // no such user! operation is not permitted");
+            }
+            return null;
+        }
+        Attachment att = em.find(Attachment.class, attachmentId);
+        if (att == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("<< renameAttachment() : null // invalid attachmentId=" + attachmentId);
+            }
+            return null;
+        }
+        if (!isOwner(u, att) && u.getUserGroup() != User.ADMIN) {
+            if (log.isTraceEnabled()) {
+                log.trace("<< renameAttachment() : null // operation is not permitted");
+            }
+            return null;
+        }
+        att.setName(name);
+        if (log.isDebugEnabled()) {
+            log.debug(">> renameAttachment() : userId =" + userId + ", attachmentId=" + attachmentId);
+        }
+        return em.merge(att);
+    }
+
+    private boolean isOwner(User u, Attachment a) {
+        for (User usr : a.getUser()) {
+            if (usr.getId().equals(u.getId())) {
+                if (log.isTraceEnabled()) {
+                    log.trace("<< isOwner(): true // owner of the file");
+                }
+                return true;
+            }
+        }
+        if (log.isTraceEnabled()) {
+            log.trace("<< isOwner(): false");
+        }
+        return false;
     }
 }

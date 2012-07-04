@@ -73,7 +73,7 @@ public interface AttachmentManagerLocal {
     /**
      * TODO: (danon) implement removeInvalidEntries in attachment manager
      */
-    public void removeInvalidEntries();
+    void removeInvalidEntries();
     
     /**
      * Substitutes attachment, that already exists, with new files
@@ -85,4 +85,13 @@ public interface AttachmentManagerLocal {
      * @return Attachment entity if succeeded or null if operation failed.
      */
     Attachment reuploadFiles(User user, Long attachmentId, List<ReshakaUploadedFile> files, String tags);
+    
+    /**
+     * Renames the file.
+     * @param userId who tries to rename
+     * @param attachmentId ID of attachment
+     * @param name new name
+     * @return attachment or null in case of error.
+     */
+    Attachment renameAttachment(Long userId, long attachmentId, String name);
 }

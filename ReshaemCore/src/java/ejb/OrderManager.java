@@ -1,6 +1,7 @@
 package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
+import ejb.util.FileUtils;
 import ejb.util.ReshakaSortOrder;
 import ejb.util.ReshakaUploadedFile;
 import entity.*;
@@ -191,17 +192,16 @@ public class OrderManager implements OrderManagerLocal {
             Attachment att = am.uploadFiles(order.getEmployer(), files, order.getTags());
             if (att != null) {
                 order.setConditionId(att.getId());
+                //(Danon): naming of problem statemets "problem_PROBLEM_ID.ext"
+                am.renameAttachment(order.getEmployer().getId(), att.getId(), "problem_"+att.getId()+FileUtils.extractExtention(att.getName()));
             }
         }
 
         User empr = em.find(User.class, order.getEmployer().getId());
-        empr.setOrderedAmount(empr.getOrderedAmount() + 1); //TODO(Sabir): bad style(((
+        empr.setOrderedAmount(empr.getOrderedAmount() + 1); //TODO(Sabir): bad style((( (Danon): ;) +1
         em.merge(empr);
 
-
-
         em.persist(order);
-
 
         System.out.println("distribution from order manager : order = " + order);
         mailMan.newOrderDistribution(order.getId()); // send messages to all employees
@@ -221,6 +221,8 @@ public class OrderManager implements OrderManagerLocal {
         System.out.println("EJB try to submit solution orderId = " + orderId);
         Order order = em.find(Order.class, orderId);
         order.setSolutionId(solutionId);
+        //(Danon): naming of solution files "solution_SOLUTION_ID.ext"
+        am.renameAttachment(userId, solutionId, "solution_"+solutionId+FileUtils.extractExtention(em.find(Attachment.class, solutionId).getName()));
 //        if (files != null) {
 //            Attachment att = am.uploadFiles(order.getEmployee(), files, order.getTags());
 //            if (att != null) {

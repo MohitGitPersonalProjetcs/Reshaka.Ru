@@ -106,4 +106,19 @@ public class FileUtils {
         }
         return output;
     }
+
+    /**
+     * Returns extention of the file with specified name.
+     * For example: "/tmp/my_file.bin.tmp" => ".tmp"
+     * @param name path name of the file
+     * @return file extention or empty sting
+     */
+    public static String extractExtention(String name) {
+        if(name==null)
+            return "";
+        int i = name.lastIndexOf(".");
+        if(i>=0)
+            return name.substring(i);
+        else return "";
+    }
 }
