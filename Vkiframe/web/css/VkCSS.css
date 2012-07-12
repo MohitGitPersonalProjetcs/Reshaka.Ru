@@ -62,6 +62,7 @@ span.online {
 
 body , p , div {
     font-family: Tahoma, "Lucida Grande", Arial, sans;
+    font-size: 11px;
 }
 
 .tabs {
@@ -160,18 +161,22 @@ tabs li.current_link a, .tabs li.current_link  span, .tl_links span.current_sp {
 }
 
 .wikiTable th {
+
     background-color: #F5F7F8;
     border: 0;
     margin: 0;
     border-top: 1px solid #DEE4E8;
+    border-bottom: 1px solid #DEE4E8;
     border-right: 1px solid #DEE4E8;
     padding: 5px;
-    text-align: left;
+    text-align: center;
     font-size: 12px;
 }
 
 .wikiTable td {
-    border-top: 1px solid #DEE4E8;
+    text-align: center;
+    /*    border-top: 1px solid #DEE4E8;*/
+    border-bottom: 1px solid #DEE4E8;
     border-right: 1px solid #DEE4E8;
     vertical-align: top;
     padding: 5px;
@@ -179,13 +184,161 @@ tabs li.current_link a, .tabs li.current_link  span, .tl_links span.current_sp {
     font-size: 11px;
 }
 
-tr {
-    display: table-row;
-    vertical-align: inherit;
-    border-color: inherit;
+input.text, input.search, textarea, input.big_text {
+    background: white;
+    color: black;
+    border: 1px solid #C0CAD5;
+    padding: 3px;
+    /*    margin: 0px;*/
+    margin-bottom: 5px;
+    font-size: 11px;
+    font-family: Tahoma, Verdana, Arial, Sans-Serif, Lucida Sans;
+
 }
+
+/*input:focus, textarea:focus, isindex:focus, keygen:focus, select:focus {
+    outline-offset: -2px;
+}*/
+
+
+/*:focus {
+    outline: 5px auto -webkit-focus-ring-color;
+}*/
+
+.create_act{
+    float: right;
+    color: #2B587A;
+    margin: 15px 10px 0 0;
+    padding-left: 5px;
+    height: 23px;
+    line-height: 23px;
+    text-decoration: none;
+}
+
+.create_act:hover {
+    background: #E1E7ED; /* Цвет фона под ссылкой */ 
+    /*    color: #ffe;  Цвет ссылки  */
+}
+
+.pedit_label {
+    color: #555;
+    /*    width: 160px;*/
+    display: inline-block;
+    text-align: right;
+    font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+    font-size: 11px;
+    padding: 4px 10px 0 0;
+}
+tr {
+/*    display: table-row;*/
+/*    vertical-align: inherit;*/
+/*    border-color: inherit;*/
+/*    background-color: yellow;*/
+}
+
+.fwDefault{
+    width: 141px;
+    font-size: 11px;
+    border: 1px solid #C0CAD5;
+    background: #DAE2E8;
+    color: black;
+    /*    font-size: 1em;*/
+    padding: 1px;
+    margin-bottom: 5px;
+    font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+    border-radius: 1px !important;
+}
+
+.vkNextButton{
+    background-color: #597DA3 ;
+    color: white;
+    /*    margin-right: 20px;*/
+    border-width: 0px;
+}
+
+.vkNextButton:hover{
+    background-color: #E1E1ED;
+    color: black;
+}
+
+.enabled_class{
+
+    background-color: white;
+    color: black;
+}
+
+/*.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }*/
 
 root { 
     display: block;
 }
 
+.Agreed{
+    color: #FFFF99 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+.New{
+    color: #00cc00 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+.NewOnline{
+    color: #00cc00 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+.Rated{
+    color: #0000e5 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+.RatedOnline{
+    color: #0000e5 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+.Solved{
+    color: #CCCCFF !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+.PrepayedOnline{
+    color: #CCCCFF !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+.Payed{
+    color: #FFCC99 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+.DoneOnline{
+    color: #FFCC99 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+.ExpiredOnline{
+    color: #e2e2e2 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}
+
+
+.ExpiredOffline{
+    color: #e2e2e2 !important;
+    background-image: none !important;
+/*    color: black !important;*/
+}

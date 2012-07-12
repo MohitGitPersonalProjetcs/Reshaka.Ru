@@ -11,6 +11,18 @@ and open the template in the editor.
     <body>
         <ui:composition>
             <div class="tabs">
+                <h:panelGroup style="float: right;">
+                    <!--                    <li>-->
+                    <a href="#{request.contextPath}/faces/MakeOfflineOrder.xhtml" class="create_act" ><span class="tl"><span class="tr">Сделать заказ</span></span></a>
+                    <!--                    </li>-->
+                </h:panelGroup>
+                
+<!--                <h:panelGroup rendered="#{tab_no!=5}" style="float: right;">
+                                        <li>
+                    <a href="#{request.contextPath}/faces/MyProfile.xhtml" class="create_act" ><span class="tl"><span class="tr">Выполнить работу</span></span></a>
+                                        </li>
+                </h:panelGroup>-->
+                
                 <ul>
                     <h:panelGroup rendered="#{tab_no==1}"> 
                         <li class="current_link">
@@ -23,7 +35,7 @@ and open the template in the editor.
                         </li>
                     </h:panelGroup>
 
-                    
+
                     <h:panelGroup rendered="#{tab_no==2}"> 
                         <li class="current_link">
                             <span><span class="tl"><span class="tr">Мои заказы</span></span></span>
@@ -34,7 +46,7 @@ and open the template in the editor.
                             <a href="#{request.contextPath}/faces/MyOrders.xhtml"><span class="tl"><span class="tr">Мои заказы</span></span></a>
                         </li>
                     </h:panelGroup>
-                    
+
                     <h:panelGroup rendered="#{tab_no==3}"> 
                         <li class="current_link">
                             <span><span class="tl"><span class="tr">Мои сообщения</span></span></span>
@@ -45,7 +57,7 @@ and open the template in the editor.
                             <a href="#{request.contextPath}/faces/MyMessages.xhtml"><span class="tl"><span class="tr">Мои сообщения</span></span></a>
                         </li>
                     </h:panelGroup>
-                    
+
                     <h:panelGroup rendered="#{tab_no==4}"> 
                         <li class="current_link">
                             <span><span class="tl"><span class="tr">Мой профиль</span></span></span>
@@ -57,7 +69,9 @@ and open the template in the editor.
                         </li>
                     </h:panelGroup>
 
-                    
+
+
+
                 </ul>
             </div>
 
