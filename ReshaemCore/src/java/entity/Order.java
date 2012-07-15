@@ -28,13 +28,14 @@ public class Order implements Serializable {
 
     public static final int OFFLINE_TYPE = 0;
     public static final int ONLINE_TYPE = 1;
+    
     public static final int NEW_OFFLINE_ORDER_STATUS = 0;
     public static final int RATED_OFFLINE_ORDER_STATUS = 1;
     public static final int AGREED_OFFLINE_ORDER_STATUS = 2;
     public static final int HALF_PAYED_OFFLINE_ORDER_STATUS = 3;
-    public static final int FIRED_OFFLINE_ORDER_STATUS = 4;
-    public static final int SOLVED_OFFLINE_ORDER_STATUS = 5;
-    public static final int FULL_PAYED_OFFLINE_ORDER_STATUS = 6;
+//    public static final int FIRED_OFFLINE_ORDER_STATUS = 4;
+    public static final int SOLVED_OFFLINE_ORDER_STATUS = 4;
+    public static final int FULL_PAYED_OFFLINE_ORDER_STATUS = 5;
     public static final int CLOSED_OFFLINE_ORDER_STATUS = 7;
     public static final int EXPIRED_OFFLINE_ORDER_STATUS = 8;
     

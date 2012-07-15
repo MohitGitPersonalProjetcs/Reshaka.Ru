@@ -158,7 +158,7 @@ public class OrderUtilsBean {
     public String tooltipTextForRatedOrderStatus(Long orderId) {
         System.out.println("offerByOrderId occured selectedBean.order.id = " + orderId);
         List<Offer> list = orderMan.getOffers(orderId);
-        String text = "Заказ оценен этими решающими: ";
+        String text = "Заказ оценен следующими решающими: ";
         int k = 0;
         for (Offer off : list) {
             if (k == 0) {
@@ -174,7 +174,7 @@ public class OrderUtilsBean {
     public String bracketsForRatedOrderStatus(Long orderId) {
         System.out.println("offerByOrderId occured selectedBean.order.id = " + orderId);
         List<Offer> list = orderMan.getOffers(orderId);
-        String text = "(" + list.size()+")";
+        String text = "(" + list.size() + ")";
         return text;
     }
 //    public ArrayList<String> employeesList(Long orderId) {
@@ -215,5 +215,9 @@ public class OrderUtilsBean {
         } else {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ошибка обновления"));
         }
+    }
+
+    public int orderedAmountOfUser(Long userId) {
+        return orderMan.getOrderedAmount(userId);
     }
 }

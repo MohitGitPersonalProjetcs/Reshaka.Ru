@@ -187,6 +187,8 @@ public class DealManager implements DealManagerLocal {
                 return "DoneOnline";
             case 15:
                 return "ExpiredOnline";
+            case 8:
+                return "ExpiredOffline";
         }
         return "";
     }
@@ -240,6 +242,10 @@ public class DealManager implements DealManagerLocal {
                 return "Оплачен";
             case 14:
                 return "Выполнен";
+            case 8:
+                return "Просрочен";
+            case 15:
+                return "Просрочен";
         }
         return "";
     }
@@ -303,8 +309,8 @@ public class DealManager implements DealManagerLocal {
 
             //sending message to employee from admin 
             String text;
-            text = "Внесена предоплата за \"Онлайн - помошь\" на "+URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshak.Ru") +"\n"
-                    + "Номер заказа: " +URLUtils.createLink(URLUtils.getOrderURL(order.getId()), "_blank", order.getId()+"") + ".\n"
+            text = "Внесена предоплата за \"Онлайн - помошь\" на " + URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshak.Ru") + "\n"
+                    + "Номер заказа: " + URLUtils.createLink(URLUtils.getOrderURL(order.getId()), "_blank", order.getId() + "") + ".\n"
                     + "Дата: " + order.getDeadlineString() + " .\n"
                     + "Продолжительность: " + order.getDuration() + " минут.\n"
                     + "Будьте на связи в указанное время. ";

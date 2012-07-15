@@ -1,6 +1,7 @@
 package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
+import entity.Order;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -429,10 +430,19 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     public Map<Integer, String> getOrderStatusDescription() {
         Map map = new HashMap();
         try {
-            map.put(0, getString("statusNew")); //new
-            map.put(1, getString("statusRated")); //rated
-            map.put(4, getString("statusSolved")); //chosen
-            map.put(5, getString("statusPayed")); //agreed
+            map.put(Order.NEW_OFFLINE_ORDER_STATUS, getString("statusNew"));
+            map.put(Order.RATED_OFFLINE_ORDER_STATUS, getString("statusOfflineRated"));
+            map.put(Order.HALF_PAYED_OFFLINE_ORDER_STATUS, getString("statusOfflineAgreed"));
+            map.put(Order.SOLVED_OFFLINE_ORDER_STATUS, getString("statusSolved"));
+            map.put(Order.FULL_PAYED_OFFLINE_ORDER_STATUS, getString("statusPayed"));
+            map.put(Order.EXPIRED_OFFLINE_ORDER_STATUS, getString("statusExpired"));
+
+            map.put(Order.NEW_ONLINE_ORDER_STATUS, getString("statusNew"));
+            map.put(Order.RATED_ONLINE_ORDER_STATUS, getString("statusOnlineRated"));
+            map.put(Order.PAYED_ONLINE_ORDER_STATUS, getString("statusOnlineAgreed"));
+            map.put(Order.EXPIRED_ONLINE_ORDER_STATUS, getString("statusExpired"));
+
+
         } catch (Exception e) {
         }
         return map;

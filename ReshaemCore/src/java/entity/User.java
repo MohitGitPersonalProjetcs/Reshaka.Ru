@@ -187,6 +187,7 @@ public class User implements Serializable {
 //    }
     public int getOrderedAmount() {
         return orderedAmount;
+
     }
 
     public void setOrderedAmount(int orderedAmount) {

@@ -78,6 +78,7 @@ public interface OrderManagerLocal {
     
     public Subject getSubjectByOrderId(Long orderId);
     
-
+    public int getOrderedAmount(Long userId);
+    
 
 }

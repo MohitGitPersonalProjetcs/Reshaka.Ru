@@ -154,7 +154,7 @@ public class OrderUtilsBean {
     public String tooltipTextForRatedOrderStatus(Long orderId) {
         System.out.println("offerByOrderId occured selectedBean.order.id = " + orderId);
         List<Offer> list = orderMan.getOffers(orderId);
-        String text = "Заказ оценен этими решающими: ";
+        String text = "Заказ оценен следующими решающими: ";
         int k = 0;
         for (Offer off : list) {
             if (k == 0) {

@@ -132,7 +132,7 @@ and open the template in the editor.
                                     <f:param name="id" value="#{selectedBean.order.id}"/>
                                 </h:link>
                                 <div style="text-align: right;">
-                                    <p:commandButton value="Удалить!" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }"  />
+                                    <p:commandButton value="Удалить" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }"  />
                                 </div>
                             </h:form>
                         </p:tab>
@@ -186,13 +186,13 @@ and open the template in the editor.
 
 
                                     <h:outputText value="Удалить заказ: " style="color: red;" />
-                                    <p:commandButton value="Удалить!" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();"  />
+                                    <p:commandButton value="Удалить" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();"  />
 
                                 </h:panelGrid>
 
                                 <hr/>   
                                 <div style="text-align: right;">
-                                    <p:commandButton value="Изменить !" actionListener="#{orderUtilsBean.updateOrder(selectedBean.order)}"  update="basic_data_edit, :growl" />
+                                    <p:commandButton value="Изменить" actionListener="#{orderUtilsBean.updateOrder(selectedBean.order)}"  update="basic_data_edit, :growl" />
                                 </div>
 
 
@@ -210,13 +210,13 @@ and open the template in the editor.
                                 </h:panelGrid>
                                 <hr/>
                                 <div style="text-align: right;">
-                                    <p:commandButton value="Изменить !" actionListener="#{orderUtilsBean.updateOrder(selectedBean.order)}" rendered="#{((webSession.id == selectedBean.order.employer.id) and (selectedBean.order.status == 0))}"  update="extra_data, :growl" />
+                                    <p:commandButton value="Изменить" actionListener="#{orderUtilsBean.updateOrder(selectedBean.order)}" rendered="#{((webSession.id == selectedBean.order.employer.id) and (selectedBean.order.status == 0))}"  update="extra_data, :growl" />
                                 </div>
 
                             </h:form>
                         </p:tab>
 
-                        <p:tab id="tab4" title="Я могу решить!" rendered="#{ ( (webSession.group==3)or(webSession.group==1)) and ( (selectedBean.order.status == 0) or  (selectedBean.order.status == 1) or (selectedBean.order.status == 10) or (selectedBean.order.status == 11) )}">
+                        <p:tab id="tab4" title="Я могу решить" rendered="#{ ( (webSession.group==3)or(webSession.group==1)) and ( (selectedBean.order.status == 0) or  (selectedBean.order.status == 1) or (selectedBean.order.status == 10) or (selectedBean.order.status == 11) )}">
                             <h:form>
                                 <h:panelGrid columns="2" id="extra_data" width="430">
                                     <h:outputText value="Цена заказчика:" />
@@ -260,14 +260,14 @@ and open the template in the editor.
 
                                 <hr/>
                                 <div style="text-align: right;">
-                                    <p:commandButton value="Подать заявку !" update=":main_panel" actionListener="#{orderUtilsBean.addOffer(selectedBean.order.id,webSession.id, orderUtilsBean.plug)}" oncomplete="handleOrderInfoRequest(xhr, status, args)"/>
+                                    <p:commandButton value="Подать заявку" update=":main_panel" actionListener="#{orderUtilsBean.addOffer(selectedBean.order.id,webSession.id, orderUtilsBean.plug)}" oncomplete="handleOrderInfoRequest(xhr, status, args)"/>
                                 </div>
 
                             </h:form>
                         </p:tab>
 
 
-                        <p:tab id="tab5"  rendered="#{ ((selectedBean.order.status == 1)or (selectedBean.order.status == 11))and((webSession.group == 1)or(webSession.group == 2))and(selectedBean.order.employer.id == webSession.id)}" title="Выбрать решаку!">
+                        <p:tab id="tab5"  rendered="#{ ((selectedBean.order.status == 1)or (selectedBean.order.status == 11))and((webSession.group == 1)or(webSession.group == 2))and(selectedBean.order.employer.id == webSession.id)}" title="Выбрать решающего">
                             <h:form prependId="false">
                                 <h:panelGrid width="330" columns="1" rendered="#{(selectedBean.order.status == 1) or (selectedBean.order.status == 11)}" >
                                     <p:tooltip for="fillUp_o" value="Пополнить баланс" />
@@ -292,7 +292,7 @@ and open the template in the editor.
                                         <p:column headerText="Цена" style="width: 45px;">
                                             #{offer.price}
                                         </p:column>
-                                        <p:column headerText="Беру" style="width: 25px;" >
+                                        <p:column headerText="Выбрать" style="width: 25px;" >
                                             <h:panelGroup>
                                                 <p:commandButton update=":main_panel" actionListener="#{dealBean.startDeal(selectedBean.order.id, offer.id)}" 
                                                                  id="plus_o" value="+"
@@ -346,7 +346,7 @@ and open the template in the editor.
                                         <h:outputText value="Теперь вы можете оплатить вторую половину стоимости и скачать решение" style="color: red;" />
                                         <br/>
 
-                                        <p:commandButton value="Оплатить!" update=":main_panel" actionListener="#{dealBean.makeFinalPayment(selectedBean.order.id)}" rendered="#{dealBean.canFinishDeal(selectedBean.order.id,webSession.id )}" />
+                                        <p:commandButton value="Оплатить" update=":main_panel" actionListener="#{dealBean.makeFinalPayment(selectedBean.order.id)}" rendered="#{dealBean.canFinishDeal(selectedBean.order.id,webSession.id )}" />
                                     </h:panelGrid>
 
                                 </h:panelGroup>
@@ -363,7 +363,7 @@ and open the template in the editor.
                             <h:form id="tab7_form" prependId="false">
                                 <h:panelGroup id="submit_solution_tab">
                                     <p:commandButton  value="Загрузить файлы" style="color:blue;" onclick="solution_dlg_upload.show()"  />
-                                    <p:commandButton update=":main_panel"  style="color:red;" oncomplete="order_info_dlg.hide()" value="Подтвердить!!!" actionListener="#{dealBean.submitSolution(selectedBean.order.id, webSession.id)}"/>
+                                    <p:commandButton update=":main_panel"  style="color:red;" oncomplete="order_info_dlg.hide()" value="Подтвердить" actionListener="#{dealBean.submitSolution(selectedBean.order.id, webSession.id)}"/>
                                 </h:panelGroup>
                             </h:form>
                         </p:tab>

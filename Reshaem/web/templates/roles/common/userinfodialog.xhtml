@@ -33,7 +33,7 @@ and open the template in the editor.
 
                                     <h:outputText value="Password: " rendered="#{webSession.group ==1}" />  
                                     <h:outputText value="#{selectedBean.user.password}" rendered="#{webSession.group ==1}" />
-                                    
+
                                     <h:outputText value="Статус: " />  
                                     <h:panelGroup>
                                         <h:outputText rendered="#{selectedBean.user.userGroup == 2}" value="Пользователь" />
@@ -53,19 +53,19 @@ and open the template in the editor.
 
                                     <h:panelGroup>                                        
                                         <h:outputText rendered="#{selectedBean.user.userGroup == 3}" value="#{selectedBean.user.solvedAmount}" />  
-                                        <h:outputText rendered="#{selectedBean.user.userGroup == 2}" value="#{selectedBean.user.orderedAmount}" />
+                                        <h:outputText rendered="#{selectedBean.user.userGroup == 2}" value="#{orderUtilsBean.orderedAmountOfUser(selectedBean.user.id)}" />
                                     </h:panelGroup>
 
-<!--                                    <p:commandLink oncomplete="comments_dlg.show()" value="Отзывы" style="color: green;" update=":comment_dialog_content" />-->
+                                    <!--                                    <p:commandLink oncomplete="comments_dlg.show()" value="Отзывы" style="color: green;" update=":comment_dialog_content" />-->
 
-                                    
-                                    
+
+
                                 </h:panelGrid>
                                 <hr/>
 
                             </h:form>
                         </p:tab>
-                        
+
 
 
                         <p:tab id="utab2" title="Контакты" rendered="#{webSession.group == 1}">
@@ -126,11 +126,11 @@ and open the template in the editor.
                                             <p:watermark for="minus_m" value="Сумма для списания"  />
                                         </h:panelGroup>
                                         <p:commandButton value="Списать" actionListener="#{adminToolsBean.withdrawMoney(selectedBean.user.id, adminToolsBean.minusMoney)}" update="admin_tools" />
-                                        
-                                        
+
+
                                         <h:outputText value="Бан:"/> 
                                         <p:commandButton style="color: red;" value="Забанить!" actionListener="#{adminToolsBean.banUser(selectedBean.user.id)}" />
-                                        
+
                                     </h:panelGrid>
                                 </p:panel>
                                 <hr/>

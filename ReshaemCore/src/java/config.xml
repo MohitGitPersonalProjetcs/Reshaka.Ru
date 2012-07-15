@@ -83,16 +83,32 @@
         <value>Заказ размещён недавно и ещё не оценен нашими специалистами</value>
     </parameter>
     
-    <parameter name="statusRated" list="false">
+    <parameter name="statusOfflineRated" list="false">
         <value>Заказ оценен нашими специалистами, а значит может быть выполнен при внесении предоплаты.</value>
+    </parameter>
+    
+    <parameter name="statusOnlineRated" list="false">
+        <value>Заявка на онлайн-помощь рассмотрена нашими решающими.</value>
     </parameter>
     
     <parameter name="statusSolved" list="false">
         <value>Заказ решён. Для того, чтобы его скачать, заказчик должен оплатить вторую половину стоимости. </value>
     </parameter>
     
+    <parameter name="statusOfflineAgreed" list="false">
+        <value>Заказчик внес предоплату и поставил свое согласие на решение. </value>
+    </parameter>
+    
+    <parameter name="statusOnlineAgreed" list="false">
+        <value>Заказчик оплатил online-помощь. </value>
+    </parameter>
+    
     <parameter name="statusPayed" list="false">
-        <value>Заказ выполнен и оплачен.</value>
+        <value>Заказ выполнен и оплачен. Теперь заказчик может скачать решение.</value>
+    </parameter>
+    
+    <parameter name="statusExpired" list="false">
+        <value>Заказ просрочен.</value>
     </parameter>
    
     <parameter name="openIdWidgetId" list="false">

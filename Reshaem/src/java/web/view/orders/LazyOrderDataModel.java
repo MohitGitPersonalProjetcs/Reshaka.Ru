@@ -100,6 +100,7 @@ public class LazyOrderDataModel<T extends Object> extends LazyDataModel<Order> {
     public List<Order> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
         initUserIds();
         initResultUserId();
+        System.out.println("LazyLoading -> loading orders of " + resultUserId);
         List<Order> data = orderMan.getOrders(filters, resultUserId, orderType, first, pageSize, "id", ReshakaSortOrder.DESCENDING);
         int dataSize = orderMan.getOrdersCount(filters, resultUserId, orderType, first, pageSize, null, null);
         this.setRowCount(dataSize);

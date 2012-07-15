@@ -193,7 +193,7 @@ public class OrderManager implements OrderManagerLocal {
             if (att != null) {
                 order.setConditionId(att.getId());
                 //(Danon): naming of problem statemets "problem_PROBLEM_ID.ext"
-                am.renameAttachment(order.getEmployer().getId(), att.getId(), "problem_"+att.getId()+FileUtils.extractExtention(att.getName()));
+                am.renameAttachment(order.getEmployer().getId(), att.getId(), "problem_" + att.getId() + FileUtils.extractExtention(att.getName()));
             }
         }
 
@@ -222,7 +222,7 @@ public class OrderManager implements OrderManagerLocal {
         Order order = em.find(Order.class, orderId);
         order.setSolutionId(solutionId);
         //(Danon): naming of solution files "solution_SOLUTION_ID.ext"
-        am.renameAttachment(userId, solutionId, "solution_"+solutionId+FileUtils.extractExtention(em.find(Attachment.class, solutionId).getName()));
+        am.renameAttachment(userId, solutionId, "solution_" + solutionId + FileUtils.extractExtention(em.find(Attachment.class, solutionId).getName()));
 //        if (files != null) {
 //            Attachment att = am.uploadFiles(order.getEmployee(), files, order.getTags());
 //            if (att != null) {
@@ -581,9 +581,9 @@ public class OrderManager implements OrderManagerLocal {
     public Order updateOrder(Order order, List<ReshakaUploadedFile> files) {
         //System.out.println("ejb - submitOrder - order = " + order);
         if (log.isTraceEnabled()) {
-            log.trace(">>updateOrder(): order =  "+ order + " ; files = " + files);
+            log.trace(">>updateOrder(): order =  " + order + " ; files = " + files);
         }
-        if ((files != null )&&(files.isEmpty() == false)) {
+        if ((files != null) && (files.isEmpty() == false)) {
             Attachment att = am.reuploadFiles(order.getEmployer(), order.getConditionId(), files, order.getTags());
 //            Attachment att = am.uploadFiles(order.getEmployer(), files, order.getTags());
             if (att != null) {
@@ -629,5 +629,16 @@ public class OrderManager implements OrderManagerLocal {
 //            log.trace("getSubjectByOrderId(): subject =  " + subject);
 //        }
         return subject;
+    }
+
+    @Override
+    public int getOrderedAmount(Long userId) {
+
+        try {
+            Query q = em.createQuery("select o.id from Order o where o.employer.id=" + userId);
+            return q.getResultList().size();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

@@ -177,10 +177,7 @@ exists or setup the property manually. For example like this:
                 </fail>
         <taskdef classpath="${libs.CopyLibs.classpath}" resource="org/netbeans/modules/java/j2seproject/copylibstask/antlib.xml"/>
     </target>
-    <!--
-                pre NB7.2 profiling section; consider it deprecated
-            -->
-    <target depends="-profile-pre-init, init, -profile-post-init, -profile-init-check" if="profiler.info.jvmargs.agent" name="profile-init"/>
+    <target depends="-profile-pre-init, init, -profile-post-init, -profile-init-check" name="profile-init"/>
     <target name="-profile-pre-init">
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
@@ -193,9 +190,6 @@ exists or setup the property manually. For example like this:
         <fail unless="profiler.info.jvm">Must set JVM to use for profiling in profiler.info.jvm</fail>
         <fail unless="profiler.info.jvmargs.agent">Must set profiler agent JVM arguments in profiler.info.jvmargs.agent</fail>
     </target>
-    <!--
-                end of pre NB7.2 profiling section
-            -->
     <target depends="pre-init,init-private,init-userdir,init-user,init-project,do-init,post-init,init-check,-init-taskdefs" name="init"/>
     <!--
     COMPILATION SECTION
@@ -221,6 +215,10 @@ exists or setup the property manually. For example like this:
             <property location="${build.dir}" name="dist.ear.dir"/>
             <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
+        <ant antfile="${project.Vkiframe}/build.xml" inheritall="false" target="dist-ear">
+            <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
+        </ant>
     </target>
     <target depends="init,deps-jar,deps-j2ee-archive" name="pre-pre-compile"/>
     <target name="pre-compile">
@@ -235,6 +233,7 @@ exists or setup the property manually. For example like this:
     <target depends="init,deps-jar,pre-pre-compile,pre-compile" name="-do-compile-deps">
         <copyfiles files="${reference.Reshaem.dist-ear}" todir="${build.dir}//"/>
         <copyfiles files="${reference.ReshaemCore.dist-ear}" todir="${build.dir}//"/>
+        <copyfiles files="${reference.Vkiframe.dist-ear}" todir="${build.dir}//"/>
     </target>
     <target name="post-compile">
         <!-- Empty placeholder for easier customization. -->
@@ -313,6 +312,7 @@ exists or setup the property manually. For example like this:
         <!-- Task to deploy to the Access Manager runtime. -->
         <ant antfile="${project.Reshaem}/build.xml" inheritall="false" target="-run-deploy-am"/>
         <ant antfile="${project.ReshaemCore}/build.xml" inheritall="false" target="-run-deploy-am"/>
+        <ant antfile="${project.Vkiframe}/build.xml" inheritall="false" target="-run-deploy-am"/>
     </target>
     <target depends="-init-cos,dist-directory-deploy,pre-run-deploy,-pre-nbmodule-run-deploy,-run-deploy-nb,-init-deploy-ant,-deploy-ant,-run-deploy-am,-post-nbmodule-run-deploy,post-run-deploy" name="run-deploy"/>
     <target if="netbeans.home" name="-run-deploy-nb">
@@ -560,16 +560,13 @@ exists or setup the property manually. For example like this:
     PROFILING SECTION
     =================
     -->
-    <!--
-        pre NB7.2 profiling section; consider it deprecated
-    -->
-    <target description="Profile a J2EE project in the IDE." if="profiler.info.jvmargs.agent" name="-profile-pre72">
+    <target description="Profile a J2EE project in the IDE." name="profile">
         <condition else="start-profiled-server" property="profiler.startserver.target" value="start-profiled-server-extraargs">
             <isset property="profiler.info.jvmargs.extra"/>
         </condition>
         <antcall target="${profiler.startserver.target}"/>
         <antcall target="run"/>
-        <antcall target="-profile-start-loadgen"/>
+        <antcall target="start-loadgen"/>
     </target>
     <target name="start-profiled-server">
         <nbstartprofiledserver forceRestart="${profiler.j2ee.serverForceRestart}" javaPlatform="${profiler.info.javaPlatform}" startupTimeout="${profiler.j2ee.serverStartupTimeout}">
@@ -584,27 +581,7 @@ exists or setup the property manually. For example like this:
             <jvmarg value="${profiler.j2ee.agentID}"/>
         </nbstartprofiledserver>
     </target>
-    <!--
-        end of pre NB7.2 profiling section
-    -->
-    <target if="netbeans.home" name="-profile-check">
-        <condition property="profiler.configured">
-            <or>
-                <contains casesensitive="true" string="${run.jvmargs.ide}" substring="-agentpath:"/>
-                <contains casesensitive="true" string="${run.jvmargs.ide}" substring="-javaagent:"/>
-            </or>
-        </condition>
-    </target>
-    <target depends="dist" name="-do-profile">
-        <startprofiler/>
-        <nbstartserver profilemode="true"/>
-        <nbdeploy clientUrlPart="${client.urlPart}" forceRedeploy="true" profilemode="true"/>
-        <antcall target="-profile-start-loadgen"/>
-    </target>
-    <target depends="-profile-check,-profile-pre72" description="Profile a J2EE project in the IDE." if="profiler.configured" name="profile">
-        <antcall target="-do-profile"/>
-    </target>
-    <target if="profiler.loadgen.path" name="-profile-start-loadgen">
+    <target if="profiler.loadgen.path" name="start-loadgen">
         <loadgenstart path="${profiler.loadgen.path}"/>
     </target>
     <!--
@@ -621,6 +598,10 @@ exists or setup the property manually. For example like this:
             <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>
         <ant antfile="${project.ReshaemCore}/build.xml" inheritall="false" target="clean-ear">
+            <property location="${build.dir}" name="dist.ear.dir"/>
+            <property name="deploy.on.save" value="${build.deploy.on.save}"/>
+        </ant>
+        <ant antfile="${project.Vkiframe}/build.xml" inheritall="false" target="clean-ear">
             <property location="${build.dir}" name="dist.ear.dir"/>
             <property name="deploy.on.save" value="${build.deploy.on.save}"/>
         </ant>

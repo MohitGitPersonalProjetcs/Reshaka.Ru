@@ -228,7 +228,7 @@ and open the template in the editor.
 
                                 <h:panelGroup>                                        
 <!--                                    <h:outputText rendered="#{profileBean.userGroup == 3}" value="#{profileBean.solvedAmount}" />  -->
-                                    <h:outputText rendered="#{profileBean.userGroup == 2}" value="#{profileBean.orderedAmount}" />
+                                    <h:outputText rendered="#{profileBean.userGroup == 2}" value="#{orderUtilsBean.orderedAmountOfUser(selectedBean.user.id)}" />
                                 </h:panelGroup>
 
                                 <h:outputText value="Образование:" rendered="#{userBean.userGroupById(profileBean.id) == 3}" />
@@ -331,7 +331,7 @@ and open the template in the editor.
 
 
                                     <h:outputText value="Бан:"/> 
-                                    <p:commandButton style="color: red;" value="Забанить!" actionListener="#{adminToolsBean.banUser(selectedBean.user.id)}" />
+                                    <p:commandButton style="color: red;" value="Забанить" actionListener="#{adminToolsBean.banUser(selectedBean.user.id)}" />
 
                                 </h:panelGrid>
                             </p:panel>
@@ -403,7 +403,6 @@ and open the template in the editor.
                                    rows="5"  
                                    paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink}"  
                                    rowStyleClass="#{orderUtilsBean.orderStatus(order.id)}"
-
                                    emptyMessage="Нет ни одного заказа"  
                                    >  
                         <!--common-->
