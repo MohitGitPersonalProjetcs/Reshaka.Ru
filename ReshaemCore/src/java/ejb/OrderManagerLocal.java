@@ -80,5 +80,6 @@ public interface OrderManagerLocal {
     
     public int getOrderedAmount(Long userId);
     
+    public boolean isExpired(Long orderId);
 
 }

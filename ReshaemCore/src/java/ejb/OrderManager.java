@@ -641,4 +641,17 @@ public class OrderManager implements OrderManagerLocal {
             return 0;
         }
     }
+
+    @Override
+    public boolean isExpired(Long orderId) {
+        try {
+            Order order = em.find(Order.class, orderId);
+            return (order.getStatus()== Order.EXPIRED_OFFLINE_ORDER_STATUS || order.getStatus() == Order.EXPIRED_ONLINE_ORDER_STATUS);
+        } catch (Exception e) {
+            if (log.isTraceEnabled()) {
+                log.trace("isExpired(): exception. orderId =  " + orderId);
+            }
+        }
+        return true;
+    }
 }
