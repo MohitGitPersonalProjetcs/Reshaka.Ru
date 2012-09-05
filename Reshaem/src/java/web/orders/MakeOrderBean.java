@@ -23,7 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.UploadedFile;
+//import org.primefaces.model.UploadedFile;
 import web.FileUploadController;
 import web.utils.SessionListener;
 import web.utils.StringUtils;

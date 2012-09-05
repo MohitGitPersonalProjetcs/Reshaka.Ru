@@ -39,7 +39,7 @@ public class Tools {
         if(uf==null)
             return null;
         try {
-            File f = File.createTempFile("uc", ".tmp");
+            File f = File.createTempFile("more_longer_uc", ".tmp");
             try (FileOutputStream os = new FileOutputStream(f)) {
                 FileUtils.copyStream(uf.getInputstream(), os);
             }

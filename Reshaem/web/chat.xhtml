@@ -345,7 +345,7 @@
                             <td><h:outputText value="Сообщение:" title="Введите ваше сообщение и нажмите Ctrl+ENTER" style="font-weight: bolder;"/>
                                 <br/><div style="font-size: 10px; color: gray;">Ctr + Enter</div>
                             </td>
-                            <td style="width: 80%; padding-right: 1em;"><h:inputTextarea required="true" id="chatMessageText" style="width: 100%;" rows="2" value="#{chatBean.text}"/></td>
+                            <td style="width: 80%; padding-right: 1em;"><h:inputTextarea id="chatMessageText" style="width: 100%;" rows="2" value="#{chatBean.text}"/></td>
                             <td><p:commandButton id="chatMessageSubmitButton" value="Отправить!" process="@form" actionListener="#{chatBean.sendMessage}" oncomplete="clearChatFiles(); document.getElementById('chatMessageText').focus();  $('#chatMessageText').keydown(chatMessageKeydown);" update="chat_send_message_form, :recent_users_list"/></td>
                             <td><p:commandButton value="Файл..." onclick="dlg_upload.show();"/></td>
                             <td><h:panelGroup id="uploadedFilesCount"><h:outputText rendered="#{chatBean.fileUploadController.files.size()!=0}"  value="(#{chatBean.fileUploadController.files.size()})"/></h:panelGroup></td>

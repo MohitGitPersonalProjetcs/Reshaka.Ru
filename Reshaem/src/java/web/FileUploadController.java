@@ -41,27 +41,27 @@ public class FileUploadController implements Serializable {
     private List<ReshakaUploadedFile> files;
 
     private Attachment attachment;
-    
+
     private boolean displayUploadControl = false;
 
     public FileUploadController() {
-        files = Collections.synchronizedList(new LinkedList<ReshakaUploadedFile>());
+//        files = Collections.synchronizedList(new LinkedList<ReshakaUploadedFile>());
+        files = new LinkedList();
     }
 
     public void handleFileUpload(FileUploadEvent event) {
         System.out.println("File is uploaded");
         ReshakaUploadedFile uf = Tools.convertUploadedFile(event.getFile());
-        
-        // check for duplicate name
-        for(ReshakaUploadedFile f : files) {
-            if(f.getFileName().equalsIgnoreCase(uf.getFileName())) {
+
+        for (ReshakaUploadedFile f : files) {
+            if (f.getFileName().equalsIgnoreCase(uf.getFileName())) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "File is not uploaded",
-                "Duplicate file name " + event.getFile().getFileName() + ".");
+                        "Duplicate file name " + event.getFile().getFileName() + ".");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 return;
             }
         }
-        
+        files.add(uf);
         if (log.isTraceEnabled()) {
             log.trace("FileUploadEvent(): uf = " + uf);
         }
@@ -81,8 +81,9 @@ public class FileUploadController implements Serializable {
     public Attachment getFileInfo() {
         FacesContext fc = FacesContext.getCurrentInstance();
         User user = (User) SessionListener.getSessionAttribute("user", true);
-        if(user==null)
+        if (user == null) {
             return new Attachment();
+        }
         if (attachment == null) {
             return new Attachment();
         }
@@ -124,6 +125,7 @@ public class FileUploadController implements Serializable {
     }
 
     public List<ReshakaUploadedFile> getFiles() {
+//        System.out.println("getFiles() occured");
         return files;
     }
 
@@ -134,7 +136,7 @@ public class FileUploadController implements Serializable {
     public void hideUploadControl(ActionEvent evt) {
         displayUploadControl = false;
     }
-    
+
     public void clearFiles(ActionEvent evt) {
         files.clear();
     }

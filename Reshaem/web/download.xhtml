@@ -30,7 +30,7 @@
                             <h:outputText value="Тип файла:" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.fileInfo.mimeType}"/>
                         </h:panelGrid>
                         Загрузка файла начнется автоматически через несколько секунд.
-                        <p:commandLink styleClass="DownloadLink" value="Download" id="downloadLink" ajax="false" style="font-weight: bolder;">
+                        <p:commandLink styleClass="DownloadLink" value="Download" id="downloadLink" ajax="false" style=" display: none; font-weight: bolder;">
                             <f:param name="id" value="#{fileDownloadController.id}"/>
                             <p:fileDownload value="#{fileDownloadController.file}"/>
                         </p:commandLink>
