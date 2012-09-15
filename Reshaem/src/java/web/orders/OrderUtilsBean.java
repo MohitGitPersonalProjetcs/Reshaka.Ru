@@ -156,18 +156,22 @@ public class OrderUtilsBean {
     }
 
     public String tooltipTextForRatedOrderStatus(Long orderId) {
-        System.out.println("offerByOrderId occured selectedBean.order.id = " + orderId);
+        System.out.println("tooltipTextForRatedOrderStatus occured selectedBean.order.id = " + orderId);
         List<Offer> list = orderMan.getOffers(orderId);
+        System.out.println("tooltipTextForRatedOrderStatus(orderId = " + orderId  +  "): list = " + list);
         String text = "Заказ оценен следующими решающими: ";
         int k = 0;
         for (Offer off : list) {
+//            System.out.println("off = " + off);
             if (k == 0) {
                 text = text + loginById(off.getUserId());
             } else {
-                text = ", " + loginById(off.getUserId());
+                text = text+ ", " + loginById(off.getUserId());
             }
+//            System.out.println("text = " + text);
             k++;
         }
+        System.out.println("text = " + text);
         return text;
     }
 

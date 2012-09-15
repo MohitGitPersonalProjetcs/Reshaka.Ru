@@ -15,19 +15,19 @@ and open the template in the editor.
     </head>
     <body>
         <ui:composition>
-            <h:outputLink id="makeonline_link" value="javascript:void(0)" onclick="onlineButtonClicked()" title="Заказать online - помощь">
+            <h:outputLink id="makeonline_link" style="text-decoration: none;" value="javascript:void(0)" onclick="onlineButtonClicked()" title="Заказать online - помощь">
                 <div id="headerPanelsecond" onclick="onlineButtonClicked();">
                     <h2>онлайн помощь</h2>
                     <p>Закажите оперативную помощь на экзамене.</p>
                 </div>
             </h:outputLink>
-            <h:link outcome="faq.xhtml">
+            <h:link outcome="faq.xhtml" style="text-decoration: none;">
                 <div id="headerPanelfast">
                     <h2>FAQ</h2>
                     <p>Часто задаваемые вопросы </p>
                 </div>
             </h:link>
-            <h:outputLink id="makeorder_link" value="javascript:void(0)" onclick="orderButtonClicked()" title="Сделать заказ">
+            <h:outputLink id="makeorder_link" value="javascript:void(0)" style="text-decoration: none;" onclick="orderButtonClicked()" title="Сделать заказ">
                 <div id="headerPanelthird" onclick="orderButtonClicked()">
                     <h2>задание</h2>
                     <p>Загрузите задание и наши специалисты помогут вам!</p>

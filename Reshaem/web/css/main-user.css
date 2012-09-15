@@ -1,7 +1,7 @@
 /* CSS Document */
 
 body{background:#fff; color:#0F0F0F; font:15px/20px Arial, Helvetica, sans-serif; margin:32px 0 0; padding:0;}
-div, ul, h1, h2, h3, li, p, img{margin:0; padding:0;}
+/*div, ul, h1, h2, h3, li, p, img{margin:0; padding:0;}*/
 ul{list-style-type:none;}
 
 .Agreed{
@@ -209,3 +209,87 @@ ul{list-style-type:none;}
 
 #rightcol {float: left; background: #FFF; width:235px; display:block; position:relative; top:5px; font-weight:normal;  }
 
+#rules_div p{
+    background: none;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+    text-indent: 2em;
+    font-size:  14px;
+    color: #616161;
+    /*    color: #6        font:  sans-serif;16161;*/
+
+}
+
+#rules_div p span{
+    font-weight: normal;
+    color: #616161;
+    /*    font:  20px Arial, Helvetica, sans-serif  ;*/
+
+}
+
+#rules_div p ul{
+    font-weight: normal;
+    color: black;
+}
+
+#rules_div p ul li{
+    font-weight: normal;
+    color: black;
+}
+
+#wrapper ul.tabs {
+    margin: 0;
+    padding: 0;
+    float: left;
+    list-style: none;
+    width: 100%;
+    /*    border-bottom: dotted 1px #A12124;*/
+}
+
+#wrapper ul {
+    padding: 0 0 20px 0;
+    display: block;
+    overflow: hidden;
+}
+
+#wrapper ul.tabs li {
+    float: left;
+    margin: 0 7px 0 0;
+    padding: 0px;
+    background: none;
+    overflow: hidden;
+    position: relative;
+    font-family: 'Puritan20Normal';
+}
+
+#wrapper ul li {
+    line-height: 20px;
+    list-style: none;
+    display: block;
+    /*    background: transparent url(style/images/bullet.jpg) no-repeat left 8px;*/
+    padding-right: 20px;
+}
+
+#wrapper ul.tabs li a {
+    text-decoration: none;
+    display: block;
+    font-size: 15px;
+    line-height: 35px;
+    padding: 0 15px 3px 15px;
+    height: 35px;
+    background-color: #91C843;
+    color: #2F556A;
+    /*    color: gold;*/
+}
+
+#wrapper ul.tabs li.active a {
+    background-color: orangered;
+    position: relative;
+    z-index: 999;
+    color: #2F556A;
+    border-style: solid;
+    border-width: 2px;
+    border-color: yellow;
+    color: gold;
+}

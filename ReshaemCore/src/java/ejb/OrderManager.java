@@ -119,7 +119,10 @@ public class OrderManager implements OrderManagerLocal {
     public List<Offer> getOffers(Long orderId) {
         try {
             Order order = em.find(Order.class, orderId);
-            return order.getOffers();
+            System.out.println("getOffers(): order = " + order);
+            List<Offer> offers = order.getOffers();
+            System.out.println("offers = " + offers);
+            return offers;
         } catch (Exception exc) {
             return null;
         }

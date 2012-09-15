@@ -72,17 +72,6 @@ and open the template in the editor.
                         <center> #{order.id}</center>
                     </p:column>  
 
-                    <!-- common                   -->
-                    <!--                    <p:column id="employerid" headerText="Заказчик">  
-                                            <center>
-                                                <p:commandLink process="@this" value="#{order.employer.login}" oncomplete="user_info_dlg.show()" update=":user_dialog_content" >
-                                                    <f:setPropertyActionListener value="#{orderUtilsBean.userById(order.employer.id)}" target="#{selectedBean.user}" />
-                                                </p:commandLink>
-                                                <h:link value="#{order.employer.login}" target="_blank" outcome="profile.xhtml" >
-                                                    <f:param name="id" value="#{order.employer.id}" />
-                                                </h:link>
-                                            </center>
-                                        </p:column>  -->
 
                     <!--   depends on order type                 -->
                     <p:column id="status" headerText="Статус">  
