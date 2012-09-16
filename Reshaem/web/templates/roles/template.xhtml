@@ -32,6 +32,10 @@
                 <!--[if IE 7]>
                 <link rel="stylesheet" href="css/cssf-ie7.css" type="text/css" media="screen" /><![endif]-->
             </c:if>
+            <!-- RedHelper -->
+            <script id="rhlpscrtg" type="text/javascript" charset="utf-8" async="async"
+	                  src="https://web.redhelper.ru/service/main.js?c=reshaka"></script>
+            <!--/Redhelper -->
         </h:head>
 
         <h:body rendered="#{!'expired'.equals(param['status'])}">
@@ -113,7 +117,8 @@
                             Footer
                         </ui:insert>
                         <p class="copyright">
-                            <h:panelGroup rendered="#{webSession.signedIn}"> 
+                            <h:panelGroup rendered="#{webSession.signedIn}">
+                                <span class="redhlp_button"><a href="javascript:void(0);" title="Задать вопрос оператору">Online-консультант</a></span> | 
                                 <a href="javascript:void()" onclick="sys_comments_dlg.show();" >добавить отзыв о проекте</a> | <a href="#{request.contextPath}/faces/feedbacks.xhtml" > все отзывы</a> <br/>
                             </h:panelGroup>
                             © Reshaka.RU all rights reserved
