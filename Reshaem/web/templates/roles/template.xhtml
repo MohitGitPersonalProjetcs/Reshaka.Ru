@@ -10,6 +10,11 @@
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
             <title>Reshaka.RU</title>
             <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
+
+            <ui:insert name="headscripts">
+
+            </ui:insert>
+
             <c:if test="#{'expired'.equals(param['status'])}"> 
                 <meta http-equiv="Refresh" content="0; url=#{request.contextPath}/faces/index2.xhtml?status=post-expired"/>
             </c:if>
