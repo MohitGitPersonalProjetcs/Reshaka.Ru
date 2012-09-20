@@ -571,9 +571,6 @@ public class UserManager implements UserManagerLocal {
     @Override
     public User registerByEmail(User user) {
         System.out.println("trying to reg user " + user);
-
-        //Pattern p = Pattern.compile("^([0-9a-zA-Z]([-\\.\\w]*[0-9a-zA-Z])*" "@(([0-9a-zA-Z]) ([-\\w]*[0-9a-zA-" "Z])*\\.) [a-zA-Z]{2,9})$");
-
         Pattern p = Pattern.compile("[\\w\\.-]*[a-zA-Z0-9_]@[\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]");
         //Match the given string with the pattern
         Matcher m = p.matcher(user.getEmail());
@@ -600,8 +597,8 @@ public class UserManager implements UserManagerLocal {
             user = em.merge(user);// try to use merge instead of persist
             user.setLogin("user" + user.getId());
             user = em.merge(user);
-            String text = "Здравствуйте, теперь вы зарегистрированы на сайте "+URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshaka.Ru") +"!"
-                    + "\n\n Логин: " + user.getEmail() + "\n"
+            String text = "Здравствуйте, теперь вы зарегистрированы на сайте Reshaka.Ru !"
+                    + "\n\nЛогин: " + user.getEmail() + "\n"
                     + "Пароль: " + user.getPassword() + ""
                     + "\n\n\n C уважением, администрация Reshaka.Ru";
             mailMan.sendMail(user.getEmail(), "Регистрация на сайте Reshaka.Ru", text);

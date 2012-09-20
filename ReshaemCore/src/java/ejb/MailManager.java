@@ -28,7 +28,8 @@ import javax.persistence.PersistenceContext;
  *
  * @author rogvold
  */
-@Stateless @TransactionAttribute(value= TransactionAttributeType.SUPPORTS)
+@Stateless
+@TransactionAttribute(value = TransactionAttributeType.SUPPORTS)
 public class MailManager implements MailManagerLocal {
 
     @Resource(name = "mail/myMailSession")
@@ -94,6 +95,7 @@ public class MailManager implements MailManagerLocal {
 
     @Asynchronous
     @Override
+    //TODO(Sabir): nullpointer exception
     public void newOrderDistribution(Long orderId) {
         Order order = em.find(Order.class, orderId);
         System.out.println("order = " + order);
@@ -142,7 +144,7 @@ public class MailManager implements MailManagerLocal {
             case 3:
                 theme = "Reshaka.Ru: внесена предоплата";
                 text = "Здравствуйте, " + order.getEmployee().getLogin() + " !"
-                        + "\n\n Внесена предоплата за заказа ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId),"_blank", ""+orderId) + " ."
+                        + "\n\n Внесена предоплата за заказа ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId), "_blank", "" + orderId) + " ."
                         + "Можете приступать к решению."
                         + "\n\n\n C Уважением, Reshaka.RU"
                         + "\n\n P.S. Вы можете отписаться от рассылки на нашем сайте reshaka.ru в разделе \"Мой профиль\"";
@@ -153,7 +155,7 @@ public class MailManager implements MailManagerLocal {
             case 4:
                 theme = "Reshaka.Ru: заказ выполнен";
                 text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-                        + "\n\n Ваш заказ (ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId),"_blank", ""+orderId) + ")"
+                        + "\n\n Ваш заказ (ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId), "_blank", "" + orderId) + ")"
                         + " выполнен."
                         + "\n Теперь вы можете оплатить вторую половину заказа, после чего Вам будет доступно решение."
                         + "\n\n\n C Уважением, Reshaka.RU"
@@ -165,7 +167,7 @@ public class MailManager implements MailManagerLocal {
             case 5:
                 theme = "заказ оплачен";
                 text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-                        + "\n\n Ваш заказ (ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId),"_blank", ""+orderId) + ")"
+                        + "\n\n Ваш заказ (ID = " + URLUtils.createLink(URLUtils.getOrderURL(orderId), "_blank", "" + orderId) + ")"
                         + " оплачен."
                         + "\n Теперь вы можете скачать решение."
                         + "\n\n\n C Уважением, Reshaka.RU"
@@ -183,5 +185,50 @@ public class MailManager implements MailManagerLocal {
     public void sendMailToAdmin(String theme, String text) {
         User user = em.find(User.class, confMan.getMainAdminId());
         sendMail(user.getEmail(), theme, text);
+    }
+
+    @Asynchronous
+    @Override
+    public void newOrder(Long orderId) {
+        if (orderId == null) {
+            return;
+        }
+        try {
+            Order order = em.find(Order.class, orderId);
+            User user = order.getEmployer();
+            String theme = "Размещение заказа (ID = " + orderId + ") на сайте Reshaka.Ru";
+            String text = "";
+            if (order.getType() == Order.OFFLINE_TYPE) {
+                text = "Ваш заказ (ID = " + orderId + ") размещён на сайте Reshaka.Ru !"
+                        + "\n"
+                        + "\nПараметры заказа:"
+                        + "\n Предмет: " + order.getSubject().getSubjectName() + ""
+                        + "\n Срок: " + order.getDeadlineString() + ""
+                        + "\n"
+                        + "\nВ ближайшее время заказ будет оценен нашими специалистами."
+                        + "\n"
+                        + "\nСпасибо, что пользуетесь нашим сервисом."
+                        + "\nС уважением, администрация Reshaka.Ru .";
+            } else {
+                text = "Ваш заказ на онлайн-помощь на экзамене (ID = " + orderId + ") размещён на сайте  Reshaka.Ru !"
+                        + "\n"
+                        + "\nПараметры заказа:"
+                        + "\n Предмет: " + order.getSubject().getSubjectName() + ""
+                        + "\n Дата и время начала: " + order.getDeadlineString() + ""
+                        + "\n Продолжительность: " + order.getDuration() + " минут"
+                        + "\n"
+                        + "\nВ ближайшее время заказ будет оценен нашими специалистами."
+                        + "\n"
+                        + "\nСпасибо, что пользуетесь нашим сервисом."
+                        + "\nС уважением, администрация Reshaka.Ru .";
+            }
+
+            if (URLUtils.isValidEmail(user.getEmail())) {
+                sendMail(user.getEmail(), theme, text);
+            }
+
+        } catch (Exception e) {
+        }
+
     }
 }

@@ -18,6 +18,8 @@ import javax.ejb.Local;
 public interface OrderManagerLocal {
 
     public void addOffer(Long orderId, Long employeeId, double price);
+    
+    public void deleteOffer(Long offerId, Long orderId);
 
     public boolean offerExists(Long orderId, Long employeeId);
 

@@ -12,4 +12,5 @@ public interface MailManagerLocal {
     public void sendMailToAdmin(String theme , String text);
     public void newOrderDistribution(Long orderId);
     public void sendStatusChange(Long orderId);
+    public void newOrder(Long orderId);
 }

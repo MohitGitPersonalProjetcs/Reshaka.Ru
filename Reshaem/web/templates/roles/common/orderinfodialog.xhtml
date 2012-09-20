@@ -46,7 +46,7 @@ and open the template in the editor.
                                     <h:outputText value="Теги:" />
                                     <h:outputText value="#{selectedBean.order.tags}" />
 
-                                    <h:outputText value="Дата подачи: " />  
+                                    <h:outputText value="Дата размещения: " />  
 
                                     <h:outputText value="#{selectedBean.order.hireDate}">
                                         <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
@@ -151,7 +151,7 @@ and open the template in the editor.
                                     </h:panelGroup>
 
 
-                                    <h:outputText value="Дата подачи: " />  
+                                    <h:outputText value="Дата размещения: " />  
 
                                     <h:outputText value="#{selectedBean.order.hireDate}">
                                         <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
@@ -224,15 +224,16 @@ and open the template in the editor.
 
                                 </h:panelGrid>
 
-                                <h:panelGroup rendered="#{selectedBean.order.status==1}">
+                                <h:panelGroup rendered="#{selectedBean.order.status==1 or selectedBean.order.status==11}">
                                     <hr/>
-                                    Вот что предлагают другие решаки :
+                                    Другие предложения :
                                     <p:dataTable value="#{orderUtilsBean.offersByOrderId(selectedBean.order.id)}" var="offer" >
                                         <p:column headerText="Решающий">
                                             #{orderUtilsBean.loginById(offer.userId)}
                                         </p:column>
                                         <p:column headerText="Цена">
-                                            #{offer.price}
+                                            #{offer.price} 
+                                            <h:commandLink value=" (удалить)" actionListener="#{orderUtilsBean.deleteOffer(offer.id,selectedBean.order.id)}" rendered="#{offer.userId.equals(webSession.id)}" />
                                         </p:column>
                                     </p:dataTable>
                                 </h:panelGroup>
@@ -245,8 +246,8 @@ and open the template in the editor.
                                 </h:panelGrid>
 
                                 <h:panelGroup>
-                                    <h:outputText value="Итак, я решу это за " rendered="#{selectedBean.order.type == 0}"/>
-                                    <h:outputText value="Итак, я помогу за " rendered="#{selectedBean.order.type == 1}"/>
+                                    <h:outputText value="Укажите стоимость заказа " rendered="#{selectedBean.order.type == 0}"/>
+                                    <h:outputText value="Укажите стоимость заказа " rendered="#{selectedBean.order.type == 1}"/>
                                 </h:panelGroup>
 
                                 <h:panelGroup>
@@ -279,7 +280,7 @@ and open the template in the editor.
 
 
                                     <hr/>
-                                    Вам хотят помочь:
+                                    Заказ оценен решающими:
                                     <p:dataTable value="#{orderUtilsBean.offersByOrderId(selectedBean.order.id)}" var="offer">
                                         <p:column headerText="Решающий" style="width: 75px;">
 

@@ -10,6 +10,14 @@
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
             <title>Reshaka.RU</title>
             <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
+            <!--            <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>-->
+            
+            <script type="text/javascript">
+//                jQuery.noConflict();
+//                $(document).ready(function() {
+//                    $(".scrollable").scrollable({ speed: 700, circular: true});
+//                });
+            </script>
 
             <ui:insert name="headscripts">
 
@@ -34,12 +42,12 @@
             </c:if>
             <!-- RedHelper -->
             <script id="rhlpscrtg" type="text/javascript" charset="utf-8" async="async"
-	                  src="https://web.redhelper.ru/service/main.js?c=reshaka"></script>
+            src="https://web.redhelper.ru/service/main.js?c=reshaka"></script>
             <!--/Redhelper -->
         </h:head>
 
         <h:body rendered="#{!'expired'.equals(param['status'])}">
-            <div style="width: 950px; color: red; font-weight: bold; margin: 0 auto;">
+            <div style="width: 950px; color: red; font-weight: bold; display: none; margin: 0 auto;">
                 Это тестовый сайт. Все внесенные вами изменения будут удалены. Вы можете оставлять отзывы по улучшению функционала сайта, а также о найденных багах.
             </div>
             <!-- include block -->

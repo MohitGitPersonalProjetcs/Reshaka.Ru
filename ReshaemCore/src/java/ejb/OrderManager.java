@@ -64,10 +64,10 @@ public class OrderManager implements OrderManagerLocal {
         System.out.println("try to add offer ; price = " + price);
 
         if (order.getType() == 0) {
-            order.setStatus(1);// rated
+            order.setStatus(Order.RATED_OFFLINE_ORDER_STATUS);// rated
         }
-        if (order.getType() == 1) {
-            order.setStatus(11); //rated
+        if (order.getType() == Order.ONLINE_TYPE) {
+            order.setStatus(Order.RATED_ONLINE_ORDER_STATUS); //rated
         }
 
 
@@ -206,15 +206,15 @@ public class OrderManager implements OrderManagerLocal {
 
         em.persist(order);
 
-        System.out.println("distribution from order manager : order = " + order);
-        mailMan.newOrderDistribution(order.getId()); // send messages to all employees
+//        System.out.println("distribution from order manager : order = " + order);
+//        mailMan.newOrderDistribution(order.getId()); // send messages to all employees TODO(Sabir): NullPointer Exception occured
         try {
             Subject sub = em.find(Subject.class, order.getSubject().getId());
             order.setSubject(sub);
             em.merge(order);
         } catch (Exception exc) { // hardcode ((((
         }
-
+        mailMan.newOrder(order.getId());
         return order;
     }
 
@@ -649,12 +649,49 @@ public class OrderManager implements OrderManagerLocal {
     public boolean isExpired(Long orderId) {
         try {
             Order order = em.find(Order.class, orderId);
-            return (order.getStatus()== Order.EXPIRED_OFFLINE_ORDER_STATUS || order.getStatus() == Order.EXPIRED_ONLINE_ORDER_STATUS);
+            return (order.getStatus() == Order.EXPIRED_OFFLINE_ORDER_STATUS || order.getStatus() == Order.EXPIRED_ONLINE_ORDER_STATUS);
         } catch (Exception e) {
             if (log.isTraceEnabled()) {
                 log.trace("isExpired(): exception. orderId =  " + orderId);
             }
         }
         return true;
+    }
+
+    @Override
+    public void deleteOffer(Long offerId, Long orderId) {
+        try {
+//            Offer offer  = em.find(Offer.class, offerId);
+//            em.remove(offer);
+//            if (log.isTraceEnabled()) {
+//                log.trace("EJB: deleteOffer(): offer id="+offerId+" removed");
+//            }
+            Order order = em.find(Order.class, orderId);
+
+            List<Offer> offers = new ArrayList(order.getOffers());
+            if (offers.size() == 1) {
+                if (order.getType() == Order.OFFLINE_TYPE) {
+                    order.setStatus(Order.NEW_OFFLINE_ORDER_STATUS);// new
+                }
+                if (order.getType() == Order.ONLINE_TYPE) {
+                    order.setStatus(Order.NEW_ONLINE_ORDER_STATUS); //new
+                }
+            }
+            
+            for (int i = 0; i< offers.size();i++)
+            {
+                if (offers.get(i).getId().equals(offerId)){
+                    offers.remove(i);
+                    break;
+                }
+            }
+            order.setOffers(offers);
+            em.merge(order);
+
+        } catch (Exception e) {
+            if (log.isTraceEnabled()) {
+                log.trace("EJB: deleteOffer(): exception = " + e);
+            }
+        }
     }
 }

@@ -40,25 +40,8 @@
         </ui:define>
 
         <ui:define name="footer">
-            <div id="site_stats" style="font-size: smaller;">
-                <div><strong>Всего онлайн:</strong> #{statsBean.onlineCount} из них #{statsBean.guestsCount} гостей</div>
-                <div><strong>Пользователи онлайн:</strong> #{statsBean.usersCount} из них #{statsBean.partnersCount} решак(а) и #{statsBean.adminsCount} администратор(ов)</div>
-                <div>
-                    <strong>Список пользователей:</strong>
-                    <c:forEach items="#{statsBean.users}" var="user">
-                        <h:outputText value=" "/>
-                        <c:if test="#{user.userGroup==3}">
-                            <h:outputText value="#{user.login}" style="color: green;"/>
-                        </c:if>
-                        <c:if test="#{user.userGroup==2}">
-                            <h:outputText value="#{user.login}" style="color: blue;"/>
-                        </c:if>
-                        <c:if test="#{user.userGroup==1}">
-                            <h:outputText value="#{user.login}" style="color: red;"/>
-                        </c:if>
-                    </c:forEach>
-                </div>
-            </div>
+            <ui:include src="templates/roles/footer.xhtml"/>
+            
         </ui:define>
     </ui:composition>
 

@@ -16,61 +16,73 @@
         <h:form>
             <ui:composition>
                 <div id="container">
-                <div id="testimonials" style="width: 500px; float: left;">
-                    <h4>О проекте</h4>
-                    <div id="testimonial">
-                        <div id="t0" >
-                        <p>
-                            <span>Reshaka.Ru</span>
-                             является автоматизированной системой для решения задач, контрольных работ по различным предметам. Зарегистрировавшись у нас и загрузив свою задачу, Вы можете on-line наблюдать поэтапно сам процесс ее решения.
-                            
-                        </p>
-                        </div>
-                        <div style="display: none;" id="t1">
-                        <p>
-                             Мы выполняем задачи как по техническим, естественным, так и по гуманитарным дисциплинам. Уровень сложности задач может быть разный - начиная от самых простых школьных и заканчивая студенческими олимпиадными задачами.
-                        </p>
-                        </div>
-                        <div style="display: none;" id="t2">
-                        <p>
-                            Мы также приглашаем студенов старших курсов, аспирантов, преподавателей, учителей стать нашими партнерами и принять участие в нашем проекте. Для сотрудничества необходимо в своем профиле в разделе "Партнер" подать соответствующую заявку.
-                            
-                        </p>
-                        </div>  
-                        
-                        <p class="moretwo" style="top: 200px; position: absolute;" onclick="nextDiv();"><a href="javascript:void()">Далее</a></p>
+                    <div id="testimonials" style="width: 500px; float: left;">
+                        <h4>О проекте</h4>
 
+                        <div id="testimonial">
+                            <!--                            <a class="prev browse left">prev</a>-->
+                            <div class="scrollable" id="scrollable">
+                                <div class="items">
+                                    <div>
+                                        <div style="display: inline-block; height: 140px; width: 195px; float: left; margin-top: 20px; margin-left: 20px;" >
+                                            <img src="images/offline_student.jpeg" style="height: 100%;" />
+                                        </div>
+                                        <div style="display: inline-block; margin-left: 20px; text-align: left; width: 200px; height: 140px; margin-top: 20px; ">
+                                            Нужно сделать кучу домашней работы, написать контрольную или курсовую, а времени нет?
+                                            <br/>
+                                            Мы без проблем выполним за вас работу  в самом лучшем виде! Кликайте на кнопку <span> "Задание" </span> !
+                                        </div>
+                                        <!--                                        <a class="next browse right">
+                                                                                    next
+                                                                                </a>-->
+                                        <!--                                        <div style="display: inline-block;">
+                                                                                    <a class="next browse right" style="display: inline-block;">
+                                                                                        next
+                                                                                    </a>
+                                                                                </div>-->
+                                    </div>
+
+                                    <div>
+                                        <div style="display: inline-block; height: 140px; width: 195px; float: left; margin-top: 20px; margin-left: 15px;" >
+                                            <img src="images/online_student.jpeg" style="height: 100%;" />
+                                        </div>
+                                        <div style="display: inline-block; margin-left: 20px; text-align: left; width: 200px; height: 140px; margin-top: 20px; ">
+                                            Завтра экзамен по нелюбимому предмету? Жалко терять время на подготовку ? 
+                                            <br/>
+                                            Мы и тут выручим вас! Закажите <span style="font-weight: bold;">"Онлайн помощь" </span> и идите спать спокойно!
+                                        </div>
+                                        <!--                                        <a class="next browse right">
+                                                                                    next
+                                                                                </a>-->
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
+                    <div id="solutions" style="width: 260px; margin-left: 500px;">
+                        <h4>Наши плюсы</h4>
+                        <ul>
+                            <li><h:link outcome="guarantees.xhtml"><span>Надежные гарантии</span></h:link></li>
+                            <li><span>Автоматизированный интерфейс</span> </li>
+                            <li><span>Низкие цены</span> </li>
+                            <li><span>Возможность выбора исполнителя</span> </li>
+                            <li><span>Конкурентная среда</span> </li>
+                            <li><span>Помощь на экзамене в режиме онлайн</span> </li>
+                            <li><span>Оперативная помощь</span> </li>
+                        </ul>
+                    </div>
+                    <div style="clear: left;"><br/></div>
                 </div>
-                <div id="solutions" style="width: 260px; margin-left: 500px;">
-                    <h4>Наши плюсы</h4>
-                    <ul>
-                        <li><h:link outcome="guarantees.xhtml"><span>Надежные гарантии</span></h:link></li>
-                        <li><span>Автоматизированный интерфейс</span> </li>
-                        <li><span>Низкие цены</span> </li>
-                        <li><span>Возможность выбора исполнителя</span> </li>
-                        <li><span>Конкурентная среда</span> </li>
-                        <li><span>Помощь на экзамене в режиме онлайн</span> </li>
-                        <li><span>Оперативная помощь</span> </li>
-                    </ul>
-                </div>
-                <div style="clear: left;"><br/></div>
-            </div>
-                
-                <script type="text/javascript" >
-                  var a = 1;
-                  function nextDiv(){
-                      var state1 = document.getElementById("t"+(a%3));
-                      var state2 = document.getElementById("t"+((a+1)%3));
-                      var state3 = document.getElementById("t"+((a+2)%3));
-                      state1.style.display="block";
-                      state2.style.display="none";
-                      state3.style.display="none";
-                      a++;
-                      
-                      
-                  }
-                  
+                <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        //                        $(".scrollable").scrollable({ speed: 700, circular: true, autoplay: true});
+                        $(".scrollable").scrollable({circular: true}).autoscroll({ autoplay: true, interval: 8000 });
+                        jQuery.noConflict();
+                    });
                 </script>
 
             </ui:composition>

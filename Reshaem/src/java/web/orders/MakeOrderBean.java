@@ -363,9 +363,9 @@ public class MakeOrderBean implements Serializable {
         order.setTags(tagsText);
         tagMan.addTags(tagsText);
 
-        order.setType(1);
+        order.setType(Order.ONLINE_TYPE);
 
-        order.setStatus(10);
+        order.setStatus(Order.NEW_ONLINE_ORDER_STATUS);
 
         Order ord = om.submitOrder(order, fileUploadController.getFiles()); // вот она отправка заказа моей мечты. 
         if (order == null) {

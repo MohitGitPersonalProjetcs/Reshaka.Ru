@@ -32,8 +32,12 @@ and open the template in the editor.
 <!--                                    <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple;" onclick="replenishment_dlg.hide()" >Пополнить </h:outputLink>-->
                                 <!--                                
                                 </h:panelGrid>-->
-                                <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple;" onclick="replenishment_dlg.hide()" ><h:commandButton value="Пополнить" /></h:outputLink>
-
+                                <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple;" onclick="replenishment_dlg.hide()" ><span style="background-color: grey; color: black; text-decoration: none; padding: 3px;">Пополнить</span></h:outputLink>
+<!--                                <a href="#{replenishmentBean.yandexLink}">
+                                    Пополнить
+                                </a>-->
+                                
+                                
                                 <p:scrollPanel style="width: 450px; height: 150px;" mode="native" >
                                     <span style="font-weight: bold;">Правила пополнения счета</span>
                                     <br/>
@@ -79,7 +83,7 @@ and open the template in the editor.
                             <!--                            </h:form>-->
 
                             <p:scrollPanel style="width: 450px; height: 150px;" mode="native" >
-                                <span style="font-weight: bold;">Правила пополнения счета</span>
+                                <span style="font-weight: bold;">Правила пополнения счета </span>
                                 <br/>
                                 <div style="font-style: italic;">
                                     1) Если сумма для оплаты - число нецелое, то отделять дробную часть следует точкой, незначащие нули в конце писать не надо.  <br/>

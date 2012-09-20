@@ -303,6 +303,7 @@ public class MoneyManager implements MoneyManagerLocal {
 
     @Override
     public String getLinkForYandexPayment(Long userId, double money) {
+        money=   Math.ceil(100* money*1.005) / 100.0;
         String DIRECT_PAYMENT_URI =
                 "https://money.yandex.ru/direct-payment.xml?"
                 + "isDirectPaymentFormSubmit=true&"
@@ -323,7 +324,7 @@ public class MoneyManager implements MoneyManagerLocal {
         String dest = confMan.getString("YandexPurse");
         params.add(new BasicNameValuePair("FormComment", title));
         params.add(new BasicNameValuePair("destination", title));
-        params.add(new BasicNameValuePair("short-dest", "пополнение счета"));
+        params.add(new BasicNameValuePair("short-dest", "пополнение счета в системе Reshaka.Ru"));
         params.add(new BasicNameValuePair("receiver", dest));
         params.add(new BasicNameValuePair("sum", Double.toString(money)));
         return DIRECT_PAYMENT_URI + URLEncodedUtils.format(params, "UTF-8");
@@ -372,7 +373,7 @@ public class MoneyManager implements MoneyManagerLocal {
                 money = MoneyUtils.getWebmoneyLMIPaymentAmount(content);
                 hash = MoneyUtils.getWebmoneyLMIHash(content);
                 list.add(new ExternalMoneyTransaction(hash, money, message.getReceivedDate(), userId));
-                System.out.println("content : " + message.getContent());
+//                System.out.println("content : " + message.getContent());
             }
         } // Add business logic below. (Right-click in editor and choose
         catch (Exception ex) {

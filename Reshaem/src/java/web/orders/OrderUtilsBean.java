@@ -107,6 +107,8 @@ public class OrderUtilsBean {
         System.out.println("current order id is " + getCurrentOrderId());
     }
 
+    
+    
     public void addOffer(Long orderId, Long userId, double price) {
         System.out.println("plug is " + getPlug());
         System.out.println("Current order id is " + getCurrentOrderId());
@@ -118,6 +120,12 @@ public class OrderUtilsBean {
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Уведомление.", "Заявка отправлена!"));
     }
 
+    public void deleteOffer(Long offerId , Long orderId){
+        //there is no cheking in EJB!!!
+        System.out.println("deleteOffer(): offerId = " + offerId);
+        orderMan.deleteOffer(offerId , orderId);
+    }
+    
     public List<User> employeesList(Long orderId) {
         return orderMan.getEmployees(orderId);
     }

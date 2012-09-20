@@ -178,7 +178,18 @@ ul{list-style-type:none;}
 #bodyPanel h3{display:block; margin:12px 0 0px 0; font:18px/18px Georgia, "Times New Roman", Times, serif; font-weight:normal; padding:0 0 0 20px; color:#FF7113;}
 
 
-#bodyPanel #testimonial{width:283px; height:162px; display:block; background:url(../images/testimonial-bg.gif) 0 0 no-repeat #FFF6DB; padding:32px 33px 0 148px; margin:0 0 0 20px; color:#786321;}
+#bodyPanel #testimonial{
+/*    width:283px; */
+    width : 450px;
+/*    height:162px;*/
+    height: 180px;
+    display:block; 
+    /*                        background:url(../images/testimonial-bg.gif) 0 0 no-repeat #FFF6DB;*/
+    background-color: #FFF6DB;
+
+    /*                        padding:32px 33px 0 148px; */
+
+    margin:0 0 0 20px; color:#786321;}
 #bodyPanel #testimonial p{background:none; margin:0; padding:0 0 5px 0;}
 #bodyPanel #testimonial p span{color:#786321 !Important; background:#FFFAED !Important;}
 #bodyPanel p.moretwo{height:26px; padding:0; background:none; margin:0;}
@@ -360,14 +371,11 @@ div.tabs div.tab{
 }
 
 div.tabs div.link{
-    /*    padding-left: 20px;*/
-    /*    padding-top:20px;*/
     font-family: "CenturyGothicRegular", "Century Gothic", Arial, Helvetica, sans-serif;
     font-size: 14px;
 }
 
 div.tabs div.tab.selected{
-    /*    color: #ffffff;*/
     color: #FF7113;
 
     border-right-color: #aeaeaa;
@@ -389,16 +397,92 @@ div.tabs div.tab.last{
     border-bottom-left-radius: 13px;
 }
 
-/*div.tabs div.tab div.arrow{
-    position: absolute;
-    background: url(/Reshaem/faces/images/28_homeSelArrow.png) no-repeat;
-    height: 58px;
-    width: 17px;
-    left: 100%;
-    top: 0px;
-    display: none;
-}*/
-
 div.tabs div.tab.selected div.arrow{
     display: block;
+}
+/* ----------- */
+.navi {
+    margin-left:328px;
+    width:200px;
+    height:20px;
+}
+
+
+/* items inside navigator */
+.navi a {
+    width:8px;
+    height:8px;
+    float:left;
+    margin:3px;
+    /*    background:url(/media/img/scrollable/arrow/navigator.png) 0 0 no-repeat;*/
+    display:block;
+    font-size:1px;
+}
+
+/* mouseover state */
+.navi a:hover {
+    background-position:0 -8px;
+}
+
+/* active state (current page state) */
+.navi a.active {
+    background-position:0 -16px;
+}
+
+/* ------------------------ */
+.scrollable {
+    position: relative;
+    overflow: hidden;
+    width: 450px;
+    height: 180px;
+/*    border: 1px solid #CCC;*/
+/*    background: url(http://jquerytools.org/media/img/gradient/h300.png) repeat-x;*/
+}
+
+/*
+root element for scrollable items. Must be absolutely positioned
+and it should have a extremely large width to accommodate scrollable
+items.  it's enough that you set width and height for the root element
+and not for this element.
+*/
+.scrollable .items {
+    /* this cannot be too large */
+    width:20000em;
+    position:absolute;
+    clear: both;
+}
+
+.scrollable img {
+    float: left;
+/*    margin: 20px 5px 20px 21px;*/
+/*    background-color: white;*/
+/*    padding: 2px;*/
+/*    border: 1px solid #CCC;*/
+/*    width: 100px;*/
+/*    height: 75px;*/
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+a.right {
+/*    background-position: 0 -30px;*/
+    clear: right;
+    margin-right: 0px;
+}
+
+
+/*
+a single item. must be floated in horizontal scrolling.  typically,
+this element is the one that *you* will style the most.
+*/
+.items div {
+    float:left;
+}
+
+a.left:active {
+/*    background-position: -60px 0;*/
+}
+
+a.browse {
+    cursor: pointer;
 }
