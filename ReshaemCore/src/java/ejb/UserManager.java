@@ -672,12 +672,18 @@ public class UserManager implements UserManagerLocal {
         User user = em.find(User.class, userId);
         try {
             String s = user.getLogin();
+            if (log.isTraceEnabled()) {
+                log.trace("UserManager: canChangeNickname() login = " + s);
+            }
             //String s2 = "user" + Long.toString(userId);
             //String s3 = "reshaka" + Long.toString(userId);
-            if ((s.indexOf("user") > 0) || (s.indexOf("reshaka") > 0)) {
+            if ((s.indexOf("user") >= 0) || (s.indexOf("reshaka") >= 0)) {
                 return true;
             }
         } catch (Exception exc) {
+            if (log.isTraceEnabled()) {
+                log.trace("canChangeNickname(): exception =  " + exc);
+            }
         }
         return false;
     }

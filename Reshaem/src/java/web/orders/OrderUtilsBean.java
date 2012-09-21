@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
+import web.utils.Tools;
 
 /**
  *
@@ -232,4 +233,9 @@ public class OrderUtilsBean {
     public int orderedAmountOfUser(Long userId) {
         return orderMan.getOrderedAmount(userId);
     }
+    
+    public int timePassed(Date date){
+        return Tools.getPassedHours(date);
+    }
+    
 }

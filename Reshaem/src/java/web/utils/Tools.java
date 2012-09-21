@@ -6,6 +6,7 @@ import ejb.util.ReshakaUploadedFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.UploadedFile;
 
@@ -16,8 +17,10 @@ import org.primefaces.model.UploadedFile;
 public class Tools {
 
     /**
-     * Converts PrimeFaces sort order model into ReshakaSortOrder 
+     * Converts PrimeFaces sort order model into ReshakaSortOrder
+     * <p/>
      * @param o source SortOrder (PrimeFaces)
+     * <p/>
      * @return Reshaka.Ru equivalent
      */
     public static ReshakaSortOrder convertSortOrder(SortOrder o) {
@@ -36,8 +39,9 @@ public class Tools {
     }
 
     public static ReshakaUploadedFile convertUploadedFile(UploadedFile uf) {
-        if(uf==null)
+        if (uf == null) {
             return null;
+        }
         try {
             File f = File.createTempFile("more_longer_uc", ".tmp");
             try (FileOutputStream os = new FileOutputStream(f)) {
@@ -45,8 +49,17 @@ public class Tools {
             }
             return new ReshakaUploadedFile(uf.getFileName(), uf.getContentType(), f);
         } catch (IOException ex) {
-            System.err.println("convertUploadedFile(): "+ex);
+            System.err.println("convertUploadedFile(): " + ex);
         }
         return null;
+    }
+
+    public static int getHourDateDifference(Date first, Date second) {
+        long diff = second.getTime() - first.getTime();
+        return (int) (diff / (1000 * 60 * 60));
+    }
+    
+    public static int getPassedHours(Date date){
+     return getHourDateDifference(date, new Date());   
     }
 }

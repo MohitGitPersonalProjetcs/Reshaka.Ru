@@ -6,6 +6,7 @@ import entity.Offer;
 import entity.Order;
 import entity.User;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -86,7 +87,14 @@ public class DealManager implements DealManagerLocal {
         Order order = em.find(Order.class, orderId);
         Offer offer = em.find(Offer.class, offerId);
 
-
+        //автоматическое продление заказа
+        if (order.getType() == Order.OFFLINE_TYPE) {
+            Date today = new Date();
+            long diff = today.getTime() - offer.getCreationDate().getTime();
+            Date deadline = order.getDeadline();
+            deadline.setTime(deadline.getTime() + diff);
+            order.setDeadline(deadline);
+        }
 
         if (order.getStatus() != 1) {
             return;

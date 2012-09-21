@@ -5,6 +5,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.*;
 
 /**
@@ -23,6 +24,9 @@ public class Offer implements Serializable {
     private Long id;
     @Column(name = "price")
     private double price;
+    @Column(name = "creation_date")
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date creationDate;
     @Column(name = "user_id")
     private Long userId;
     @ManyToOne(optional = true)
@@ -35,9 +39,11 @@ public class Offer implements Serializable {
     private Order order;
 
     public Offer() {
+        creationDate = new Date();
     }
 
     public Offer(double price, Long userId) {
+        creationDate = new Date();
         this.price = price;
         this.userId = userId;
     }
@@ -64,6 +70,14 @@ public class Offer implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Order getOrder() {

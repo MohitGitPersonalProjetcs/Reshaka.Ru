@@ -287,12 +287,18 @@ and open the template in the editor.
                                             <h:link target="_blank" outcome="profile.xhtml" value="#{orderUtilsBean.loginById(offer.userId)}" style="color: red;">
                                                 <f:param name="id" value="#{offer.userId}"/>
                                             </h:link>
+                                            
+                                            <h:outputLink style="color: blue;" styleClass="ChatLink" value="ichat.xhtml?friend=#{offer.userId}"><img src="#{request.contextPath}/images/chat.png" style="width: 15px;" /></h:outputLink>
 
 
                                         </p:column>
                                         <p:column headerText="Цена" style="width: 45px;">
                                             #{offer.price}
                                         </p:column>
+                                        <p:column headerText="Срок будет продлён на" style="width: 45px;" rendered="#{selectedBean.order.type == 0}" >
+                                            <center>#{orderUtilsBean.timePassed(offer.creationDate)} ч.</center>
+                                        </p:column>
+
                                         <p:column headerText="Выбрать" style="width: 25px;" >
                                             <h:panelGroup>
                                                 <p:commandButton update=":main_panel" actionListener="#{dealBean.startDeal(selectedBean.order.id, offer.id)}" 
@@ -313,7 +319,7 @@ and open the template in the editor.
                                         </p:column>
 
                                     </p:dataTable>
-
+                                    <!--                                    <span style="font-weight: bold;">Внимание!</span> При оплате заказа срок будет продлён на -->
                                 </h:panelGrid>
                                 <hr/>
                                 <div style="text-align: right;">
@@ -351,6 +357,8 @@ and open the template in the editor.
                                     </h:panelGrid>
 
                                 </h:panelGroup>
+                                <hr/>
+                                Прошло времени после подачи заявки: #{orderUtilsBean.timePassed(selectedBean.order.hireDate)} ч.
                                 <hr/>
                                 <div style="text-align: right;">
                                     <p:commandButton value="OK" onclick="handleOrderInfoRequest(xhr, status, args)"/>

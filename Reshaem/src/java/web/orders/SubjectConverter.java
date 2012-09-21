@@ -39,7 +39,7 @@ public class SubjectConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        System.out.println("SubjectConverter.getAsString: value = " + value);
+//        System.out.println("SubjectConverter.getAsString: value = " + value);
         if (!(value instanceof Subject)) {
             throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion failed", "Invalid instance type"));
         }
