@@ -135,6 +135,14 @@ public class OfflineOrderEditorBean implements Serializable {
         order.setDuration(duration);
     }
 
+    public String getFromEmail() {
+        return order.getFromEmail();
+    }
+
+    public void setFromEmail(String fromEmail) {
+        order.setFromEmail(fromEmail);
+    }
+
     public Long getConditionId() {
         return order.getConditionId();
     }
@@ -199,6 +207,18 @@ public class OfflineOrderEditorBean implements Serializable {
 
     public void setType(int type) {
         order.setType(type);
+    }
+
+    public int getType() {
+        return order.getType();
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public boolean isAgreed() {
@@ -416,24 +436,24 @@ public class OfflineOrderEditorBean implements Serializable {
         order.setTags(tagsText);
         tagMan.addTags(tagsText);
 
-        try{
-        Order ord = orderMan.updateOrder(order, fileUploadController.getFiles());
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"INFO","Заказ успешно обновлен"));
-        }catch (Exception exc){
+        try {
+            Order ord = orderMan.updateOrder(order, fileUploadController.getFiles());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Заказ успешно обновлен"));
+        } catch (Exception exc) {
             System.out.println("Exception occured while updating order");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Ошибка","Заказ не обновлен."));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Заказ не обновлен."));
         }
-        
+
         if (order == null) {
             System.out.println("ERROR occured while submiting order");
         }
 
     }
 
-    public void testEvent(){
+    public void testEvent() {
         System.out.println("test!!!");
     }
-    
+
     public boolean shouldShowFilesList() {
 //        System.out.println(fileUploadController.getFiles());
         return !fileUploadController.getFiles().isEmpty();

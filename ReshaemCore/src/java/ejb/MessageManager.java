@@ -292,38 +292,38 @@ public class MessageManager implements MessageManagerLocal {
         try {
             adm = em.getReference(User.class, id);
             if (adm.getUserGroup() != 1) {
-                if (log.isTraceEnabled()) {
-                    log.trace("getAnyMessages(): operation not permited!");
-                }
+//                if (log.isTraceEnabled()) {
+//                    log.trace("getAnyMessages(): operation not permited!");
+//                }
                 return null;
             }
         } catch (Exception ex) {
-            if (log.isTraceEnabled()) {
-                log.trace("getAnyMessages(): operation not permited!", ex);
-            }
+//            if (log.isTraceEnabled()) {
+//                log.trace("getAnyMessages(): operation not permited!", ex);
+//            }
             return null;
         }
         List<Message> messages = null;
 
         Query q = null;
         if (mailBoxOwner == null) {
-            if (log.isTraceEnabled()) {
-                log.trace("getAnyMessages()): using query Message.findAllBetween");
-            }
+//            if (log.isTraceEnabled()) {
+//                log.trace("getAnyMessages()): using query Message.findAllBetween");
+//            }
             q = em.createNamedQuery("Message.findAllBetween");
         } else {
-            if (log.isTraceEnabled()) {
-                log.trace("getAnyMessages(): using query Message.findAllOfUserBetween");
-            }
+//            if (log.isTraceEnabled()) {
+//                log.trace("getAnyMessages(): using query Message.findAllOfUserBetween");
+//            }
             q = em.createNamedQuery("Message.findAllOfUserBetween");
         }
 
         if (mailBoxOwner != null) {
             User u = em.find(User.class, mailBoxOwner);
             if (u == null) {
-                if (log.isTraceEnabled()) {
-                    log.trace("<< getAnyMessages(): no user with ID=" + mailBoxOwner);
-                }
+//                if (log.isTraceEnabled()) {
+//                    log.trace("<< getAnyMessages(): no user with ID=" + mailBoxOwner);
+//                }
                 return null;
             }
             q.setParameter("owner", u);
@@ -341,9 +341,9 @@ public class MessageManager implements MessageManagerLocal {
 
         messages = (List<Message>) q.getResultList();
 
-        if (log.isTraceEnabled()) {
-            log.trace("<< getAnyMessages(): " + messages);
-        }
+//        if (log.isTraceEnabled()) {
+//            log.trace("<< getAnyMessages(): " + messages);
+//        }
         return messages;
     }
 
@@ -380,14 +380,14 @@ public class MessageManager implements MessageManagerLocal {
     @Override
     @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
     public int getUnreadMessagesNumber(long id, Long fromUserId) {
-        if (log.isTraceEnabled()) {
-            log.trace(">> getUnreadMessagesNumber(): id = " + id);
-        }
+//        if (log.isTraceEnabled()) {
+//            log.trace(">> getUnreadMessagesNumber(): id = " + id);
+//        }
         User u = em.find(User.class, id);
         if (u == null) {
-            if (log.isTraceEnabled()) {
-                log.trace("<< getUnreadMessagesNumber(): 0 // user not found");
-            }
+//            if (log.isTraceEnabled()) {
+//                log.trace("<< getUnreadMessagesNumber(): 0 // user not found");
+//            }
             return 0;
         }
         Query q;
@@ -401,9 +401,9 @@ public class MessageManager implements MessageManagerLocal {
         }
         q.setParameter("u", u);
         Number n = (Number) q.getSingleResult();
-        if (log.isTraceEnabled()) {
-            log.trace("<< getUnreadMessagesNumber(): "+n);
-        }
+//        if (log.isTraceEnabled()) {
+//            log.trace("<< getUnreadMessagesNumber(): "+n);
+//        }
         return n.intValue();
     }
 }

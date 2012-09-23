@@ -61,6 +61,10 @@ and open the template in the editor.
                                     <h:outputText value="#{selectedBean.order.deadline}">
                                         <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
                                     </h:outputText>
+                                    
+                                    <h:outputText value="Контактный Email:" rendered="#{ ( (selectedBean.order.employer.id == webSession.id ) or (webSession.group == 1))and (selectedBean.order.type == 1)}" />
+                                    <h:outputText value="#{selectedBean.order.fromEmail}" rendered="#{ ( (selectedBean.order.employer.id == webSession.id ) or (webSession.group == 1))and (selectedBean.order.type == 1)}"  />
+                                    
 
                                     <h:outputText value="Продолжительность: " rendered="#{selectedBean.order.type == 1}" />  
                                     <h:outputText value="#{selectedBean.order.duration} минут" rendered="#{selectedBean.order.type == 1}" /> 
@@ -274,7 +278,8 @@ and open the template in the editor.
                                     <p:tooltip for="fillUp_o" value="Пополнить баланс" />
                                     <h:panelGrid columns="2">
                                         <h:outputText value="Мой баланс:"/>
-                                        <p:commandLink id="fillUp_o" value="#{userBean.userBalance(webSession.id)}" style="color:red;"/>
+                                        <h:outputLink style="color: red;"  id="fillUp_o" target="payments" value="#{request.contextPath}/faces/payments.xhtml">#{userBean.userBalance(webSession.id)}</h:outputLink>
+
                                     </h:panelGrid>
 
 
@@ -287,8 +292,8 @@ and open the template in the editor.
                                             <h:link target="_blank" outcome="profile.xhtml" value="#{orderUtilsBean.loginById(offer.userId)}" style="color: red;">
                                                 <f:param name="id" value="#{offer.userId}"/>
                                             </h:link>
-                                            
-                                            <h:outputLink style="color: blue;" styleClass="ChatLink" value="ichat.xhtml?friend=#{offer.userId}"><img src="#{request.contextPath}/images/chat.png" style="width: 15px;" /></h:outputLink>
+
+                                            <h:outputLink style="color: blue;" styleClass="ChatLink" value="ichat.xhtml?friend=#{offer.userId}"><img title="Перейти в чат" src="#{request.contextPath}/images/chat.png" style="width: 15px;" /></h:outputLink>
 
 
                                         </p:column>
@@ -353,7 +358,7 @@ and open the template in the editor.
                                         <h:outputText value="Теперь вы можете оплатить вторую половину стоимости и скачать решение" style="color: red;" />
                                         <br/>
 
-                                        <p:commandButton value="Оплатить" update=":main_panel" actionListener="#{dealBean.makeFinalPayment(selectedBean.order.id)}" rendered="#{dealBean.canFinishDeal(selectedBean.order.id,webSession.id )}" />
+                                        <p:commandButton value="Оплатить" oncomplete="order_info_dlg.hide();" update=":main_panel" actionListener="#{dealBean.makeFinalPayment(selectedBean.order.id)}" rendered="#{dealBean.canFinishDeal(selectedBean.order.id,webSession.id )}" />
                                     </h:panelGrid>
 
                                 </h:panelGroup>
@@ -363,7 +368,6 @@ and open the template in the editor.
                                 <div style="text-align: right;">
                                     <p:commandButton value="OK" onclick="handleOrderInfoRequest(xhr, status, args)"/>
                                 </div>
-
 
                             </h:form>
                         </p:tab>

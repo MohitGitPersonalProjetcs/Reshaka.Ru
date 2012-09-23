@@ -28,9 +28,13 @@ public class OrderManager implements OrderManagerLocal {
     @EJB
     MailManagerLocal mailMan;
     @EJB
+    MessageManagerLocal messMan;
+    @EJB
     UserManagerLocal userMan;
     @EJB
     OnlineHelpManagerLocal onlineMan;
+    @EJB
+    ConfigurationManagerLocal confMan;
 
     @Override
     public void persistEntity(Object o) {
@@ -87,12 +91,32 @@ public class OrderManager implements OrderManagerLocal {
             offers.add(off);
             order.setOffers(offers);
             mergeEntity(order);
-            mailMan.sendStatusChange(order.getId());
+            offe = off;
+//            mailMan.sendStatusChange(order.getId());
+
         } else {
             offe.setPrice(price);
             offe = em.merge(offe);
-            mailMan.sendStatusChange(order.getId());
+//            mailMan.sendStatusChange(order.getId());
         }
+        String theme = "Reshaka.Ru: заказ оценён";
+        String text = "";
+        if (order.getType() == Order.OFFLINE_TYPE) {
+            text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
+                    + "\n\nРешающий " + getLoginById(offe.getUserId()) + " готов выполнить заказ (ID=" + order.getId() + ")"
+                    + " за " + offe.getPrice() + " р."
+                    + "\n\n Необходимо внести предоплату в размере 50% от стоимости заказа, либо либо вы можете подождать пока заказ просмотрят другие решающие."
+                    + "\n\n\n C уважением, администрация Reshaka.RU";
+        }
+        if (order.getType() == Order.ONLINE_TYPE) {
+            text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
+                    + "\n\nРешающий " + getLoginById(offe.getUserId()) + " готов выполнить заказ на онлайн-помощь (ID=" + order.getId() + ")"
+                    + " за " + offe.getPrice() + " р."
+                    + "\n\n Необходимо внести предоплату (100% стоимости заказа), либо либо вы можете подождать пока заказ просмотрят другие решающие."
+                    + "\n\n\n C уважением, администрация Reshaka.RU";
+        }
+        mailMan.sendMail(order.getEmployer().getEmail(), theme, text);
+        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), theme, text, null);
     }
 
     @Override
@@ -215,6 +239,7 @@ public class OrderManager implements OrderManagerLocal {
         } catch (Exception exc) { // hardcode ((((
         }
         mailMan.newOrder(order.getId());
+        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), "Размещение заказа", "Ваш заказ (ID=" + order.getId() + ") успешно размещен в системе. Дождитесть пока он не будет оценен решающим", null);
         return order;
     }
 
@@ -233,6 +258,13 @@ public class OrderManager implements OrderManagerLocal {
 //            }
 //        }
         em.merge(order);
+        String theme = "Заказ ID=" + orderId + " выполнен";
+        String text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
+                + "\n\nРешение заказа ID=" + orderId + " было загружено на сайт. "
+                + "\nПосле оплаты вы сможете его скачать, нажав конпку информации о заказе (i) -> скачать решение. "
+                + "\n\n\n C уважением, администрация Reshaka.RU.";
+        mailMan.sendMail(order.getEmployer().getEmail(), theme, text);
+        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), theme, text,null);
         return order;
     }
 
@@ -677,10 +709,9 @@ public class OrderManager implements OrderManagerLocal {
                     order.setStatus(Order.NEW_ONLINE_ORDER_STATUS); //new
                 }
             }
-            
-            for (int i = 0; i< offers.size();i++)
-            {
-                if (offers.get(i).getId().equals(offerId)){
+
+            for (int i = 0; i < offers.size(); i++) {
+                if (offers.get(i).getId().equals(offerId)) {
                     offers.remove(i);
                     break;
                 }

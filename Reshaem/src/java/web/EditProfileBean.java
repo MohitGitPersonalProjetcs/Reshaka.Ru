@@ -381,7 +381,7 @@ public class EditProfileBean {
 //        }
 //    }
     
-    public void applyUploadedAvatar(ActionEvent evt) {
+    public void applyUploadedAvatar() {
         System.out.println("applyUploadedAvatar occured!!!");
         FacesContext fc = FacesContext.getCurrentInstance();
         this.user = um.updateAvatar(user.getId(), Tools.convertUploadedFile(uploadedAvatar));
@@ -391,7 +391,7 @@ public class EditProfileBean {
         fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Avatar has been updated."));
     }
 
-    public void applyPassword(ActionEvent evt) {
+    public void applyPassword() {
         User u = um.updatePassword(user.getId(), oldPassword, getPassword());
         FacesContext fc = FacesContext.getCurrentInstance();
         if (u != null) {
@@ -406,7 +406,7 @@ public class EditProfileBean {
         }
     }
 
-    public void apply(ActionEvent evt) {
+    public void apply() {
         // user.setSettings(settings);
 
         System.out.println("settings : newMessage/newStatus  = " + settings.isNewMessage() + "/" + settings.isNewStatus());
@@ -426,7 +426,7 @@ public class EditProfileBean {
         }
     }
 
-    public void cancel(ActionEvent evt) {
+    public void cancel() {
         this.user = um.getUserById(((User) SessionListener.getSessionAttribute("user", true)).getId());
 
         FacesContext fc = FacesContext.getCurrentInstance();

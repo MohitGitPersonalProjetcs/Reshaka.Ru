@@ -88,6 +88,8 @@ public class Order implements Serializable {
         @JoinColumn(name = "subject_id")
     })
     private Subject subject;
+    @Column
+    private String fromEmail;
     @Column(name = "tags")
     private String tags;
     @ManyToOne
@@ -245,6 +247,16 @@ public class Order implements Serializable {
     public void setType(int type) {
         this.type = type;
     }
+
+    public String getFromEmail() {
+        return fromEmail;
+    }
+
+    public void setFromEmail(String fromEmail) {
+        this.fromEmail = fromEmail;
+    }
+    
+    
 
     @Override
     public int hashCode() {

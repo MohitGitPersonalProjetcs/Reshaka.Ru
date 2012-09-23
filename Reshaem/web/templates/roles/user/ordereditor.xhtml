@@ -30,14 +30,16 @@ and open the template in the editor.
                         <h:outputLabel value="Стоимость (RUR) :" style="font-weight: bold;" />  
                         <h:panelGroup>
                             <p:inputText id="price" style="width: 40px;" value="#{offlineOrderEditorBean.price}">
-                                <f:validateDoubleRange minimum="0.0"  />
+                                <f:validateDoubleRange minimum="0.0"   />
+<!--                                <f:validateRegex pattern="[0-9]*[\.0-9]"   />-->
+
                             </p:inputText>
                             <p:tooltip for="price" style="width: 250px;" value="Укажите примерную стоимость, на которую Вы рассчитываете. Оставьте поле пустым, если не знаете цену даже примерно. " />
                         </h:panelGroup>
 
 
 
-                        <h:outputLabel value="Срок: *" for="order_deadline"  style="font-weight: bold;" />  
+                        <h:outputLabel value="Дата: *" for="order_deadline"  style="font-weight: bold;" />  
                         <p:calendar  id="order_deadline" mindate="#{offlineOrderEditorBean.minDate}"  value="#{offlineOrderEditorBean.deadline}" pattern="MM/dd/yyyy HH:mm" /> 
                     </h:panelGrid>
 
@@ -56,8 +58,15 @@ and open the template in the editor.
                             <p:watermark for="aut" value="Подразделы"  />
                             <p:tooltip for="aut" style="width: 200px;" value="Введите подразделы к предмету через запятую. Например: электричество, электростатика" />
                         </h:panelGroup>
-
                     </h:panelGrid>
+                    
+                    <h:outputText value="Контактный Email:" style="width: 200px; display: inline-block; text-align: right; margin-right: 5px;" rendered="#{ (offlineOrderEditorBean.type == 1)}" />
+                    <p:inputText value="#{offlineOrderEditorBean.fromEmail}" rendered="#{ (offlineOrderEditorBean.type == 1)}"  /><br/>
+
+
+
+
+
 
                     <h:outputLabel value="Дополнительные данные о заказе:"  /> <br/>
                     <p:inputTextarea id="inputarea" value="#{offlineOrderEditorBean.description}" autoResize="false" rows="5" style="width: 98%;"/>   
