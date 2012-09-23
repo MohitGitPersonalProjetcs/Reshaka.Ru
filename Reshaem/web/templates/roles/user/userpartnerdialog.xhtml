@@ -103,9 +103,12 @@ and open the template in the editor.
                     </h:panelGroup>
                 </h:panelGrid>
                 <hr/>
-                <div style="float: right;">
+                <div style="float: right; ,argin: 10px;">
+                    <h:panelGrid columns="2">
                     <p:commandButton value="Отправить заявку" update=":growl,:main_panel" 
-                                      oncomplete="partner_dlg.hide()" />
+                                     oncomplete="partner_dlg.hide()" />
+                        <h:link onclick="partner_dlg.hide();" value="Отмена"/>
+                    </h:panelGrid>
                 </div>
                 </h:form>
             </p:dialog>

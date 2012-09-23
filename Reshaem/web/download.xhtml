@@ -14,7 +14,12 @@
         </h:head>
         <script type="text/javascript">
             $(document).ready(function() {
-                setTimeout(function () {$("#downloadLink").click(); return true;}, 1500);
+                setTimeout(function () {
+                        $("#downloadLink").click(); 
+                        $("#downloadLink").css('display', 'none'); 
+                        return true;
+                    }, 
+                    1500);
             });  
         </script>
 
@@ -26,18 +31,17 @@
                         <h:panelGrid columns="2" id="fileInfo">
                             <h:outputText value="Идентификатор файла" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.id}"/>
                             <h:outputText value="Имя файла:" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.fileInfo.name}"/>
-                            <h:outputText value="Размер файла:" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.fileInfo.size} Байт"/>
+                            <h:outputText value="Размер файла:" style="font-weight: bolder;"/> <h:outputText value="#{formatUtilsBean.normalizeFileSize(fileDownloadController.fileInfo.size)}"/>
                             <h:outputText value="Тип файла:" style="font-weight: bolder;"/> <h:outputText value="#{fileDownloadController.fileInfo.mimeType}"/>
                         </h:panelGrid>
-                        Загрузка файла начнется автоматически через несколько секунд.
-                        <p:commandLink styleClass="DownloadLink" value="Download" id="downloadLink" ajax="false" style=" display: none; font-weight: bolder;">
+                        <p:commandLink styleClass="DownloadLink" value="Download" id="downloadLink" ajax="false" style=" font-weight: bolder;">
                             <f:param name="id" value="#{fileDownloadController.id}"/>
                             <p:fileDownload value="#{fileDownloadController.file}"/>
                         </p:commandLink>
                     </h:form>
                 </h:panelGroup>
                 <h:panelGroup rendered="#{!fileDownloadController.fileExists()}">
-                    Запрашиваемый вами (#{webSession.user.login}) файл не существует либо у вас недостаточно прав на его загрузку.
+                    Запрашиваемый Вами (#{webSession.user.login}) файл не существует, либо у вас недостаточно прав на его загрузку.
                 </h:panelGroup>
             </div>
         </h:body>

@@ -128,12 +128,12 @@ and open the template in the editor.
                                     <!--                                    <p:commandButton value="OK" onclick="handleOrderInfoRequest(xhr, status, args)" />-->
                                 </div> 
 
-                                <h:link outcome="offlineOrderEditor.xhtml" value="Редактировать" style="color: blue;" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }">
-                                    <f:param name="id" value="#{selectedBean.order.id}"/>
-                                </h:link>
-                                <div style="text-align: right;">
-                                    <p:commandButton value="Удалить" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }"  />
-                                </div>
+                                <h:panelGrid columns="2">
+                                    <p:button outcome="offlineOrderEditor.xhtml" value="Редактировать" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }">
+                                        <f:param name="id" value="#{selectedBean.order.id}"/>
+                                    </p:button>
+                                    <p:commandLink value="Удалить" style="color: red;" actionListener="#{orderUtilsBean.deleteOrder(selectedBean.order.id)}" update=":main_panel" oncomplete="order_info_dlg.hide();" rendered="#{(webSession.id == selectedBean.order.employer.id) and ( (selectedBean.order.status == 0) or (selectedBean.order.status == 10) ) }"  />
+                                </h:panelGrid>
                             </h:form>
                         </p:tab>
 
@@ -380,7 +380,10 @@ and open the template in the editor.
 
                     </p:tabView>
                 </h:panelGroup>
-
+                
+                <div style="float: right; margin: 10px;">
+                    <h:link value="Закрыть" onclick="order_info_dlg.hide();"/>
+                </div>
 
             </p:dialog>
 

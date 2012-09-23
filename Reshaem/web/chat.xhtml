@@ -362,13 +362,15 @@
                     <p:remoteCommand name="clearChatFiles" process="@this" actionListener="#{chatBean.fileUploadController.clearFiles}" 
                                      async="false" update="uploadedFilesCount"/>
                     Перетащите файлы сюда либо добавьте их через проводник. Затем нажмите <strong>Загрузить</strong>.<br/>
-                    По завершении загрузки нажмите кнопку <strong>Закрыть</strong>.<br/>
+                    По завершении загрузки нажмите <strong>Закрыть</strong>.<br/>
                     <h:panelGroup id="uploadControl">
                         <p:fileUpload rendered="#{chatBean.displayUploadControl}" mode="advanced" uploadLabel="Загрузить" cancelLabel="Отмена" label="Обзор..." 
                                       auto="false" multiple="true" update="fileUploadGrowl, uploadedFilesCount" 
                                       fileUploadListener="#{chatBean.fileUploadController.handleFileUpload}"/>
                     </h:panelGroup>
-                    <p:commandButton value="Закрыть" onclick="dlg_upload.hide();"/>
+                    <div style="float: right; margin: 10px;">
+                        <h:link value="Закрыть" onclick="dlg_upload.hide();"/>
+                    </div>
                     <p:growl id="fileUploadGrowl" showDetail="true"/>
                 </p:dialog>
 

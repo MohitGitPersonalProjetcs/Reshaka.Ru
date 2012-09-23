@@ -144,6 +144,13 @@ public class Startup {
                 log.debug("initDatabase(): addChatAdmin() failed", ex);
             }
         }
+        try {
+            addSystemUser();
+        } catch (Exception ex) {
+            if (log.isDebugEnabled()) {
+                log.debug("initDatabase(): addSystemUser() failed", ex);
+            }
+        }
         // add subjects
         try {
             addSubjects();
@@ -177,7 +184,36 @@ public class Startup {
 
         String mainAdminLogin = cm.getString("mainAdminLogin", "admin");
         String mainAdminPassword = cm.getString("mainAdminPassword", "reshaka");
-        String mainAdminEmail = cm.getString("mainAdminEmail", "reshaka");
+        String mainAdminEmail = cm.getString("mainAdminEmail", "admin@reshaka.ru");
+        u.setLogin(mainAdminLogin);
+        u.setPassword(mainAdminPassword);
+        u.setEmail(mainAdminEmail);
+        u.setUserGroup(1);
+        u.setOpenId(new OpenId());
+
+        if (!exists) {
+            u.setId(mainAdminId);
+            em.persist(u);
+        } else {
+            em.merge(u);
+        }
+    }
+    
+    private void addSystemUser() {
+        User u = null;
+        boolean exists = false;
+
+        Long mainAdminId = cm.getLong("systemUserId", 1000000000L);
+        u = em.find(User.class, mainAdminId);
+        if (u != null) {
+            exists = true;
+        } else {
+            u = new User();
+        }
+
+        String mainAdminLogin = cm.getString("systemUserLogin", "Reshaka.Ru");
+        String mainAdminPassword = cm.getString("systemUserPassword", "reshaka");
+        String mainAdminEmail = cm.getString("systemUserEmail", "reshaka@reshaka.ru");
         u.setLogin(mainAdminLogin);
         u.setPassword(mainAdminPassword);
         u.setEmail(mainAdminEmail);
@@ -206,7 +242,7 @@ public class Startup {
 
         String mainAdminLogin = cm.getString("chatAdminLogin", "admin");
         String mainAdminPassword = cm.getString("chatAdminPassword", "reshaka");
-        String mainAdminEmail = cm.getString("chatAdminEmail", "reshaka");
+        String mainAdminEmail = cm.getString("chatAdminEmail", "support@reshaka.ru");
         u.setLogin(mainAdminLogin);
         u.setPassword(mainAdminPassword);
         u.setEmail(mainAdminEmail);

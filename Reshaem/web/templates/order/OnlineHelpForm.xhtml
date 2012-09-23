@@ -82,7 +82,7 @@
                                       />
                         <h:panelGroup id="uploadedOnlineOrderFiles" style="max-height: 100px;">
                             <p:dataList var="file" value="#{makeOrderBean.fileUploadController.files}">
-                                #{file.fileName} (#{file.size} байт)
+                                #{file.fileName} (#{formatUtilsBean.normalizeFileSize(file.size)})
                             </p:dataList>
                         </h:panelGroup>
                     </h:panelGroup>
@@ -93,13 +93,16 @@
                 
                 Электронный адрес, на который следует высылать условие задач: 
                 <h:outputText value="online.reshaka@gmail.com" style="color: red;" />
-                
-                <p:panel style="text-align: right;">
-                    <p:commandButton update=":main_panel" 
-                                     oncomplete="handleOnlineRequest(xhr, status, args);" 
-                                     actionListener="#{makeOrderBean.submitOnline}" 
-                                     id="confirm_button2" 
-                                     value="Отправить заказ"  />
+                <br/>
+                <p:panel style="float: right; border-width: 0px;">
+                    <h:panelGrid columns="2">
+                        <p:commandButton update=":main_panel" 
+                                         oncomplete="handleOnlineRequest(xhr, status, args);" 
+                                         actionListener="#{makeOrderBean.submitOnline}" 
+                                         id="confirm_button2" 
+                                         value="Отправить заказ"  />
+                        <h:link value="Отмена" onclick="dlg_makeonline.hide();"/>
+                    </h:panelGrid>
                 </p:panel>
             </h:form>
         </p:dialog>

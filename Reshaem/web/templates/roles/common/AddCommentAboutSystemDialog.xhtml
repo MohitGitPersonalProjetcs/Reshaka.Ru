@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -32,8 +28,11 @@ and open the template in the editor.
                     <p:inputTextarea value="#{feedbacksBean.text}" style="width: 95%; height: 100px;"  />
                     <hr/>
 <!--                    <div style="text-align: left">Просмотреть все отзывы</div>-->
-                    <div style="text-align: right;">
-                        <p:commandButton oncomplete="sys_comments_dlg.hide();" value="Отправить" actionListener="#{feedbacksBean.addComment()}" update=":growl" />
+                    <div style="float: right; margin: 10px;">
+                        <h:panelGrid columns="2">
+                            <p:commandButton oncomplete="sys_comments_dlg.hide();" value="Отправить" actionListener="#{feedbacksBean.addComment()}" update=":growl" />
+                            <h:link value="Закрыть" onclick="sys_comments_dlg.hide();"/>
+                        </h:panelGrid>
                     </div>
                 </h:form>
             </p:dialog>

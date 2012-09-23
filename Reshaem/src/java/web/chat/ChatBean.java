@@ -76,7 +76,7 @@ public class ChatBean implements Serializable {
         }
         me = u;
 
-        if (me.getUserGroup() == 1) {
+        if (me.getUserGroup() == User.ADMIN) {
             adminMode = true;
         }
 
@@ -90,7 +90,7 @@ public class ChatBean implements Serializable {
             } catch (NumberFormatException ex) {
             }
             if(this.period < 0)
-                this.period = 1L;
+                this.period = 1L; // One day
         } else this.period = 1L;
         
         lastUpdate = new Date(System.currentTimeMillis() - 1000*60*60*24*this.period);
@@ -102,7 +102,7 @@ public class ChatBean implements Serializable {
         if (friendStr == null) {
             friendId = null;
         } else if (friendStr.equalsIgnoreCase("support")) {
-            friendId = cm.getLong("chatAdminId");
+            friendId = cm.getAdminId();
         } else if (friendStr.equalsIgnoreCase("_stream")) {
             if (me.getUserGroup() != 1) {
                 friendId = null;

@@ -65,7 +65,7 @@
                                       />
                         <h:panelGroup id="uploadedOrderFiles" style="max-height: 100px;">
                             <p:dataList var="file" value="#{makeOrderBean.fileUploadController.files}">
-                                #{file.fileName} (#{file.size} байт)
+                                #{file.fileName} (#{formatUtilsBean.normalizeFileSize(file.size)})
                             </p:dataList>
                         </h:panelGroup>
                         <p:panel rendered="false">
