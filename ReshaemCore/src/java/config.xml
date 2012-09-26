@@ -12,9 +12,21 @@
     <parameter name="mainAdminPassword" list="false">
         <value>reshaka</value>
     </parameter>
-    
     <parameter name="adminPercent" list="false">
         <value>0.3</value>
+    </parameter>
+    
+    <parameter name="systemUserId" list="false">
+        <value>1000000000</value>
+    </parameter>
+    <parameter name="systemUserLogin" list="false">
+        <value>Reshaka.Ru</value>
+    </parameter>
+    <parameter name="systemUsernEmail" list="false">
+        <value>reshaka@reshaka.ru</value>
+    </parameter>
+    <parameter name="systemUsernPassword" list="false">
+        <value>reshaka</value>
     </parameter>
     
     <parameter name="chatAdminId" list="false">

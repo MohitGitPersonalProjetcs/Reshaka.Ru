@@ -67,11 +67,14 @@ and open the template in the editor.
                             <p:watermark for="dop_me" value="Например: 'Мне более привычно общаться в контакте: vk.com/vasya.pupkin ' "/>
                         </h:panelGroup>
                     </p:panel>
-                    <div style="float: right;">
-                        <p:commandButton value="Отправить заявку"  update=":growl"
+                    <div style="float: right; margin: 10px;">
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Отправить заявку"  update=":growl"
                                          oncomplete="handleReshakaRequest(xhr, status, args)"
                                          actionListener="#{requestBean.addNewRequest()}"
                                          />
+                        <h:link onclick="partner_dlg.hide();" value="Отмена"/>
+                        </h:panelGrid>
                     </div>
                 </h:form>
             </p:dialog>

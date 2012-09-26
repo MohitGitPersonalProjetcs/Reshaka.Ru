@@ -70,11 +70,11 @@ public interface ConfigurationManagerLocal {
 
     public void reload(String xmlFile);
 
-    // 
     public Map<Integer, String> getOrderStatusDescription();
 
-    // TODO: Delete old methods
     public Long getMainAdminId();
 
     public double getAdminPercent();
+    
+    public Long getAdminId();
 }

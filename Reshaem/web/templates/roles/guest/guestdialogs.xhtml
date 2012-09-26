@@ -35,9 +35,6 @@
                             <p:password value="#{userBean.password}"   
                                         id="password1" required="true" label="password" feedback="false"/>  
 
-
-                            <!--                                                     update=":main_panel,:growl,:makeorder_dialog"   -->
-
                             <f:facet name="footer">  
                                 <table style="width: 100%">
                                     <tr>
@@ -53,7 +50,9 @@
                                 <h:outputLink value="javascript:void()" onclick="dlg_recover.show()" >Забыли пароль ?</h:outputLink>
                                 <h:outputText />
                                 <div><h:outputLink value="javascript:void();" style="font-size: large; color: blue;" onclick="dlg_register.show()">Регистрация</h:outputLink>  </div>
-                                
+                                <div style="float: right; margin: 10px;">
+                                    <h:link onclick="dlg_login.hide();" value="Закрыть"/>
+                                </div>
                             </f:facet>  
                         </h:panelGrid>  
                     </h:panelGrid>
@@ -134,14 +133,15 @@
 
                     </h:panelGrid>  
 <!--          disabled="#{!userBean.agreed}"-->
-                    <div style="text-align: right;" >
-                        <p:commandButton id="confirm_button3"
-                               
-                                         value="Зарегистрироваться" 
-                                         update=":growl"
-                                         actionListener="#{userBean.registerByEmail}" 
-                                         oncomplete="handleRegisterRequest(xhr, status, args)" />  
-
+                    <div style="float: right; margin: 10px;">
+                        <h:panelGrid columns="2">
+                            <p:commandButton id="confirm_button3"
+                                             value="Зарегистрироваться" 
+                                             update=":growl"
+                                             actionListener="#{userBean.registerByEmail}" 
+                                             oncomplete="handleRegisterRequest(xhr, status, args)" />
+                            <h:link onclick="dlg_register.hide();" value="Отмена"/>
+                        </h:panelGrid>
                     </div>
                 </h:form> 
             </p:dialog> 
@@ -154,11 +154,14 @@
                         <p:inputText value="#{userBean.recoveryEmail}"/>
 
                     </h:panelGrid>
-                    <div style="text-align: right;">
-                        <p:commandButton value="Восстановить" oncomplete="handleRecoverRequest(xhr, status, args)"
-                                         actionListener="#{userBean.recoverPassword(userBean.recoveryEmail)}"
-                                         update=":growl"
-                                         />
+                    <div style="float: right; margin: 10px;">
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Восстановить" oncomplete="handleRecoverRequest(xhr, status, args)"
+                                             actionListener="#{userBean.recoverPassword(userBean.recoveryEmail)}"
+                                             update=":growl"
+                                             />
+                            <h:link onclick="dlg_recover.hide();" value="Отмена"/>
+                        </h:panelGrid>
                     </div>
                 </h:form> 
             </p:dialog> 

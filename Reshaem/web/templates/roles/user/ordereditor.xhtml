@@ -83,7 +83,7 @@ and open the template in the editor.
                                       />
                         <h:panelGroup id="uploadedOrderFiles" style="max-height: 100px;">
                             <p:dataList var="file" value="#{offlineOrderEditorBean.fileUploadController.files}">
-                                #{file.fileName} (#{file.size} байт)
+                                #{file.fileName} (#{formatUtilsBean.normalizeFileSize(file.size)})
                             </p:dataList>
                         </h:panelGroup>
                         <p:panel rendered="false">

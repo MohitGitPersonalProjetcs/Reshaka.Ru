@@ -21,12 +21,15 @@
 
             <h:form id="wizard_form1" prependId="false" enctype="multipart/form-data">                      
                 <ui:include src="makeorderform2.xhtml"/>
-                <p:panel style="text-align: right; border-width: 0px;">
-                    <p:commandButton update=":main_panel" 
+                <p:panel style="float: right; border-width: 0px;">
+                    <h:panelGrid columns="2">
+                        <p:commandButton update=":main_panel" 
                                      oncomplete="handleOfflineRequest(xhr, status, args);" 
                                      actionListener="#{makeOrderBean.submitOrder}" 
                                      id="confirm_button" 
                                      value="Отправить заказ"  />
+                        <h:link value="Отмена" onclick="dlg_makeorder.hide();"/>
+                    </h:panelGrid>
                 </p:panel>
 
 

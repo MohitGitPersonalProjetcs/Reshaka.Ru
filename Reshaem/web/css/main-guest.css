@@ -486,3 +486,13 @@ a.left:active {
 a.browse {
     cursor: pointer;
 }
+
+#slider #prevBtn {
+    display: block;
+    float: left;
+}
+
+#slider #nextBtn {
+    display: block;
+    float: right;
+}

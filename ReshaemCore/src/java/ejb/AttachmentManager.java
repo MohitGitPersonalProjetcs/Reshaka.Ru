@@ -4,6 +4,7 @@ import com.sun.xml.ws.api.tx.at.Transactional;
 import ejb.util.FileUtils;
 import ejb.util.ReshakaUploadedFile;
 import entity.Attachment;
+import entity.Order;
 import entity.User;
 import java.io.File;
 import java.io.IOException;
@@ -45,14 +46,14 @@ public class AttachmentManager implements AttachmentManagerLocal {
         if (log.isTraceEnabled()) {
             log.trace(">> uploadFile()");
         }
-
-        if (!checkUploadRights(user)) {
-            return null;
-        }
         try {
             if (contents.length > MAX_ZIP_SIZE) {
                 log.trace("File too large!");
                 throw new IOException("File too large.");
+            }
+            
+            if (!checkUploadRights(user)) {
+                return null;
             }
 
             Attachment a = prepareAttachment(fileName, contentType, user, contents, tags);
@@ -104,6 +105,13 @@ public class AttachmentManager implements AttachmentManagerLocal {
         try {
             Attachment att = prepareAttachment(user, files, tags);
 
+            if(att.getSize() > MAX_ZIP_SIZE) {
+                if(log.isTraceEnabled()) {
+                    log.trace("File too large!");
+                }
+                throw new IOException("File too large.");
+            }
+            
             em.persist(att);
 
             Set<User> uset = new HashSet();
@@ -231,8 +239,25 @@ public class AttachmentManager implements AttachmentManagerLocal {
         }
 
         // do check if it is a problem statement
-        q = em.createQuery("SELECT o FROM Order o WHERE o.conditionId = :conditionId", User.class);
+        q = em.createQuery("SELECT o FROM Order o WHERE o.conditionId = :conditionId", Order.class);
         q.setParameter("conditionId", a.getId());
+        lst = q.getResultList();
+        if (lst != null && !lst.isEmpty()) {
+            if (log.isTraceEnabled()) {
+                log.trace("<< checkDownloadRights(): true // this is a problem statement");
+            }
+            return true;
+        }
+        
+        // do check if it is a solution to closed order
+        q = em.createQuery("SELECT o FROM Order o WHERE o.solutionId = :solutionId and o.status in :statuses", Order.class);
+        q.setParameter("solutionId", a.getId());
+        q.setParameter("statuses", new ArrayList(){{
+            add(Order.CLOSED_OFFLINE_ORDER_STATUS);
+            add(Order.FULL_PAYED_OFFLINE_ORDER_STATUS);
+            add(Order.EXPIRED_OFFLINE_ORDER_STATUS);
+            add(Order.EXPIRED_ONLINE_ORDER_STATUS);
+        }});
         lst = q.getResultList();
         if (lst != null && !lst.isEmpty()) {
             if (log.isTraceEnabled()) {

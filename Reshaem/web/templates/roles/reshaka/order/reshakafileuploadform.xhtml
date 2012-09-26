@@ -32,8 +32,12 @@
                                       />  
                     </h:panelGroup>
                     <p:growl id="wmessages" showDetail="true" sticky="false" />
-                    <p:commandButton value="OK"  oncomplete="solution_dlg_upload.hide()"/>
-
+                    <div style="float: right; margin: 10px;">
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="OK"  oncomplete="solution_dlg_upload.hide()"/>
+                            <h:link onclick="solution_dlg_upload.hide();" value="Отмена"/>
+                        </h:panelGrid>
+                    </div>
                 </h:form>
 
             </p:dialog>

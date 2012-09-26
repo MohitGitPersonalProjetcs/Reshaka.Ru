@@ -8,7 +8,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
@@ -208,11 +207,15 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     @Override
     @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
     synchronized public Long getMainAdminId() {
+        return Long.parseLong(getParameter("systemUserId").toString());
+    }
+    
+    @Override
+    synchronized public Long getAdminId() {
         return Long.parseLong(getParameter("mainAdminId").toString());
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
     synchronized public double getAdminPercent() {
         return Double.parseDouble(getParameter("adminPercent", "0.3").toString());
     }

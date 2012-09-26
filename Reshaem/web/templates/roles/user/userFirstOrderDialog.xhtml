@@ -13,6 +13,9 @@
         <ui:composition>
             <p:dialog widgetVar="first_order_dlg" header="Ваш первый заказ в системе" width="500" dynamic="true">
                 <ui:include  src="firstOrderFrame.xhtml"/>
+                <div style="margin: 10px; float: right;">
+                    <h:link onclick="first_order_dlg.hide();" value="Закрыть"/>
+                </div>
             </p:dialog>
             
         </ui:composition>

@@ -102,7 +102,8 @@ public class EditProfileBean {
 
         String sid = null;
         Long tid = null;
-        if (user1.getId().equals(confMan.getMainAdminId())) {
+//        if (user1.getId().equals(confMan.getMainAdminId())) {
+        if(user1.getUserGroup() == User.ADMIN){
             sid = HttpUtils.getRequestParam("id");
             try {
                 tid = Long.parseLong(sid);

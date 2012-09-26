@@ -163,7 +163,7 @@ and open the template in the editor.
                                                   />
                                     <h:panelGroup id="uploadedRepFiles" style="max-height: 100px;">
                                         <p:dataList var="file" value="#{replenishmentRequestBean.fileUploadController.files}">
-                                            #{file.fileName} (#{file.size} байт)
+                                            #{file.fileName} (#{formatUtilsBean.normalizeFileSize(file.size)})
                                         </p:dataList>
                                     </h:panelGroup>
                                 </h:panelGroup>
@@ -175,12 +175,14 @@ and open the template in the editor.
                                 <hr/>
                                 <br/>
                                 <div style="text-align: right;" >
-                                    <p:commandButton value="Подать заявку" update=":growl" oncomplete="hideRepUploadControl();replenishment_dlg.hide();"  actionListener="#{replenishmentRequestBean.addReplenishmentRequest()}" />
+                                     <p:commandButton value="Подать заявку" update=":growl" oncomplete="hideRepUploadControl();replenishment_dlg.hide();"  actionListener="#{replenishmentRequestBean.addReplenishmentRequest()}" />
                                 </div>
                             </h:form>
                         </p:tab>
-
                     </p:tabView>
+                    <div style="float: right; margin: 10px;">
+                            <h:link value="Отмена" onclick="replenishment_dlg.hide();"/>
+                    </div> 
                 </h:panelGroup>
 
 
