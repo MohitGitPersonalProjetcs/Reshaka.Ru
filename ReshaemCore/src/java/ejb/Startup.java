@@ -19,16 +19,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import quartz.ReshakaScheduler;
 import quartz.jobs.MoneyCheckerJob;
 import quartz.jobs.OrdersExpirationJob;
-import quartz.jobs.ReshakaJob;
 
 /**
  * This Singleton startup EJB performs initial configuration at startup.
@@ -80,15 +76,6 @@ public class Startup {
             ReshakaScheduler.getInstance().schedule(MoneyCheckerJob.class, trigger);
         } catch (Exception ex) {
         }
-
-//        // TODO: Use QuarzScheduler!
-//        Timer t = new Timer("moneyChecker");
-//        t.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                updateMoney(); //uncomment!!!
-//            }
-//        }, new Date(), 60 * 1000);
 
         if (log != null) {
             log.info("EJB module initialized");
@@ -308,9 +295,5 @@ public class Startup {
                 em.persist(ss);
             }
         }
-    }
-
-    private void updateMoney() {
-        monMan.updateMoney();
     }
 }

@@ -13,6 +13,10 @@ import javax.persistence.*;
 @NamedQueries({
     @NamedQuery(name="Message.findIncomingBetween",
                 query="SELECT m FROM Message m WHERE m.toUser = :owner and m.dateSent > :afterDate and m.dateSent < :beforeDate or m.read = false order by m.dateSent"),
+    @NamedQuery(name="Message.updateReadIncomingFromUserBetween",
+                query="UPDATE Message m SET m.read = :isRead WHERE m.toUser = :owner and m.fromUser = :fromUser and m.dateSent > :afterDate and m.dateSent < :beforeDate or m.read = false"),
+    @NamedQuery(name="Message.updateReadIncomingBetween",
+                query="UPDATE Message m SET m.read = :isRead WHERE m.toUser = :owner and m.dateSent > :afterDate and m.dateSent < :beforeDate or m.read = false"),
     @NamedQuery(name="Message.findIncomingFromUserBetween",
                 query="SELECT m FROM Message m WHERE m.toUser = :owner and m.fromUser = :fromUser and m.dateSent > :afterDate and m.dateSent < :beforeDate or m.read = false order by m.dateSent"),
     @NamedQuery(name="Message.findOutcomingBetween",
