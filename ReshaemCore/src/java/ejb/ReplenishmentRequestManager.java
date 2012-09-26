@@ -44,7 +44,7 @@ public class ReplenishmentRequestManager implements ReplenishmentRequestManagerL
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<ReplenishmentRequest> getAllReplenishmentRequests() {
         Query q = em.createNamedQuery("getAllReplenishmentRequests");
         List<ReplenishmentRequest> list = q.getResultList();

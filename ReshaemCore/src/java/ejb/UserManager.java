@@ -157,6 +157,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<User> getAdministrators() {
         List<User> users = em.createNamedQuery("findAdmins").getResultList();
         return users;
@@ -276,6 +277,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Attachment getUserAvatar(Long avatarId) {
         if (log.isTraceEnabled()) {
             log.trace(">> getUserAvatar(): avatarId=" + avatarId);
@@ -353,6 +355,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public User getUserById(Long userId) {
         User user;
         if (userId == null) {
@@ -363,6 +366,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<User> getFilteredUsers(Map<String, String> filters, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select u from User u where 'plug' = 'plug' ";
         String filterProperty, filterValue;
@@ -412,6 +416,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public String getStringRoleByUserGroup(int userGroup) {
         switch (userGroup) {
             case 1:
@@ -492,6 +497,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public UserSettings getUserSettings(Long userId) {
         User user = em.find(User.class, userId);
         return user.getSettings();
@@ -532,6 +538,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public OpenId getOpenIdByUserId(Long userId) {
         User user = em.find(User.class, userId);
         System.out.println("getOpenIdByUserId(): user =  " + user);
@@ -540,6 +547,7 @@ public class UserManager implements UserManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public double getBalanceByUserId(Long userId) {
         double d = 0.0;
         DecimalFormat df = new DecimalFormat("#.##");

@@ -24,6 +24,7 @@ public class SubjectManager implements SubjectManagerLocal {
     
     
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Map<Long, String> getAllSubjectsMap() {
         Query q = em.createNamedQuery("findMySubjects");
 
@@ -42,6 +43,7 @@ public class SubjectManager implements SubjectManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Subject> getSubjectListByStringList(List<String> stringList) {
         if (stringList == null) {
             return null;
@@ -60,6 +62,7 @@ public class SubjectManager implements SubjectManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Subject> getAllSubjects() {
         Query q = em.createNamedQuery("getAllSubjects");
         List<Subject> list = q.getResultList();
@@ -79,16 +82,19 @@ public class SubjectManager implements SubjectManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Subject getSubjectBySubjectMap() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Subject getSubjectById(Long subjectId) {
         return em.find(Subject.class, subjectId);
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Subject getSubjectBySubjectName(String subName) {
         Query q = em.createNamedQuery("getSubjectByName").setParameter("subjectName", subName);
         List<Subject> list = q.getResultList();
@@ -100,7 +106,7 @@ public class SubjectManager implements SubjectManagerLocal {
     }
 
     @Override
-//    @Transactional(Transactional.TransactionFlowType.NEVER)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Long> getUserIdListBySubjectId(Long subjectId) {
         if (log.isTraceEnabled()) {
             log.trace("getUserIdListBySubjectId(Long subjectId): subjectId =  " + subjectId);
@@ -118,6 +124,7 @@ public class SubjectManager implements SubjectManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<User> getUsersListBySubjectId(Long subjectId) {
         if (log.isTraceEnabled()) {
             log.trace("getUserIdListBySubjectId(Long subjectId): subjectId =  " + subjectId);
@@ -131,7 +138,7 @@ public class SubjectManager implements SubjectManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Subject> getFilteredSubjects(Map<String, String> filters, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select s from Subject s where 'plug' = 'plug' ";
         String filterProperty, filterValue;
@@ -197,7 +204,7 @@ public class SubjectManager implements SubjectManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public int getFilteredSubjectsCount(Map<String, String> filters, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select count(s) from Subject s where 'plug' = 'plug' ";
         String filterProperty, filterValue;

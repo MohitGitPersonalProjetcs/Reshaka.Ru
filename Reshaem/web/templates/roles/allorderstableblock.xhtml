@@ -44,7 +44,7 @@ and open the template in the editor.
 
                 </div>
                 <p:dataTable   id="table_block" var="order" value="#{showOrdersBean.lazyModel}" paginator="true"
-                               rows="5"  
+                               rows="10"  
                                paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink}"  
                                rowStyleClass="#{orderUtilsBean.orderStatus(order.id)}"
                                emptyMessage="В системе нет ни одного заказа"

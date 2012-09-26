@@ -44,7 +44,7 @@ public class SessionManager implements SessionManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<String> getSessions() {
         if (log.isTraceEnabled()) {
             log.trace(">> getSessions() returns " + sessions);

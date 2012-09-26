@@ -48,7 +48,7 @@ public class FeedbackManager implements FeedbackManagerLocal {
     // "Insert Code > Add Business Method")
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Feedback> getAllFeedbacks() {
         Query q = em.createNamedQuery("getAllFeedbacks") ;
         return (List<Feedback>)q.getResultList();

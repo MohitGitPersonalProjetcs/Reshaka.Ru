@@ -93,6 +93,7 @@ public class OnlineHelpManager implements OnlineHelpManagerLocal {
      * @return
      */
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<OnlineHelp> getOnlineHelpItems(String type, int status) {
         String jpqlString = "select o from OnlineHelp o where 'plug'='plug' ";
         if (type != null) {
@@ -132,6 +133,7 @@ public class OnlineHelpManager implements OnlineHelpManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public OnlineHelp getOnlineHelpById(Long oId) {
         try {
             return em.find(OnlineHelp.class, oId);

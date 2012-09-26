@@ -1,6 +1,6 @@
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
+//import com.sun.xml.ws.api.tx.at.Transactional;
 import ejb.util.FileUtils;
 import ejb.util.ReshakaSortOrder;
 import ejb.util.ReshakaUploadedFile;
@@ -47,6 +47,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean offerExists(Long orderId, Long employeeId) {
         Order order = em.find(Order.class, orderId);
         List<Offer> offers = order.getOffers();
@@ -120,7 +121,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<User> getEmployees(Long orderId) {
         try {
             List<Offer> offers = getOffers(orderId);
@@ -139,7 +140,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Offer> getOffers(Long orderId) {
         try {
             Order order = em.find(Order.class, orderId);
@@ -153,7 +154,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public double getMinPrice(Long orderId) {
         System.out.println("ejb: orderId is " + orderId);
         List<Offer> set = getOffers(orderId);
@@ -183,7 +184,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public String getLoginById(Long userId) {
         // todo plug
         System.out.println("order.userId = " + userId);
@@ -197,14 +198,14 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public String getSubjectById(Long subjectId) {
         Subject subj = em.find(Subject.class, subjectId);
         return subj.getSubjectName();
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> getAllOrders() {
         System.out.println("get all orders occured");
         Map filter = new HashMap();
@@ -264,12 +265,12 @@ public class OrderManager implements OrderManagerLocal {
                 + "\nПосле оплаты вы сможете его скачать, нажав конпку информации о заказе (i) -> скачать решение. "
                 + "\n\n\n C уважением, администрация Reshaka.RU.";
         mailMan.sendMail(order.getEmployer().getEmail(), theme, text);
-        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), theme, text,null);
+        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), theme, text, null);
         return order;
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Order getOrderByStringId(String stringId) {
         Long orderId = Long.parseLong(stringId);
         try {
@@ -288,7 +289,7 @@ public class OrderManager implements OrderManagerLocal {
      * @return
      */
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> getFilteredOrders(Map<String, String> filters, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         String jpqlString = "select o from Order o where 'plug' = 'plug' ";
         String filterProperty, filterValue;
@@ -362,7 +363,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> myOrders(Long userId) {
         //User user = em.find(User.class, userId);
         Map<String, String> map = new HashMap();
@@ -371,7 +372,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> getOnlineOrders() {
         Map<String, String> map = new HashMap();
         map.put("type", "1");
@@ -379,7 +380,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> getOrdersOfReshaka(Long userId) {
         Query q = em.createNamedQuery("getOrdersOfReshaka").setParameter("userId", userId);
         List<Order> list = q.getResultList();
@@ -388,7 +389,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> myOnlineOrders(Long userId) {
         if (log.isTraceEnabled()) {
             log.trace(">>myOnlineOrders(): userId = " + userId);
@@ -410,7 +411,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> myOfflineOrders(Long userId) {
         if (log.isTraceEnabled()) {
             log.trace(">>myOfflineOrders(): userId = " + userId);
@@ -430,7 +431,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> getOfflineOrders() {
         System.out.println("get all orders occured");
         Map filter = new HashMap();
@@ -439,6 +440,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public int getSolvedOrdersAmountOfReshaka(Long reshakaId) {
         Query q = em.createNamedQuery("getSolvedOrdersIdOfReshaka").setParameter("reshakaId", reshakaId);
         List<Long> list = q.getResultList();
@@ -458,6 +460,7 @@ public class OrderManager implements OrderManagerLocal {
      * @return List of Orders
      */
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Order> getOrders(Map<String, String> filters, Long userId, int orderType, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         int userGroup = userMan.getGroupById(userId);
         // depends on userGroup
@@ -546,6 +549,7 @@ public class OrderManager implements OrderManagerLocal {
      * @return size of List of Orders
      */
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public int getOrdersCount(Map<String, String> filters, Long userId, int orderType, int first, int pageSize, String sortField, ReshakaSortOrder sortOrder) {
         int userGroup = userMan.getGroupById(userId);
         // depends on userGroup
@@ -631,6 +635,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean userOwnsThisOrder(Long userId, Long orderId) {
         if ((userId == null) || (orderId == null)) {
             return false;
@@ -640,11 +645,13 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Order getOrderById(Long orderId) {
         return (orderId == null) ? null : em.find(Order.class, orderId);
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Subject getSubjectByOrderId(Long orderId) {
 //        if (log.isTraceEnabled()) {
 //            log.trace(">> getSubjectByOrderId(): orderId =  " + orderId);
@@ -667,6 +674,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public int getOrderedAmount(Long userId) {
 
         try {
@@ -678,6 +686,7 @@ public class OrderManager implements OrderManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean isExpired(Long orderId) {
         try {
             Order order = em.find(Order.class, orderId);

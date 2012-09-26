@@ -46,6 +46,7 @@ public class TagManager implements TagManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean tagExixts(String text) {
         Query q = em.createNamedQuery("getTagByText").setParameter("text", text);
         List l = q.getResultList();
@@ -73,6 +74,7 @@ public class TagManager implements TagManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Tag> completeTagList(String query) {
         if (log.isTraceEnabled()) {
             log.trace(">> completeTagList(): query = " + query);
@@ -90,6 +92,7 @@ public class TagManager implements TagManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Tag getTagByText(String text) {
         if (log.isTraceEnabled()) {
             log.trace("getTagByText(): text = " + text);

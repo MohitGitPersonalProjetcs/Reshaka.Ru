@@ -38,7 +38,7 @@ public class DealManager implements DealManagerLocal {
     OrderManagerLocal orderMan;
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean canStartDeal(Long employerId, Long offerId) {
         try {
             Offer offer = em.find(Offer.class, offerId);
@@ -189,7 +189,7 @@ public class DealManager implements DealManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public String getCurrentStatus(Long orderId) {
         Order order = em.find(Order.class, orderId);
         if (order == null) {
@@ -230,7 +230,7 @@ public class DealManager implements DealManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean canFinishDeal(Long orderId, Long userId) {
         boolean b = false;
         try {
@@ -248,7 +248,7 @@ public class DealManager implements DealManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public String getRussianCurrentStatus(Long orderId) {
         Order order = em.find(Order.class, orderId);
         if (order == null) {
@@ -287,7 +287,7 @@ public class DealManager implements DealManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean canStartOnlineDeal(Long employerId, Long offerId) {
         try {
             Offer offer = em.find(Offer.class, offerId);

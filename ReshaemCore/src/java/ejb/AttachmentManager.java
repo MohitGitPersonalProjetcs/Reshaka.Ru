@@ -130,7 +130,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Attachment getUploadedFile(Long userId, long id) {
         if (log.isTraceEnabled()) {
             log.trace(">> getUploadedFile(): id=" + id);
@@ -188,7 +188,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     /**
      * Checks if user can upload files
      */
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     private boolean checkUploadRights(User u) {
         if (log.isTraceEnabled()) {
             log.trace(">> checkDownloadRights(): " + u);
@@ -212,7 +212,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     /**
      * Checks if user has the right to download specified attachment
      */
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     private boolean checkDownloadRights(User u, Attachment a) {
         if (log.isTraceEnabled()) {
             log.trace(">> checkDownloadRights(): user=" + u);
@@ -301,7 +301,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean checkDownloadRights(Long userId, Long attachmentId) {
         if (log.isTraceEnabled()) {
             log.trace("checkDownloadRights(): userId = " + userId + " / attachmentId = " + attachmentId);
@@ -322,6 +322,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Attachment> getAttachmentsByUserId(Long userId) {
         User user = em.find(User.class, userId);
         List<Attachment> alist = new ArrayList(user.getAttachments());
@@ -526,6 +527,7 @@ public class AttachmentManager implements AttachmentManagerLocal {
         return em.merge(att);
     }
 
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     private boolean isOwner(User u, Attachment a) {
         for (User usr : a.getUser()) {
             if (usr.getId().equals(u.getId())) {

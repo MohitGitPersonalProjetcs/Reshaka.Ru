@@ -4,7 +4,6 @@
  */
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
 import ejb.util.MoneyUtils;
 import entity.ExternalMoneyTransaction;
 import entity.MoneyTransaction;
@@ -15,13 +14,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -183,7 +179,7 @@ public class MoneyManager implements MoneyManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean enoughMoney(Long userId, double money) {
         User user = em.find(User.class, userId);
         if (user.getCurrentBalance() >= money) {
@@ -302,6 +298,7 @@ public class MoneyManager implements MoneyManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public String getLinkForYandexPayment(Long userId, double money) {
         money=   Math.ceil(100* money*1.005) / 100.0;
         String DIRECT_PAYMENT_URI =
@@ -386,7 +383,6 @@ public class MoneyManager implements MoneyManagerLocal {
 
     @Asynchronous
     private void processExternalWebmoneyMoneyOperation(ExternalMoneyTransaction webmoneyTransaction) {
-//         Query q = em.createNamedQuery("findByLoginAndPassword").setParameter("userLogin", login);
         System.out.println("processExternalWebmoneyMoneyOperation -> transaction userId/money " + webmoneyTransaction.getUserId() + "/"+webmoneyTransaction.getMoney());
         
         Query q = em.createNamedQuery("getExternalTransactionByPaymentSystemAndOperationId").setParameter("system", "webmoney");
@@ -418,7 +414,8 @@ public class MoneyManager implements MoneyManagerLocal {
         }
 
     }
-
+    
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     private List<Operation> getFreshYandexMoneyOperations() {
         ru.yandex.money.api.YandexMoney ym = new YandexMoneyImpl(confMan.getString("yandexId"));
         String token = confMan.getString("YandexToken");
@@ -507,7 +504,8 @@ public class MoneyManager implements MoneyManagerLocal {
         }
 
     }
-
+    
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     private void addMoney(Long userId, double money) {
         try {
             User user = em.find(User.class, userId);

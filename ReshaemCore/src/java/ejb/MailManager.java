@@ -139,30 +139,6 @@ public class MailManager implements MailManagerLocal {
         String text = "", theme = "";
         int a = order.getStatus();
         switch (a) {
-//            case Order.RATED_OFFLINE_ORDER_STATUS:
-//                theme = "Reshaka.Ru: заказ оценён";
-//                text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-//                        + "Решающий "+ order.getEmployer().getLogin() + "готов выполнить заказ (ID = " + order.getId() + ")"
-//                        + "за"
-//                        + "\n\n Ваш заказ (ID = " + order.getId() + ")"
-//                        + " оценён решающим " + order.getEmployer().getLogin()
-//                        + "\n Необходимо внести предоплату в размере 50% от стоимости заказа, либо либо вы можете пока заказ просмотрят другие решающие."
-//                        + "\n\n\n C Уважением, Reshaka.RU";
-//                if (order.getEmployer().getSettings().isNewStatus()) {
-//                    sendMail(order.getEmployer().getEmail(), theme, text);
-//                }
-//                break;
-//            case Order.RATED_ONLINE_ORDER_STATUS:
-//                theme = "Reshaka.Ru: заказ оценён";
-//                text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-//                        + "\n\n Ваш заказ (ID = " + order.getId() + ")"
-//                        + " оценён решающим " + order.getEmployer().getLogin()
-//                        + "\n Необходимо внести предоплату в размере 50% от стоимости заказа, либо либо вы можете пока заказ просмотрят другие решающие."
-//                        + "\n\n\n C Уважением, Reshaka.RU";
-//                if (order.getEmployer().getSettings().isNewStatus()) {
-//                    sendMail(order.getEmployer().getEmail(), theme, text);
-//                }
-//                break;
             case 3:
                 theme = "Reshaka.Ru: внесена предоплата";
                 text = "Здравствуйте, " + order.getEmployee().getLogin() + " !"

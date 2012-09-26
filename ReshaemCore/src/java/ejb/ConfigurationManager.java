@@ -37,12 +37,12 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     public static final String CURRENT_XML_CONFIG_FILE = new File("./config.xml").getAbsolutePath();
 
     @PostConstruct
-    synchronized public void init() {
+     public void init() {
         reload();
     }
 
     @PreDestroy
-    synchronized public void save() {
+     public void save() {
         Document doc = null;
         File xmlFile = null;
         try {
@@ -106,11 +106,13 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     synchronized public Object getParameter(String param) {
         return config.get(param);
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     synchronized public void load() {
         load(CURRENT_XML_CONFIG_FILE);
     }
@@ -194,7 +196,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         }
     }
 
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     private String getParameterValue(Element elem) {
         Node node = elem.getFirstChild();
         if (node instanceof Text) {
@@ -205,23 +207,25 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
-    synchronized public Long getMainAdminId() {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Long getMainAdminId() {
         return Long.parseLong(getParameter("systemUserId").toString());
     }
     
     @Override
-    synchronized public Long getAdminId() {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Long getAdminId() {
         return Long.parseLong(getParameter("mainAdminId").toString());
     }
 
     @Override
-    synchronized public double getAdminPercent() {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public double getAdminPercent() {
         return Double.parseDouble(getParameter("adminPercent", "0.3").toString());
     }
 
     @Override
-    synchronized public void load(String xmlFile) {
+     public void load(String xmlFile) {
         if (log.isTraceEnabled()) {
             log.trace("load(xmlFile): xmlFile=" + xmlFile);
         }
@@ -278,12 +282,12 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
-    synchronized public void reload() {
+     public void reload() {
         reload(CURRENT_XML_CONFIG_FILE);
     }
 
     @Override
-    synchronized public void reload(String xmlFile) {
+     public void reload(String xmlFile) {
         if (log.isTraceEnabled()) {
             log.trace(">> reload(): xmlFile = " + xmlFile);
         }
@@ -295,73 +299,86 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
-    synchronized public Object getParameter(String paramName, Object defaultValue) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Object getParameter(String paramName, Object defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : value;
     }
 
     @Override
-    synchronized public String getString(String paramName) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public String getString(String paramName) {
         return getString(paramName, null);
     }
 
     @Override
-    synchronized public String getString(String paramName, String defaultValue) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public String getString(String paramName, String defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : value.toString();
     }
 
     @Override
-    synchronized public Integer getInteger(String paramName) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Integer getInteger(String paramName) {
         return getInteger(paramName, null);
     }
 
     @Override
-    synchronized public Integer getInteger(String paramName, Integer defaultValue) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Integer getInteger(String paramName, Integer defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Integer.valueOf(value.toString());
     }
 
-    synchronized @Override
+    @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Long getLong(String paramName) {
         return getLong(paramName, null);
     }
 
     @Override
-    synchronized public Long getLong(String paramName, Long defaultValue) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Long getLong(String paramName, Long defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Long.valueOf(value.toString());
     }
 
     @Override
-    synchronized public Double getDouble(String paramName) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Double getDouble(String paramName) {
         return getDouble(paramName, null);
     }
 
     @Override
-    synchronized public Double getDouble(String paramName, Double defaultValue) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Double getDouble(String paramName, Double defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Double.valueOf(value.toString());
     }
 
     @Override
-    synchronized public Boolean getBoolean(String paramName) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Boolean getBoolean(String paramName) {
         return getBoolean(paramName, null);
     }
 
     @Override
-    synchronized public Boolean getBoolean(String paramName, Boolean defaultValue) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public Boolean getBoolean(String paramName, Boolean defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Boolean.valueOf(value.toString());
     }
 
     @Override
-    synchronized public List getList(String paramName) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public List getList(String paramName) {
         return getList(paramName, null);
     }
 
     @Override
-    synchronized public <T> List<T> getList(String paramName, List<T> defaultValue) {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public <T> List<T> getList(String paramName, List<T> defaultValue) {
         Object value = getParameter(paramName);
         if (value instanceof List) {
             return value == null ? defaultValue : (List<T>) value;
@@ -371,12 +388,13 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
-    synchronized public List<String> getParameterNames() {
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+     public List<String> getParameterNames() {
         return Collections.synchronizedList(new ArrayList(config.keySet()));
     }
 
     @Override
-    synchronized public void setString(String paramName, String value) {
+     public void setString(String paramName, String value) {
         config.put(paramName, value);
         if (value == null) {
             config.remove(paramName);
@@ -430,6 +448,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Map<Integer, String> getOrderStatusDescription() {
         Map map = new HashMap();
         try {
@@ -452,6 +471,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Date getDate(String paramName) {
         String s = getString(paramName, "01/01/1495 00:00:00");
         SimpleDateFormat f = new SimpleDateFormat("MM/dd/yyyy HH:mm");
@@ -465,6 +485,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Date getDate(String paramName, Date defaultValue) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

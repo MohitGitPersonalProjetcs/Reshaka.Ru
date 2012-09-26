@@ -1,0 +1,2 @@
+
+drop table announcements, attachments , comments , external_transaction, messages , money_transactions, offer, offers, open_id, orders, orders_subjects, requests, subjects, user_attachments, user_external_transactions, users, user_orders, user_subjects, user_transactions, usersettings cascade;

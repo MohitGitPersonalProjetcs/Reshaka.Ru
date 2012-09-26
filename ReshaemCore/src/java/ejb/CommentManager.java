@@ -4,7 +4,6 @@
  */
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
 import entity.Comment;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,7 @@ public class CommentManager implements CommentManagerLocal {
     EntityManager em;
     
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Comment> getCommentsByOwnerId(Long ownerId) {
         if (ownerId == null)  return null;
         

@@ -48,7 +48,7 @@
 
                 </div>
                 <p:dataTable   id="table_block" var="order" value="#{showOrdersBean.lazyModel}" paginator="true"
-                               rows="5"  
+                               rows="10"  
                                paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"  
                                rowStyleClass="#{orderUtilsBean.orderStatus(order.id)}"
                                emptyMessage="Пока что у Вас нет ни одного заказа"

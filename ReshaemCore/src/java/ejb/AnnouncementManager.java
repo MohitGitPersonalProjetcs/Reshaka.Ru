@@ -50,7 +50,7 @@ public class AnnouncementManager implements AnnouncementManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Announcement> getAllAnnouncements() {
 
         Query q = em.createNamedQuery("getAllAnnouncements");

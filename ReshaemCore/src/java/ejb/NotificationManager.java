@@ -1,6 +1,5 @@
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
 import entity.Notification;
 import entity.User;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class NotificationManager implements NotificationManagerLocal {
     private EntityManager em;
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Notification> getNotifications(Long userId, Integer type, Integer minPriority, boolean markRead) {
         if (log.isTraceEnabled()) {
             log.trace(">> enclosing_method(): getting notifications for " + userId);
@@ -115,11 +114,9 @@ public class NotificationManager implements NotificationManagerLocal {
             u.setLastNotificationDate(maxDate);
             em.merge(u);
         }
-
         if (log.isTraceEnabled()) {
             log.trace("<< getNotifications(): got list of notifications");
         }
-
         return result;
     }
 

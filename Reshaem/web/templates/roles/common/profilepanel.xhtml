@@ -400,7 +400,7 @@ and open the template in the editor.
                     <p:growl id="table_growl" showDetail="true" sticky="false" /> 
 
                     <p:dataTable   id="table_block" var="order" value="#{showOrdersBean.lazyModel}" paginator="true"
-                                   rows="5"  
+                                   rows="10"  
                                    paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink}"  
                                    rowStyleClass="#{orderUtilsBean.orderStatus(order.id)}"
                                    emptyMessage="Нет ни одного заказа"  

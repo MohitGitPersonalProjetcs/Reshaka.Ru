@@ -34,7 +34,7 @@ public class MessageManager implements MessageManagerLocal {
     AttachmentManagerLocal am;
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate) {
         if (log.isTraceEnabled()) {
             log.trace(">> getIncomingMessages(): owner=" + owner);
@@ -130,7 +130,7 @@ public class MessageManager implements MessageManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Message> getOutcomingMessages(long owner, Long toUser, Date afterDate, Date beforeDate) {
         if (log.isTraceEnabled()) {
             log.trace(">> getOutMessages(): owner=" + owner);
@@ -189,7 +189,7 @@ public class MessageManager implements MessageManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Set<SimpleUser> getRecentUsers(long owner) {
         if (log.isTraceEnabled()) {
             log.trace(">> getRecentUsers(): id=" + owner);
@@ -224,6 +224,7 @@ public class MessageManager implements MessageManagerLocal {
     }
 
     @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<SimpleUser> filterUsersByLogin(long owner, String login) {
         if (log.isTraceEnabled()) {
             log.trace(">> filterUsersByLogin(): owner=" + owner + "; login=" + login);
@@ -283,7 +284,7 @@ public class MessageManager implements MessageManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Message> getAnyMessages(long id, Long mailBoxOwner, Date afterDate, Date beforeDate) {
         if (log.isTraceEnabled()) {
             log.trace(">> getAnyMessages(): id = " + id + ", userID = " + mailBoxOwner);
@@ -348,7 +349,7 @@ public class MessageManager implements MessageManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean hasUnreadMessages(Long id) {
         if (log.isTraceEnabled()) {
             log.trace(">> hasUnreadMessages(): id = " + id);
@@ -378,7 +379,7 @@ public class MessageManager implements MessageManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public int getUnreadMessagesNumber(long id, Long fromUserId) {
 //        if (log.isTraceEnabled()) {
 //            log.trace(">> getUnreadMessagesNumber(): id = " + id);
