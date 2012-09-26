@@ -58,7 +58,7 @@ public class OrdersExpirationJob implements ReshakaJob {
             q.setParameter("ORDER_EXPIRED_STATUS", Order.EXPIRED_ONLINE_ORDER_STATUS);
             q.setParameter("ALLOWED_ORDERS", Arrays.asList(Order.NEW_ONLINE_ORDER_STATUS, Order.RATED_ONLINE_ORDER_STATUS));
             q.setParameter("ORDER_TYPE", Order.ONLINE_TYPE);
-            q.setParameter("DATE_THRESHOLD", new Date(System.currentTimeMillis()+
+            q.setParameter("DATE_THRESHOLD", new Date(System.currentTimeMillis()-
                     (OnlineHelp.RELAXATION_TIME+OnlineHelp.MAX_DURATION_TIME)*1000*60));
             r += q.executeUpdate();
             

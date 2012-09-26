@@ -250,10 +250,11 @@ public class AttachmentManager implements AttachmentManagerLocal {
         }
         
         // do check if it is a solution to closed order
-        q = em.createQuery("SELECT o FROM Order o WHERE o.solutionId = :solutionId and o.status in (:statuses)", Order.class);
+        q = em.createQuery("SELECT o FROM Order o WHERE o.solutionId = :solutionId and o.status in :statuses", Order.class);
         q.setParameter("solutionId", a.getId());
         q.setParameter("statuses", new ArrayList(){{
             add(Order.CLOSED_OFFLINE_ORDER_STATUS);
+            add(Order.FULL_PAYED_OFFLINE_ORDER_STATUS);
             add(Order.EXPIRED_OFFLINE_ORDER_STATUS);
             add(Order.EXPIRED_ONLINE_ORDER_STATUS);
         }});

@@ -69,8 +69,8 @@
                             </h:panelGrid>
                             <hr/>
                             <div style="text-align: right;">
-                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="basic_data, :growl"/>
-                                <p:commandButton value="Применить" actionListener="#{editProfileBean.apply}" process="@form" update="basic_data, :growl"/>
+                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel()}" oncomplete="profileHandler(xhr, status, args);" update="basic_data, :growl"/>
+                                <p:commandButton value="Применить" actionListener="#{editProfileBean.apply()}" process="@form" update="basic_data, :growl"/>
                             </div>
                             <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size: smaller; color: red;"/>
                         </h:form>
@@ -86,7 +86,7 @@
                                 Выберите изображение.
                                 <p:fileUpload auto="true" multiple="false" fileUploadListener="#{editProfileBean.uploadAvatar}" 
                                               sizeLimit="1000000"  update=":growl"/>
-                                <p:commandButton update="current_avatar,:growl" value="Применить" actionListener="#{editProfileBean.applyUploadedAvatar}"/>
+                                <p:commandButton update="current_avatar,:growl" value="Применить" actionListener="#{editProfileBean.applyUploadedAvatar()}"/>
                             </h:panelGroup>
                         </h:form>
                     </p:tab>
@@ -103,8 +103,8 @@
                             </h:panelGrid>
                             <hr/>
                             <div style="text-align: right;">
-                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="extra_data, :growl"/>
-                                <p:commandButton value="Применить" actionListener="#{editProfileBean.apply}" process="@form" update="extra_data, :growl"/>
+                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel()}" oncomplete="profileHandler(xhr, status, args);" update="extra_data, :growl"/>
+                                <p:commandButton value="Применить" actionListener="#{editProfileBean.apply()}" process="@form" update="extra_data, :growl"/>
                             </div>
                             <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size: smaller; color: red;"/>
                         </h:form>
@@ -131,8 +131,8 @@
                             </h:panelGrid>
                             <hr/>
                             <div style="text-align: right;">
-                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}" oncomplete="profileHandler(xhr, status, args);" update="pwd_data, :growl"/>
-                                <p:commandButton value="Применить" actionListener="#{editProfileBean.applyPassword}" update="pwd_data, :growl"/>
+                                <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel()}" oncomplete="profileHandler(xhr, status, args);" update="pwd_data, :growl"/>
+                                <p:commandButton value="Применить" actionListener="#{editProfileBean.applyPassword()}" update="pwd_data, :growl"/>
                             </div>
                             <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size:smaller; color: red;"/>
                         </h:form>
@@ -370,8 +370,8 @@
                                 </p:scrollPanel>
 
                                 <div style="text-align: right;">
-                                    <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel}"  update="basic_data2, :growl"/>
-                                    <p:commandButton value="Применить" actionListener="#{editProfileBean.apply}" process="@form" update="basic_data2, :growl"/>
+                                    <p:commandButton value="Отмена" actionListener="#{editProfileBean.cancel()}"  update="basic_data2, :growl"/>
+                                    <p:commandButton value="Применить" actionListener="#{editProfileBean.apply()}" process="@form" update="basic_data2, :growl"/>
                                 </div>
 
                                 <!--                            </h:panelGrid>-->

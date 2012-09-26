@@ -781,7 +781,7 @@ public class UserManager implements UserManagerLocal {
         user = em.merge(user);
         user.setLogin("reshaka" + Long.toString(user.getId()));
 
-        String text = "Здравствуйте, теперь вы зарегистрированы на сайте "+URLUtils.createLink(URLUtils.getReshakaURL(), "_blank", "Reshaka.Ru")+" в качестве решателя!"
+        String text = "Здравствуйте, теперь вы зарегистрированы на сайте Reshaka.Ru в качестве решающего!"
                 + "\n\nЛогин: " + user.getEmail() + "\n"
                 + "Пароль: " + user.getPassword() + ""
                 + "\n\nВы можете поменять пароль в разделе \"Мой профиль\" "

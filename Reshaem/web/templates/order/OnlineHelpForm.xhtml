@@ -34,11 +34,14 @@
 
                         <h:panelGroup>
                             <h:outputLabel value="Дата/время: *" style="margin-right: 1em;" />  
-                            <p:calendar id="online_help_deadline" mindate="#{makeOrderBean.minDate}" value="#{makeOrderBean.deadline}" pattern="MM/dd/yyyy HH:mm"  /> 
+                            <p:calendar  id="online_help_deadline" mindate="#{makeOrderBean.minDate}" value="#{makeOrderBean.deadline}" pattern="MM/dd/yyyy HH:mm"  /> 
+                            <p:tooltip for="online_help_deadline" value="Указывается по МОСКОВСКОМУ времени" />
                         </h:panelGroup>
+                        
 
                         <h:panelGroup>
                             <h:outputLabel value="Продолжительность: *" style="margin-right: 1em;" /> 
+                            <p:tooltip for="duration" value="Длительность экзамена в минутах" />
                             <p:inputText id="duration" required="true" style="width: 30px;" value="#{makeOrderBean.duration}" />
                             <h:outputText value="минут" style="margin-left: 1em;" />
                         </h:panelGroup>
@@ -48,7 +51,7 @@
                     </h:panelGrid>
 
                     <h:panelGrid columns="2">
-                        <p:selectOneMenu style="width:180px;" value="#{makeOrderBean.subject}" converter="subjectConverter" effectDuration="1">  
+                        <p:selectOneMenu style="width:200px;" value="#{makeOrderBean.subject}" converter="subjectConverter" effectDuration="1">  
                             <f:selectItems value="#{makeOrderBean.allSubjects}" var="subject" itemLabel="#{subject.subjectName}"/>  
                         </p:selectOneMenu> 
 
@@ -56,15 +59,22 @@
                         <h:panelGroup>
                             <p:autoComplete   id="aut2"  completeMethod="#{makeOrderBean.completeTag}" value="#{makeOrderBean.tagsText}"
                                               >
-                                <!--                    <p:ajax event="itemSelect" listener=""  update="mypa" />-->
                                 <p:ajax event="keydown" />
                             </p:autoComplete>
                             <p:watermark for="aut2" value="Подразделы"  />
-                            <p:tooltip for="aut2" style="width: 200px;" value="Введите подразделы к предмету через запятую. Например: электричество, электростатика" />
+                            <p:tooltip for="aut2" style="width: 200px; margin-right: 5px;" value="Введите подразделы к предмету через запятую. Например: электричество, электростатика" />
                         </h:panelGroup>
 
                     </h:panelGrid>
-
+                    
+                    <h:outputLabel value="Ваш Email: * " style=" text-align: right; display: inline-block; width: 200px; margin-right: 25px;" /> 
+                    <p:inputText id="my_email" style="width: 400px;"
+                                 
+                                 required="true" value="#{makeOrderBean.fromEmail}" />
+                    <p:watermark for="my_email" value="Например: vasya.pupkin@mail.ru"  />
+                    <p:tooltip style="width: 200px;" for="my_email" value="Указывается E-mail, c которого будете писать во время экзамена, в случае если фото будет отправляться по MMS на E-mail указать адрес отправителя, это адрес примерного вида 79030000000@mms.beeline.ru. Чтобы получить этот адрес попробуйте отправить MMS себе на почту." />
+                    <br/>
+                    
                     <h:outputLabel value="Дополнительные сведения о заказе"  /> <br/>
                     <p:inputTextarea id="inputarea21" style="width: 98%;" value="#{makeOrderBean.description}" autoResize="false" rows="5"/>   
                     <p:watermark for="inputarea21" value="Здесь вы можете указать требования к решению, оформлению и т.д. Оставлять здесь контактные данные категорически запрещено!" /> 

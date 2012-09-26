@@ -34,6 +34,8 @@ public class DealManager implements DealManagerLocal {
     MailManagerLocal mailMan;
     @EJB
     OnlineHelpManagerLocal onlineMan;
+    @EJB
+    OrderManagerLocal orderMan;
 
     @Override
     @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
@@ -76,8 +78,26 @@ public class DealManager implements DealManagerLocal {
             order.setStatus(3);//half-paid
             em.merge(order);
             //sending message to employee from admin 
-            messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), "Внесена предоплата за заказ " + order.getId().toString(), "Можете начинать решать", order.getConditionId());
-            mailMan.sendStatusChange(order.getId());
+//            messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), "Внесена предоплата за заказ " + order.getId().toString(), "Можете начинать решать", order.getConditionId());
+            String theme = "Внесена предоплата за заказ ID=" + order.getId();
+            String text = "";
+            if (order.getType() == Order.OFFLINE_TYPE) {
+                text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
+                        + "\n\nВнесена предоплата за заказа ID=" + order.getId() + ""
+                        + "\n\n Дедлайн: " + order.getDeadlineString() + ""
+                        + "\n\n\nC уважением, администрация Reshaka.Ru";
+            }
+            if (order.getType() == Order.ONLINE_TYPE) {
+                text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
+                        + "\n\nВнесена предоплата за заказа ID=" + order.getId() + ""
+                        + "\n\n Время начала онлайн-помощи: " + order.getDeadlineString() + ""
+                        + "\n Продолжительность: " + order.getDuration() + " мин. "
+                        + "\n\n\nC уважением, администрация Reshaka.Ru";
+            }
+            mailMan.sendMail(order.getEmployee().getEmail(), theme, text);
+            messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), theme, text, order.getConditionId());
+
+            //            mailMan.sendStatusChange(order.getId());
         }
 
     }
@@ -115,8 +135,10 @@ public class DealManager implements DealManagerLocal {
         offers.add(offer);
         order.setOffers(offers);
         em.merge(order);
-
         makePrepayment(orderId);
+
+//        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), "Заказ оценен","Решающий "+orderMan.getLoginById(offer.getUserId()) +" готов выполнить заказ (ID="+orderId+") за "+offer.getPrice() +" р.  Необходимо внести предоплату в размере 50% от стоимости заказа, либо вы можете подождать, пока заказ просмотрят другие решающие", null);
+//        mailMan.sendMail(order.getEmployer().getEmail(), "Заказ оценен в системе", "Решающий "+orderMan.getLoginById(offer.getUserId()) +" готов выполнить заказ (ID="+orderId+") за "+offer.getPrice() +" р.  Необходимо внести предоплату в размере 50% от стоимости заказа, либо вы можете подождать, пока заказ просмотрят другие решающие. \n \nC уважением, администрация Reshaka.Ru");
     }
 
     @Override
@@ -130,8 +152,8 @@ public class DealManager implements DealManagerLocal {
         order.setSolutionId(solutionId);
         order.setStatus(4); // solved
         em.merge(order);
-        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), "Ваше задание решено! (id = " + order.getId().toString() + " )", "Внесите оставшуюся часть денег, чтобы скачать решение (" + order.getPrice() / 2.0 + " p.)", null);
-        mailMan.sendStatusChange(order.getId());
+//        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), "Ваше задание решено! (id = " + order.getId().toString() + " )", "Внесите оставшуюся часть денег, чтобы скачать решение (" + order.getPrice() / 2.0 + " p.)", null);
+//        mailMan.sendStatusChange(order.getId());
     }
 
     @Override
@@ -157,7 +179,13 @@ public class DealManager implements DealManagerLocal {
         order.setStatus(5); //payed
         userMan.addAttachmentToUser(order.getEmployer().getId(), order.getSolutionId());
         em.merge(order);
-        mailMan.sendStatusChange(order.getId());
+//        mailMan.sendStatusChange(order.getId());
+        String theme = "Решение доступно для скачивания.";
+        String text = "Решение заказа ID=" + order.getId()+ " доступно для скачивания. "
+                + "\n\n Вы можете его скачать, нажав конпку информации о заказе (i) -> скачать решение. "
+                + "\n\n\nC уважением, администрация Reshaka.Ru";
+        messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), theme, text, order.getSolutionId());
+        mailMan.sendMail(order.getEmployer().getEmail(), theme, text);
     }
 
     @Override

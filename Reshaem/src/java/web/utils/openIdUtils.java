@@ -15,6 +15,7 @@ public class openIdUtils {
 
  public Map<String,String> extractIdFromJson(String json)
  {
+     System.out.println("extractIdFromJson(): json = " + json);
      String s  = "";
      int i;
      Map<String,String> map = new HashMap();
@@ -29,7 +30,7 @@ public class openIdUtils {
          return map;
      }
      
-     if (json.indexOf("vkontakte.ru\\/id")  > 0)
+     if (json.indexOf("vk.com\\/id")  > 0)
      {
          s = "";
          i = json.indexOf("uid\":") + 5;

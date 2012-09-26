@@ -150,6 +150,14 @@ public class MakeOrderBean implements Serializable {
     public void setDescription(String description) {
         order.setDescription(description);
     }
+    
+    public String getFromEmail(){
+        return order.getFromEmail();
+    }
+    
+    public void setFromEmail(String fromEmail){
+        order.setFromEmail(fromEmail);
+    }
 
     public User getEmployee() {
         return order.getEmployee();
