@@ -60,7 +60,7 @@ public class SessionUtils {
                     break;
             }
         }
-        System.out.println("Cookies: l=" + l + "; p=" + p + "; e=" + e);
+//        System.out.println("Cookies: l=" + l + "; p=" + p + "; e=" + e);
         if (e == null || "true".equalsIgnoreCase(e)) {
             return um.logInByEmailMD5(l, p);
         } else {

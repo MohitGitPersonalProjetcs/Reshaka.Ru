@@ -105,7 +105,7 @@ public class SessionTimeoutFilter implements Filter {
             // try to log in using cookies
             User u = SessionUtils.loginByCookies(cookies);
             if (u == null) {
-                System.out.println("Login via cookies => not signed in");
+//                System.out.println("Login via cookies => not signed in");
                 return;
             }
             if (session != null && session.isNew()) {
@@ -114,7 +114,7 @@ public class SessionTimeoutFilter implements Filter {
                 session = sRequest.getSession(true);
             }
             SessionListener.setSessionAttribute(session, "user", u);
-            System.out.println("Login via cookies: user=" + SessionListener.getSessionAttribute(session, "user"));
+//            System.out.println("Login via cookies: user=" + SessionListener.getSessionAttribute(session, "user"));
         }
     }
 

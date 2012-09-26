@@ -44,51 +44,83 @@
     
     <parameter name="subjects" list="true">
         <value>Выберите предмет</value>
-        <value>Гидравлика</value>
+        <value>Математика</value>
+        <value>Математический анализ</value>
+        <value>Физика</value>
+        <value>Информатика</value>
+        <value>Программирование</value>
+        <value>Теоретическая механика</value>
+        <value>Сопротивление материалов</value>
+        <value>Прикладная механика</value>
+        <value>ТОЭ</value>
+        <value>Химия</value>
         <value>Детали машин</value>
         <value>Инженерная графика</value>
-        <value>Информатика</value>
         <value>История</value>
         <value>Логика</value>
-        <value>Математика</value>
         <value>Материаловедение</value>
-        <value>Прикладная механика</value>
-        <value>Программирование</value>
         <value>Русский язык</value>
-        <value>Сопротивление материалов</value>
-        <value>Теоретическая механика</value>
-        <value>ТОЭ</value>
-        <value>Физика</value>
-        <value>Химия</value>
         <value>Эконометрика</value>
         <value>Экономика</value>
         <value>Электроника</value>
-        <value>Англ. язык</value>
+        <value>Английский язык</value>
+        <value>Французский язык</value>
+        <value>Немецкий язык</value>
         <value>Нет в списке</value>
     </parameter>
     
     <parameter name="tags" list="true">
-        <value>Гидравлика</value>
-        <value>Детали машин</value>
-        <value>Инженерная графика</value>
-        <value>Информатика</value>
-        <value>История</value>
-        <value>Логика</value>
-        <value>Математика</value>
-        <value>Материаловедение</value>
-        <value>Прикладная механика</value>
-        <value>Программирование</value>
-        <value>Русский язык</value>
-        <value>Сопротивление материалов</value>
-        <value>Теоретическая механика</value>
-        <value>ТОЭ</value>
-        <value>Физика</value>
-        <value>Химия</value>
-        <value>Эконометрика</value>
-        <value>Экономика</value>
-        <value>Электроника</value>
-        <value>Англ. язык</value>
-        <value>Нет в списке</value>
+        <value>Аналитическая геометрия</value>
+        <value>Аналитическая динамика</value>
+        <value>Аналитическая химия</value>
+        <value>Выполнение лабораторных работ</value>
+        <value>Вычисление пределов</value>
+        <value>Динамика</value>
+        <value>Дискретная математика</value>
+        <value>Дифференциальное и интегральное исчисление</value>
+        <value>Дифференциальные уравнения</value>
+        <value>Интегральные уравнения</value>
+        <value>Кинематика</value>
+        <value>Коллоидная химия</value>
+        <value>Комбинаторика</value>
+        <value>Кратные и криволинейные интегралы</value>
+        <value>Магнитные цепи.</value>
+        <value>Математическая логика</value>
+        <value>Математическая статистика</value>
+        <value>Написание контрольных работ</value>
+        <value>Написание рефератов по правоведению</value>
+        <value>Нелинейные электрические цепи переменного тока.</value>
+        <value>Неорганическая химия</value>
+        <value>Органическая химия</value>
+        <value>Переводы специальных технических текстов</value>
+        <value>Переводы текстов школьной программы</value>
+        <value>Переводы художественной литературы</value>
+        <value>Переходные процессы в линейных электрических цепях</value>
+        <value>Периодические несинусоидальные токи в линейных электрических цепях</value>
+        <value>Пределы и непрерывность</value>
+        <value>Решение задач по ТАУ (теории автоматического управления)</value>
+        <value>Решение задач по биологии и генетике</value>
+        <value>Решение задач по географии</value>
+        <value>Решение задач по геодезии</value>
+        <value>Решение задач по геологии</value>
+        <value>Решение задач по материаловедению</value>
+        <value>Решение задач по метрологии</value>
+        <value>Решение задач по теплотехнике</value>
+        <value>Решение задач по экологии</value>
+        <value>Решение задач по эконометрике</value>
+        <value>Решение задач по электронике</value>
+        <value>Решение кейсов по экономике</value>
+        <value>Ряды</value>
+        <value>Ряды, функциональные ряды</value>
+        <value>Статика</value>
+        <value>Теория множеств</value>
+        <value>Теория пределов</value>
+        <value>Трехфазные цепи.</value>
+        <value>Физическая химия</value>
+        <value>Функции комплексного переменного</value>
+        <value>Школьный курс</value>
+        <value>Электрические цепи однофазного синусоидального тока.</value>
+        <value>Электрические цепи постоянного тока.</value>
     </parameter>
     
     <parameter name="statusNew" list="false">
