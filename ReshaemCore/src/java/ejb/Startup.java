@@ -19,12 +19,16 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import quartz.ReshakaScheduler;
+import quartz.jobs.MoneyCheckerJob;
 import quartz.jobs.OrdersExpirationJob;
+import quartz.jobs.ReshakaJob;
 
 /**
  * This Singleton startup EJB performs initial configuration at startup.
@@ -51,26 +55,40 @@ public class Startup {
         try {
             log4jInit();
         } catch (Exception ex) {
-            System.err.println("Failed to initialize log4j!" + ex);
+            System.err.println("Startup.startup(): Failed to initialize log4j!" + ex);
         }
         try {
             initDatabase();
         } catch (Exception ex) {
-            System.err.println("Init database failed!" + ex);
+            System.err.println("Startup.startup(): Init database failed!" + ex);
         }
         try {
             checkUploads();
         } catch (Exception ex) {
-            System.err.println("Upload validity check failed!" + ex);
+            System.err.println("Startup.startup(): Upload validity check failed!" + ex);
+        }
+        
+        try {
+            ReshakaScheduler.getInstance().start();
+
+            // Schedule: Order Expiration Check
+            Trigger trigger = TriggerBuilder.newTrigger().startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(24).repeatForever()).build();
+            ReshakaScheduler.getInstance().schedule(OrdersExpirationJob.class, trigger);
+            
+            // Schedule: Incoming Money Check 
+            trigger = TriggerBuilder.newTrigger().startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(1).repeatForever()).build();
+            ReshakaScheduler.getInstance().schedule(MoneyCheckerJob.class, trigger);
+        } catch (Exception ex) {
         }
 
-        Timer t = new Timer("moneyChecker");
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateMoney(); //uncomment!!!
-            }
-        }, new Date(), 60 * 1000);
+//        // TODO: Use QuarzScheduler!
+//        Timer t = new Timer("moneyChecker");
+//        t.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                updateMoney(); //uncomment!!!
+//            }
+//        }, new Date(), 60 * 1000);
 
         if (log != null) {
             log.info("EJB module initialized");
@@ -89,15 +107,6 @@ public class Startup {
         ReshakaEvent event = new ReshakaEvent();
         event.setDescription("test event");
         evt.postEvent(event);
-
-        try {
-            ReshakaScheduler.getInstance().start();
-
-            // Schedule: Order Expiration Check
-            Trigger trigger = TriggerBuilder.newTrigger().startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(24).repeatForever()).build();
-            ReshakaScheduler.getInstance().schedule(OrdersExpirationJob.class, trigger);
-        } catch (SchedulerException ex) {
-        }
     }
 
     @PreDestroy
