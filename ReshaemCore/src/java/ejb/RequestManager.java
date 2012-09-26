@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.PersistenceContext;
@@ -74,7 +75,7 @@ public class RequestManager implements RequestManagerLocal {
     }
 
     @Override
-    @Transactional(value = Transactional.TransactionFlowType.SUPPORTS)
+    @javax.ejb.TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Request> getAllRequests(Long ownerId) {
         List<User> admins = userMan.getAdministrators();
         boolean b = false;
