@@ -12,7 +12,7 @@
                 <div><strong>Пользователи онлайн:</strong> #{statsBean.usersCount} из них #{statsBean.partnersCount} решак(а) и #{statsBean.adminsCount} администратор(ов)</div>
                 <div>
                     <strong>Список пользователей:</strong>
-                    <c:forEach items="#{statsBean.users}" var="user">
+                    <c:forEach items="#{statsBean.getUsers(10)}" var="user">
                         <h:outputText value=" "/>
                         <c:if test="#{user.userGroup==3}">
                             <h:link target="_blank" outcome="profile.xhtml" value="#{user.login}" style="color: green;">

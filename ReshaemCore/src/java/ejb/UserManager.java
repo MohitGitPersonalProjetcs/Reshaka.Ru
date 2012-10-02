@@ -403,7 +403,7 @@ public class UserManager implements UserManagerLocal {
         Query q = em.createQuery(jpqlString);
         q.setMaxResults(first + pageSize);
         List<User> users = q.getResultList();
-        System.out.println("EJB: finded users: " + users.toString());
+        System.out.println("EJB: found users: " + users.toString());
         if (first > users.size() - 1) {
             return null;
         }

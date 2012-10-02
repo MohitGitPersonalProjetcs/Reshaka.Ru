@@ -1,18 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package web.users;
 
 import ejb.UserManagerLocal;
 import entity.User;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
-import org.primefaces.model.SortOrder;
 
 /**
  *
@@ -27,7 +22,8 @@ public class ShowUsersBean {
 
     private List<User> usersList;
 
-    private SelectItem[] options;
+    private static final SelectItem[] userGroupFilterOptions = createFilterOptions();
+    private static final SelectItem[] userOnlineStatusOptions = createStatusFilterOptions();
 
 //    public List<User> getAllUsers()
 //    {
@@ -36,7 +32,6 @@ public class ShowUsersBean {
     @PostConstruct
     private void init() {
         setUsersList(userMan.getAllRegisteredUsers());
-        options = createFilterOptions();
     }
 
     public void establishAllReshakas() {
@@ -51,7 +46,7 @@ public class ShowUsersBean {
         setUsersList(userMan.getAllRegisteredUsers());
     }
 
-    private SelectItem[] createFilterOptions() {
+    private static SelectItem[] createFilterOptions() {
         SelectItem[] options2 = new SelectItem[4];
 
         options2[0] = new SelectItem("", "Выберите");
@@ -70,8 +65,22 @@ public class ShowUsersBean {
         this.usersList = usersList;
     }
 
-    public SelectItem[] getOptions() {
-        return options;
+    public SelectItem[] getUserGroupFilterOptions() {
+        return userGroupFilterOptions;
+    }
+    
+    public SelectItem[] getUserOnlineStatusFilterOptions() {
+        return userOnlineStatusOptions;
+    }
+
+    private static SelectItem[] createStatusFilterOptions() {
+        SelectItem[] options2 = new SelectItem[3];
+
+        options2[0] = new SelectItem("", "Выберите");
+        options2[1] = new SelectItem("true", "Online");
+        options2[2] = new SelectItem("false", "Offline");
+
+        return options2;
     }
     
     

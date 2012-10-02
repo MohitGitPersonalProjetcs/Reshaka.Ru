@@ -5,6 +5,7 @@
 package servlets;
 
 import ejb.ConfigurationManagerLocal;
+import ejb.SessionManagerLocal;
 import ejb.UserManagerLocal;
 import entity.User;
 import java.io.BufferedReader;
@@ -40,6 +41,9 @@ public class openId extends HttpServlet {
 
     @EJB
     UserManagerLocal userMan;
+    
+    @EJB
+    SessionManagerLocal sm;
 
     private transient HttpSession session = null;
 
@@ -132,6 +136,8 @@ public class openId extends HttpServlet {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         session = (HttpSession) facesContext.getExternalContext().getSession(false);
         SessionListener.setSessionAttribute(session, "user", user); // working with session in servlet...
+        sm.addSession(session.getId(), (user == null) ? null : user.getId());
+        
     }
 
     private void makeBundle(Map<String, String> map) {
@@ -143,6 +149,7 @@ public class openId extends HttpServlet {
         FacesContext context = FacesContext.getCurrentInstance();
         session = (HttpSession) context.getExternalContext().getSession(true);
         SessionListener.setSessionAttribute(session, "user", user);
+        sm.addSession(session.getId(), (user == null) ? null : user.getId());
         System.out.println("makeBundle(): success");
     }
 

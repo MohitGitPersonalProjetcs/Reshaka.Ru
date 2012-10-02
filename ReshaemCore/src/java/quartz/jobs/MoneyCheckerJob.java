@@ -1,8 +1,7 @@
 package quartz.jobs;
 
 import ejb.MoneyManagerLocal;
-import javax.naming.Context;
-import javax.naming.InitialContext;
+import ejb.util.EJBUtils;
 import org.apache.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -30,14 +29,11 @@ public class MoneyCheckerJob implements ReshakaJob {
     public void execute(JobExecutionContext jec) throws JobExecutionException {
         log.trace(">> execute(): started");
         if (mm==null) {
-            try {
-                Context context = null;
-                context = new InitialContext();
-                mm = (MoneyManagerLocal)context.lookup("java:global/ReshaemEE/ReshaemCore/MoneyManager!ejb.MoneyManagerLocal");
-            } catch (Exception ex) {
-                log.error("Failed to resolve MoneyManager EJB",ex);
+           mm = EJBUtils.resolve("java:global/ReshaemEE/ReshaemCore/MoneyManager!ejb.MoneyManagerLocal", MoneyManagerLocal.class);
+           if(mm == null){
+                log.error("Failed to resolve MoneyManager EJB");
                 return;
-            }
+           }
         }
         if(mm!=null) {
             mm.updateMoney();

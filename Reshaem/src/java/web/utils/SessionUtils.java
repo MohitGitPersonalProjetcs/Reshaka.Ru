@@ -1,13 +1,9 @@
 package web.utils;
 
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.ejbLinkType;
+import ejb.util.EJBUtils;
 import ejb.UserManagerLocal;
 import entity.User;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -15,17 +11,9 @@ import javax.servlet.http.HttpSession;
  */
 public class SessionUtils {
     
-    private static UserManagerLocal um;
-    
-    static {
-        Context context = null;
-        try {
-            context = new InitialContext();
-            um = (UserManagerLocal)context.lookup("java:global/ReshaemEE/ReshaemCore/UserManager!ejb.UserManagerLocal");
-        } catch (Exception ex) {
-            
-        }
-    }
+    private static UserManagerLocal um = 
+            EJBUtils.resolve("java:global/ReshaemEE/ReshaemCore/UserManager!ejb.UserManagerLocal",
+                              UserManagerLocal.class);
 
     public static boolean isSignedIn() {
         if (SessionListener.getSessionAttribute("user", false) != null) {
