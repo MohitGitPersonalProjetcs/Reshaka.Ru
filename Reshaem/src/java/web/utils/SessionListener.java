@@ -22,7 +22,7 @@ public class SessionListener implements HttpSessionListener {
 
     private static final Map<String, HttpSession> map = Collections.synchronizedMap(new HashMap<String, HttpSession>(100));
 
-    private static SessionManagerLocal sm = EJBUtils.resolve("java:global/ReshaemEE/ReshaemCore/SessionManager!ejb.SessionManagerLocal", null);
+    private static SessionManagerLocal sm = EJBUtils.resolve("java:global/ReshaemEE/ReshaemCore/SessionManager!ejb.SessionManagerLocal", SessionManagerLocal.class);
 
     private static Logger log = Logger.getLogger(SessionListener.class);
 
