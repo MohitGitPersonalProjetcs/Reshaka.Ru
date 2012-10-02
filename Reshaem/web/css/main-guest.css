@@ -487,12 +487,17 @@ a.browse {
     cursor: pointer;
 }
 
-#slider #prevBtn {
-    display: block;
-    float: left;
+#testimonial #prevBtn {
+    display: inline-block;
+    width: 20px;
+    height: 8px;
+    background: url('../images/arrow_left.png');
 }
 
-#slider #nextBtn {
-    display: block;
+#testimonial #nextBtn {
+    display: inline-block;
     float: right;
+    width: 20px;
+    height: 8px;
+    background: url('../images/arrow_right.png');
 }
