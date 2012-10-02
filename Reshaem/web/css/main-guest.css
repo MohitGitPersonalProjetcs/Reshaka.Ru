@@ -489,15 +489,22 @@ a.browse {
 
 #testimonial #prevBtn {
     display: inline-block;
-    width: 20px;
-    height: 8px;
-    background: url('../images/arrow_left.png');
+    width: 18px;
+    height: 16px;
+    background: url('../images/left_arrow_32x32.png');
+    background-size: 16px;
+    float: left;
+}
+
+#testimonial #prevBtn a, #testimonial #nextBtn a {
+    text-decoration: none;
 }
 
 #testimonial #nextBtn {
     display: inline-block;
     float: right;
-    width: 20px;
-    height: 8px;
-    background: url('../images/arrow_right.png');
+    width: 18px;
+    height: 16px;
+    background-size: 16px;
+    background: url('../images/right_arrow_32x32.png');
 }
