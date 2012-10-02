@@ -107,13 +107,13 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
 
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
-    synchronized public Object getParameter(String param) {
+    public Object getParameter(String param) {
         return config.get(param);
     }
 
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
-    synchronized public void load() {
+    public void load() {
         load(CURRENT_XML_CONFIG_FILE);
     }
 

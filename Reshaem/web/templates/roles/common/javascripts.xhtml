@@ -205,7 +205,7 @@ and open the template in the editor.
                 }
                 
                 function setLinkForLoginzaFrame(operation , step){
-                    var s0 = "https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId";
+                    var s0 = "https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FopenId";
                     var sk = "&amp;providers_set=vkontakte,facebook,mailru,google,yandex&amp;lang=ru&amp;overlay=loginza";
                     var s2= "%3Foperation%3D"+operation+"%26step%3D"+step;
                     var sr = s0+s2+sk;
@@ -217,7 +217,7 @@ and open the template in the editor.
             
                 function initOpenIdIframe(){
                     var elem = document.getElementById("openIdIframe");
-                    elem.setAttribute("src", "https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FReshaem%2Ffaces%2FopenId&amp;providers_set=vkontakte,facebook,mailru,google,yandex&amp;lang=ru&amp;overlay=loginza");
+                    elem.setAttribute("src", "https://loginza.ru/api/widget?token_url=http%3A%2F%2Freshaka.ru%2FopenId&amp;providers_set=vkontakte,facebook,mailru,google,yandex&amp;lang=ru&amp;overlay=loginza");
                     elem = document.getElementById("openIdScript");
                     elem.setAttribute("src", "http://loginza.ru/js/widget.js");
                 }
