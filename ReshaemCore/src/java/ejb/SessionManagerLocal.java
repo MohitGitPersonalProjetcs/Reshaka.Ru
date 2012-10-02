@@ -1,6 +1,6 @@
 package ejb;
 
-import java.util.List;
+import java.util.Set;
 import javax.ejb.Local;
 
 /**
@@ -11,10 +11,12 @@ import javax.ejb.Local;
 @Local
 public interface SessionManagerLocal {
     
-    void addSession(String sessionId);
+    void addSession(String sessionId, Long userId);
     void removeSession(String session);
     void removeAll();
     
-    List<String> getSessions();
+    Set<String> getSessions();
+
+    public boolean isOnline(Long id);
     
 }

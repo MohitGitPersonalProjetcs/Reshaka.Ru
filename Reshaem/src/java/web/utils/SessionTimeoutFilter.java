@@ -1,10 +1,10 @@
 package web.utils;
 
+import ejb.util.EJBUtils;
+import ejb.SessionManagerLocal;
 import entity.User;
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLEncoder;
-import javax.faces.context.FacesContext;
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * When the session destroyed, MySessionListener will
- * do necessary logout operations.
  * Later, at the first request of client,
  * this filter will be fired and redirect
  * the user to the appropriate timeout page
@@ -25,7 +23,11 @@ import javax.servlet.http.HttpSession;
 public class SessionTimeoutFilter implements Filter {
 
     // This should be your default Home or Login page
-    private String timeoutPage = "expired.xhtml";
+    private static final String timeoutPage = "expired.xhtml";
+    private static final SessionManagerLocal sm = 
+                            EJBUtils.resolve("java:global/ReshaemEE/ReshaemCore/SessionManager!ejb.SessionManagerLocal",
+                                                SessionManagerLocal.class);
+    
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -79,7 +81,7 @@ public class SessionTimeoutFilter implements Filter {
         System.err.println("Redirect!");
         String timeoutUrl = httpServletRequest.getContextPath()
                 + "/" + getTimeoutPage();
-        String url = URLEncoder.encode(httpServletRequest.getRequestURL().toString());
+        String url = URLEncoder.encode(httpServletRequest.getRequestURL().toString(), "UTF-8");
         System.out.println("Session is invalid! redirecting to timeoutpage : " + timeoutUrl + "?redirect=" + url);
         //tryLoginViaCookies(httpServletRequest, null);
         httpServletResponse.sendRedirect(timeoutUrl + "?redirect=" + url);
@@ -114,6 +116,7 @@ public class SessionTimeoutFilter implements Filter {
                 session = sRequest.getSession(true);
             }
             SessionListener.setSessionAttribute(session, "user", u);
+            sm.addSession(session.getId(), (u == null) ? null : u.getId());
 //            System.out.println("Login via cookies: user=" + SessionListener.getSessionAttribute(session, "user"));
         }
     }
@@ -124,11 +127,6 @@ public class SessionTimeoutFilter implements Filter {
 
     public String getTimeoutPage() {
         return timeoutPage;
-
-    }
-
-    public void setTimeoutPage(String timeoutPage) {
-        this.timeoutPage = timeoutPage;
 
     }
 }

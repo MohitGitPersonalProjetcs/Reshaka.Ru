@@ -1,9 +1,9 @@
 package web.utils;
 
+import ejb.util.EJBUtils;
 import ejb.SessionManagerLocal;
 import entity.User;
 import java.util.*;
-import javax.ejb.EJB;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +22,7 @@ public class SessionListener implements HttpSessionListener {
 
     private static final Map<String, HttpSession> map = Collections.synchronizedMap(new HashMap<String, HttpSession>(100));
 
-    @EJB
-    SessionManagerLocal sm;
+    private static SessionManagerLocal sm = EJBUtils.resolve("java:global/ReshaemEE/ReshaemCore/SessionManager!ejb.SessionManagerLocal", null);
 
     private static Logger log = Logger.getLogger(SessionListener.class);
 
@@ -32,7 +31,7 @@ public class SessionListener implements HttpSessionListener {
         System.out.println("ID Session Created: " + event.getSession().getId());
         HttpSession session = event.getSession();
         map.put(session.getId(), session);
-        sm.addSession(session.getId());
+        sm.addSession(session.getId(), null);
     }
 
     @Override
@@ -50,32 +49,7 @@ public class SessionListener implements HttpSessionListener {
     }
 
     public static boolean isOnline(Long id) {
-        if (map == null) {
-            return false;
-        }
-        Set<Map.Entry<String, HttpSession>> entrySet = map.entrySet();
-        if (entrySet == null) {
-            return false;
-        }
-        for (Map.Entry<String, HttpSession> entry : entrySet) {
-            HttpSession session = (HttpSession) entry.getValue();
-            if (session == null) {
-                continue;
-            }
-            if(!isSessionValid(session))
-                continue;
-            User u = (User) session.getAttribute("user");
-            if (u == null && id == null) {
-                return true;
-            }
-            if (id == null) {
-                continue;
-            }
-            if (u != null && u.getId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
+        return sm.isOnline(id);
     }
 
     public static List<HttpSession> getAllUserSessions(Long id) {

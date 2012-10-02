@@ -1,10 +1,13 @@
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import javax.ejb.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import org.apache.log4j.Logger;
 
 /**
@@ -16,20 +19,30 @@ import org.apache.log4j.Logger;
 @Singleton
 public class SessionManager implements SessionManagerLocal {
 
-    private final List<String> sessions = Collections.synchronizedList(new ArrayList<String>());
+    private final Map<String, Long> sessions = new HashMap<String, Long>();
     private static Logger log = Logger.getLogger(SessionManager.class);
+    
+    @PersistenceContext(unitName = "ReshaemCorePU")
+    EntityManager em;
 
     @Override
-    public void addSession(String session) {
-        sessions.add(session);
+    public void addSession(String session, Long userId) {
+        if(userId != null)
+            sessions.put(session, userId);
         if (log.isDebugEnabled()) {
-            log.debug("addSession(): Session added. Online: " + sessions.size());
+            log.debug("addSession(): Session added. userId = "+userId+" Online: " + sessions.size());
         }
     }
 
     @Override
     public void removeSession(String session) {
-        sessions.remove(session);
+        Long id = sessions.remove(session);
+        if(id != null) {
+            Query q = em.createQuery("update User u set u.lastActivityDate = :currentDate where u.id = :id");
+            q.setParameter("currentDate", new Date());
+            q.setParameter("id", id);
+            q.executeUpdate();
+        }
         if (log.isDebugEnabled()) {
             log.debug("removeSession(): Session removed. Online: " + sessions.size());
         }
@@ -45,10 +58,15 @@ public class SessionManager implements SessionManagerLocal {
 
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
-    public List<String> getSessions() {
+    public Set<String> getSessions() {
         if (log.isTraceEnabled()) {
             log.trace(">> getSessions() returns " + sessions);
         }
-        return sessions;
+        return sessions.keySet();
+    }
+
+    @Override
+    public boolean isOnline(Long id) {
+        return sessions.values().contains(id);
     }
 }

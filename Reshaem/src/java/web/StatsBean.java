@@ -27,13 +27,20 @@ public class StatsBean {
     }
     
     public List<SimpleUser> getUsers() {
+        return getUsers(20);
+    }
+    
+    public List<SimpleUser> getUsers(int count) {
         List<SimpleUser> lst = new ArrayList<>();
         Set<User> set = new HashSet<>();
         Map<String, HttpSession> m = SessionListener.getAllSessions();
         for(HttpSession s : m.values()) {
             User u = (User)SessionListener.getSessionAttribute(s,"user");
-            if(u!=null)
+            if(u!=null) {
                 set.add(u);
+                if(set.size() == count)
+                    break;
+            }
         }
         for(User u : set) {
             SimpleUser su = new SimpleUser(u);

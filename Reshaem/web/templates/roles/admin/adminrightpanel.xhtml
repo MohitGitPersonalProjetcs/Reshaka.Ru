@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -21,7 +17,7 @@ and open the template in the editor.
                         <h:outputText value="Баланс :" style="font-size: small;"/>
                         <h:panelGroup>
                             <p:commandLink value="#{userBean.userBalance(webSession.id)}" onclick="replenishment_dlg.show();" />
-                            <img src="#{request.contestPath}/images/rur.jpg" style="width: 17px;" />
+                            <img src="#{request.contextPath}/images/rur.jpg" style="width: 17px;" />
                         </h:panelGroup>
                         
                         <a href="#{request.contextPath}/profile.xhtml" style="font-size: small;" >

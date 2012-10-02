@@ -1,10 +1,10 @@
 package quartz.jobs;
 
+import ejb.util.EJBUtils;
 import entity.OnlineHelp;
 import entity.Order;
 import java.util.Arrays;
 import java.util.Date;
-import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -38,7 +38,7 @@ public class OrdersExpirationJob implements ReshakaJob {
         try {
             EntityManagerFactory f = Persistence.createEntityManagerFactory("ReshaemCorePU");
             EntityManager em = f.createEntityManager();
-            UserTransaction transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
+            UserTransaction transaction = EJBUtils.resolve("java:comp/UserTransaction", UserTransaction.class);
             transaction.begin();
             // Offline orders
             Query q = em.createQuery("update Order o set o.status=:ORDER_EXPIRED_STATUS"

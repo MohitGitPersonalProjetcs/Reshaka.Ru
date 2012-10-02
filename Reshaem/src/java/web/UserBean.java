@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 import web.utils.SessionListener;
+import web.utils.Tools;
 
 /**
  * Contains user profile information which is stored in Entity class
@@ -401,7 +402,7 @@ public class UserBean implements Serializable {
         HttpServletResponse response = (HttpServletResponse) ctx.getResponse();
         Cookie loginCookie = new Cookie("l", login);
         loginCookie.setMaxAge(3600 * 24 * 366);
-        Cookie passwordCookie = new Cookie("p", getMD5(password));
+        Cookie passwordCookie = new Cookie("p", Tools.getMD5(password));
         passwordCookie.setMaxAge(3600 * 24 * 366);
         Cookie emailCookie = new Cookie("e", "true");
         emailCookie.setMaxAge(3600 * 24 * 366);
@@ -453,27 +454,6 @@ public class UserBean implements Serializable {
         System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath());
     }
 
-    public String getMD5(String s) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(s.getBytes());
-            byte byteData[] = md.digest();
-
-            StringBuilder hexString = new StringBuilder();
-            for (int i = 0; i < byteData.length; i++) {
-                String hex = Integer.toHexString(0xff & byteData[i]);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (Exception exc) {
-        }
-
-        return "";
-    }
-
     public boolean canChangeNickname(Long userId) {
         return userMan.canChangeNickname(userId);
     }
@@ -498,5 +478,9 @@ public class UserBean implements Serializable {
         userMan.recoverPassword(email);
         fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Уведомление","Новый пароль выслан на почту " +email));
         rc.addCallbackParam("recovery", true);
+    }
+    
+    public static String userOnlineStatus(Long id) {
+        return SessionListener.isOnline(id)+"";
     }
 }
