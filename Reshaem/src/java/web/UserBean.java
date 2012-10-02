@@ -376,7 +376,7 @@ public class UserBean implements Serializable {
         session.invalidate();
         context.getExternalContext().getSession(true);
         flushCookies();
-        return "index2.xhtml?faces-redirect=true";
+        return "index.xhtml?faces-redirect=true";
     }
 
     /**

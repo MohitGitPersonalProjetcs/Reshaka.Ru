@@ -90,7 +90,7 @@ public class openId extends HttpServlet {
 //                k++;
 //            }
 //
-//            s = "index2.xhtml" + s;
+//            s = "index.xhtml" + s;
 //
 //            System.out.println("s = " + s);
 //            out.println("<html>" + "<head><title> Receipt </title>");
@@ -109,15 +109,15 @@ public class openId extends HttpServlet {
 //            if (!isSignedIn()) {
 //                openIdAuthorisation(json);
 //                System.out.println("openIdAuthorisation success... ");
-//                response.sendRedirect("index2.xhtml");
+//                response.sendRedirect("index.xhtml");
 //            } else {
 //                makeBundle(utils.extractIdFromJson(json));
-//                response.sendRedirect("index2.xhtml");
+//                response.sendRedirect("index.xhtml");
 //            }
 //
 //
 //
-//            response.sendRedirect("index2.xhtml");
+//            response.sendRedirect("index.xhtml");
         }
     }
     
@@ -210,7 +210,7 @@ public class openId extends HttpServlet {
                 k++;
             }
 
-            s = "index2.xhtml" + s;
+            s = "index.xhtml" + s;
 
             System.out.println("s = " + s);
             
