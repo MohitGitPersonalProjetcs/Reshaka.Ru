@@ -31,7 +31,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
+        <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>openId</servlet-name>
@@ -49,7 +49,7 @@
         <session-timeout>1</session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>faces/index2.xhtml</welcome-file>
+        <welcome-file>index2.xhtml</welcome-file>
     </welcome-file-list>
     <!-- -->
     <filter>

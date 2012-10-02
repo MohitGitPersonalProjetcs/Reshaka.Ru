@@ -278,7 +278,7 @@ and open the template in the editor.
                                     <p:tooltip for="fillUp_o" value="Пополнить баланс" />
                                     <h:panelGrid columns="2">
                                         <h:outputText value="Мой баланс:"/>
-                                        <h:outputLink style="color: red;"  id="fillUp_o" target="payments" value="#{request.contextPath}/faces/payments.xhtml">#{userBean.userBalance(webSession.id)}</h:outputLink>
+                                        <h:outputLink style="color: red;"  id="fillUp_o" target="payments" value="#{request.contextPath}/payments.xhtml">#{userBean.userBalance(webSession.id)}</h:outputLink>
 
                                     </h:panelGrid>
 

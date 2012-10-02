@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class URLUtils {
 
     public static String getOrderURL(Long orderID) {
-        String url = getReshakaURL() + "/faces/index2.xhtml"; // my orders page
+        String url = getReshakaURL() + "/index2.xhtml"; // my orders page
         if (orderID != null) {
             url += "?order=" + orderID;
         }
@@ -18,7 +18,7 @@ public class URLUtils {
     }
 
     public static String getReshakaURL() {
-        return "http://reshaka.ru/Reshaem";
+        return "http://reshaka.ru";
     }
 
     public static String createLink(String url, String target, String value) {

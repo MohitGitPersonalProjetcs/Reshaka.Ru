@@ -17,7 +17,7 @@
                         <span style="font-size: small; cursor: pointer;" onclick="replenishment_dlg.show();" >Баланс: </span>
                         <h:panelGroup>
                             <p:commandLink value="#{userBean.userBalance(webSession.id)}" onclick="replenishment_dlg.show();" />
-                            <img src="/Reshaem/images/rur.jpg" style="width: 13px;" />
+                            <img src="#{request.contextPath}/images/rur.jpg" style="width: 13px;" />
                         </h:panelGroup>
 
 
@@ -25,15 +25,15 @@
                                                                
                                                                update=":profile_dialog_content"
                                                                style="font-size: small;"/>-->
-                        <a href="#{request.contextPath}/faces/profile.xhtml" style="font-size: small;" >
+                        <a href="#{request.contextPath}/profile.xhtml" style="font-size: small;" >
                             Мой профиль
                         </a>
                         <h:outputText value=""/>
 
 
                         <!--
-                                                <a style="font-size: small;" href="#{request.contextPath}/faces/index2.xhtml#operation=myorder" onclick="window.location = '#{request.contextPath}/faces/index2.xhtml#operation=myorder' ;myOrdersButtonClicked();"> Мои заказы </a>    -->
-                        <a style="font-size: small;" href="#{request.contextPath}/faces/index2.xhtml">Мои заказы </a>
+                                                <a style="font-size: small;" href="#{request.contextPath}/index2.xhtml#operation=myorder" onclick="window.location = '#{request.contextPath}/index2.xhtml#operation=myorder' ;myOrdersButtonClicked();"> Мои заказы </a>    -->
+                        <a style="font-size: small;" href="#{request.contextPath}/index2.xhtml">Мои заказы </a>
                         <h:outputText value=""/>
 
                         <h:link outcome="ichat.xhtml" value="Мои сообщения" style="font-size:small;"/>

@@ -69,7 +69,7 @@ public class auth extends HttpServlet {
             scope.add(new Payment(Destination.toPattern, "343", 1, "100"));
             scope.add(new Payment(Destination.toPattern, "928", 1, "100"));
 
-            String codeReqUri = ym.authorizeUri(scope,"http://reshaka.ru/Reshaem/faces/redirected", false);
+            String codeReqUri = ym.authorizeUri(scope,"http://reshaka.ru/redirected", false);
             response.sendRedirect(codeReqUri);
 
         } finally {

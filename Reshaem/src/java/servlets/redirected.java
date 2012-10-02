@@ -73,7 +73,7 @@ public class redirected extends HttpServlet {
                     System.out.println("ym is null!!!");
                 }
                 ReceiveOAuthTokenResponse resp =
-                        ym.receiveOAuthToken(code, "http://reshaka.ru/Reshaem/faces/redirected");
+                        ym.receiveOAuthToken(code, "http://reshaka.ru/redirected");
                 System.out.println("resp to string = " + resp.toString());
                 if (resp == null) {
                     System.out.println("resp is null!!!");

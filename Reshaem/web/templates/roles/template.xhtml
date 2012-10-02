@@ -24,7 +24,7 @@
             </ui:insert>
 
             <c:if test="#{'expired'.equals(param['status'])}"> 
-                <meta http-equiv="Refresh" content="0; url=#{request.contextPath}/faces/index2.xhtml?status=post-expired"/>
+                <meta http-equiv="Refresh" content="0; url=#{request.contextPath}/index2.xhtml?status=post-expired"/>
             </c:if>
             <c:if test="#{!'expired'.equals(param['status'])}">
                 <c:if test="#{webSession.signedIn}">
@@ -66,7 +66,7 @@
                 </h:panelGroup>
                 <div id="topPanel">
                     <div style="width: 250px; float: left;">
-                        <a href="#{request.contextPath}/faces/index2.xhtml">
+                        <a href="#{request.contextPath}/index2.xhtml">
                             <img src="#{request.contextPath}/images/logo.png" title="Reshaka.RU" 
                                  alt="Reshaka.RU" width="230" height="80" border="0" />
                         </a>
@@ -109,8 +109,8 @@
 
                 <h:panelGroup >
                     <div onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" id="share42"  style=" opacity: 0.5; top: 180px; z-index:1000; position:fixed; right:10px;  ">
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -224px 0" href="#" onclick="window.open('http://vkontakte.ru/share.php?url=http%3A%2F%2Freshaka.ru/Reshaem/faces/index2.xhtml', '_blank', 'scrollbars=0, resizable=1, menubar=0, left=200, top=200, width=554, height=421, toolbar=0, status=0');return false" title="Поделиться В Контакте" target="_blank"></a>                   
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -64px 0" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Freshaka.ru/Reshaem/faces/index2.xhtml&amp;t=" title="Поделиться в Facebook" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -224px 0" href="#" onclick="window.open('http://vkontakte.ru/share.php?url=http%3A%2F%2Freshaka.ru/Reshaem/index2.xhtml', '_blank', 'scrollbars=0, resizable=1, menubar=0, left=200, top=200, width=554, height=421, toolbar=0, status=0');return false" title="Поделиться В Контакте" target="_blank"></a>                   
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -64px 0" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Freshaka.ru/Reshaem/index2.xhtml&amp;t=" title="Поделиться в Facebook" target="_blank"></a>
                         <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -192px 0" href="http://twitter.com/share?text=Решение задач для школьников и студентов на заказ. Очень помогло!&amp;url=http%3A%2F%2Freshaka.ru/Reshaem/" title="Добавить в Twitter" target="_blank"></a>
 
                         <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -128px 0" href="http://connect.mail.ru/share?url=http%3A%2F%2Freshaka.ru/Reshaem/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов." title="Поделиться в Моем Мире@Mail.Ru" target="_blank"></a>
@@ -127,7 +127,7 @@
                         <p class="copyright">
                             <h:panelGroup rendered="#{webSession.signedIn}">
                                 <span class="redhlp_button"><a href="javascript:void(0);" title="Задать вопрос оператору">Online-консультант</a></span> | 
-                                <a href="javascript:void()" onclick="sys_comments_dlg.show();" >добавить отзыв о проекте</a> | <a href="#{request.contextPath}/faces/feedbacks.xhtml" > все отзывы</a> <br/>
+                                <a href="javascript:void()" onclick="sys_comments_dlg.show();" >добавить отзыв о проекте</a> | <a href="#{request.contextPath}/feedbacks.xhtml" > все отзывы</a> <br/>
                             </h:panelGroup>
                             © Reshaka.RU all rights reserved
                         </p>	

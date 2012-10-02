@@ -179,7 +179,7 @@
     </parameter>
    
     <parameter name="redirectUri" list="false">
-        <value>http://reshaka.ru/Reshaem/faces/redirected</value>
+        <value>http://reshaka.ru/redirected</value>
     </parameter>
     
     <parameter name="WebmoneyLastMessageReceivedDate" list="false">

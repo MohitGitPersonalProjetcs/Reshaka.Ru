@@ -364,15 +364,7 @@ div.tabs div.tab.last{
     border-bottom-left-radius: 13px;
 }
 
-/*div.tabs div.tab div.arrow{
-    position: absolute;
-    background: url(/Reshaem/faces/images/28_homeSelArrow.png) no-repeat;
-    height: 58px;
-    width: 17px;
-    left: 100%;
-    top: 0px;
-    display: none;
-}*/
+
 
 div.tabs div.tab.selected div.arrow{
     display: block;

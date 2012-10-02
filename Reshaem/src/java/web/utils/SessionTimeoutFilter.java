@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 public class SessionTimeoutFilter implements Filter {
 
     // This should be your default Home or Login page
-    private String timeoutPage = "faces/expired.xhtml";
+    private String timeoutPage = "expired.xhtml";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
