@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
+//import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -134,6 +135,8 @@ public class openId extends HttpServlet {
         User user = userMan.openIdAuthorisation(map);
         System.out.println("openId auth: user = " + user);
         FacesContext facesContext = FacesContext.getCurrentInstance();
+//        FacesContext facesContext = ServletContext.
+        System.out.println("openIdAuthorisation: facesContext = " + facesContext);
         session = (HttpSession) facesContext.getExternalContext().getSession(false);
         SessionListener.setSessionAttribute(session, "user", user); // working with session in servlet...
         sm.addSession(session.getId(), (user == null) ? null : user.getId());
@@ -237,7 +240,7 @@ public class openId extends HttpServlet {
             System.out.println("JSON = " + json);
 
             if (!SessionUtils.isSignedIn()) {
-                out.println("is not signed in. trying to make authorisation");
+                out.println("is not signed in. trying to make authorisation; json = " + json);
                 openIdAuthorisation(json);
                 if (SessionUtils.isSignedIn())
                 out.println("openIdAuthorisation success... ");
