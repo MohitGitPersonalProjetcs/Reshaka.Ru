@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.json.JSONArray;
@@ -21,13 +22,15 @@ import web.FileUploadController;
 import web.utils.SessionListener;
 
 /**
- *
+ * Backing bean for chat
  * @author Danon <Anton Danshin>
  */
 @ManagedBean
 @ViewScoped
 public class ChatBean implements Serializable {
 
+    private static final Logger log = Logger.getLogger(ChatBean.class);
+    
     @EJB
     MessageManagerLocal mm;
 
@@ -213,7 +216,6 @@ public class ChatBean implements Serializable {
         if (me == null) {
             return;
         }
-        System.out.println("friend=" + friendId);
         mm.sendMessageAndUpload(me.getId(), friendId, "chat", getText(), fileUploadController.getFiles());
         text = null;
     }

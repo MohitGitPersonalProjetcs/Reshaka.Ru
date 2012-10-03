@@ -23,7 +23,7 @@ public class URLUtils {
 
     public static String createLink(String url, String target, String value) {
         String link = "<a href=\"" + url + "\"";
-        if (target != null && !target.isEmpty()) {
+        if (!StringUtils.isEmpty(target)) {
             link += " target=\"" + target + "\"";
         }
         link += ">" + value + "</a>";

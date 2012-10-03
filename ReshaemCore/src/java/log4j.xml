@@ -25,9 +25,21 @@
         </filter>
     </appender>
 	
-    <appender name="FILE"
+    <appender name="FILE_EJB"
                   class="org.apache.log4j.RollingFileAppender">
         <param name="File" value="logs/reshaem-ejb.log" />
+        <param name="Append" value="true" />
+        <param name="MaxFileSize" value="500KB" />
+        <param name="MaxBackupIndex" value="5" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                               value="[%d{ISO8601}] %-5p %m%n" />
+        </layout>
+    </appender>
+    
+    <appender name="FILE_WEB"
+                  class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="logs/reshaem-web.log" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="500KB" />
         <param name="MaxBackupIndex" value="5" />
@@ -61,12 +73,16 @@
 
     <logger name="ejb" additivity="false">
         <level value="TRACE" />
-        <appender-ref ref="FILE" />
+        <appender-ref ref="FILE_EJB" />
+        <appender-ref ref="STDOUT" />
     </logger>
     
-    <logger name="ejb" additivity="false">
+    
+    
+    <logger name="web" additivity="false">
         <level value="TRACE" />
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE_WEB" />
     </logger>
 		
 	<!-- ** -->

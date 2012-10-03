@@ -20,5 +20,18 @@ public abstract class EJBUtils {
             ex.printStackTrace();
         }
         return t;
-    } 
+    }
+    
+    public static Object resolve(String jndiName) {
+        Context context = null;
+        Object o = null;
+        try {
+            context = new InitialContext();
+            o = context.lookup(jndiName);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return o;
+    }
+    
 }

@@ -57,6 +57,9 @@ public class ReshakaScheduler {
 
     public Date schedule(Class<? extends ReshakaJob> jclazz, Trigger trigger) {
         try {         
+            if(log.isTraceEnabled())
+                log.trace(">> schedule(): job="+jclazz.getName()+" with trigger="+trigger.getCalendarName());
+            
             // define the job and tie it to our HelloJob class
             JobDetail job = JobBuilder.newJob(jclazz).build();
 

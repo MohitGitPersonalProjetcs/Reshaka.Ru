@@ -5,22 +5,15 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- *
+ * A few useful methods for working with HTTP request
+ * 
  * @author rogvold
  */
 public class HttpUtils {
 
     public static String getRequestParam(String name) {
         String result = null;
-        FacesContext fc = FacesContext.getCurrentInstance();
-        if (fc == null) {
-            return null;
-        }
-        ExternalContext ec = fc.getExternalContext();
-        if (ec == null) {
-            return null;
-        }
-        HttpServletRequest request = (HttpServletRequest) ec.getRequest();
+        HttpServletRequest request = getRequest();
         if (request != null) {
             result = request.getParameter(name);
         }
@@ -29,6 +22,14 @@ public class HttpUtils {
 
     public static String getRequestUrl() {
         String result = null;
+        HttpServletRequest request = getRequest();
+        if (request != null) {
+            result = request.getRequestURI();
+        }
+        return result;
+    }
+    
+    public static HttpServletRequest getRequest() {
         FacesContext fc = FacesContext.getCurrentInstance();
         if (fc == null) {
             return null;
@@ -37,10 +38,6 @@ public class HttpUtils {
         if (ec == null) {
             return null;
         }
-        HttpServletRequest request = (HttpServletRequest) ec.getRequest();
-        if (request != null) {
-            result = request.getRequestURI();
-        }
-        return result;
+        return (HttpServletRequest) ec.getRequest();
     }
 }
