@@ -134,10 +134,12 @@ public class openId extends HttpServlet {
         Map<String, String> map = utils.extractIdFromJson(json);
         User user = userMan.openIdAuthorisation(map);
         System.out.println("openId auth: user = " + user);
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+//        FacesContext facesContext = FacesContext.getCurrentInstance();
 //        FacesContext facesContext = ServletContext.
-        System.out.println("openIdAuthorisation: facesContext = " + facesContext);
-        session = (HttpSession) facesContext.getExternalContext().getSession(false);
+        System.out.println("openIdAuthorisation: session = " + session);
+//        session = (HttpSession) facesContext.getExternalContext().getSession(false);
+        
+        
         SessionListener.setSessionAttribute(session, "user", user); // working with session in servlet...
         sm.addSession(session.getId(), (user == null) ? null : user.getId());
         
@@ -149,8 +151,8 @@ public class openId extends HttpServlet {
             System.out.println("Trying to fuck the system!!!");
             return;
         }
-        FacesContext context = FacesContext.getCurrentInstance();
-        session = (HttpSession) context.getExternalContext().getSession(true);
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        session = (HttpSession) context.getExternalContext().getSession(true);
         SessionListener.setSessionAttribute(session, "user", user);
         sm.addSession(session.getId(), (user == null) ? null : user.getId());
         System.out.println("makeBundle(): success");
@@ -190,6 +192,7 @@ public class openId extends HttpServlet {
       //  processRequest(request, response);
         try (PrintWriter out = response.getWriter()) {
             
+            session = request.getSession(true);
             // working with get params
             
             System.out.println("-----------------------------------------------------------");
