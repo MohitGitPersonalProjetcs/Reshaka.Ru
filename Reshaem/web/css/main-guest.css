@@ -491,7 +491,7 @@ a.browse {
     display: inline-block;
     width: 18px;
     height: 16px;
-    background: url('../images/left_arrow_32x32.png');
+    background-image: url('../images/left_arrow_32x32.png');
     background-size: 16px;
     float: left;
 }
@@ -505,6 +505,7 @@ a.browse {
     float: right;
     width: 18px;
     height: 16px;
+    background-image: url('../images/right_arrow_32x32.png');
     background-size: 16px;
-    background: url('../images/right_arrow_32x32.png');
+    
 }
