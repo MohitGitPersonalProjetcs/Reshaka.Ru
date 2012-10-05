@@ -2,6 +2,7 @@ package web;
 
 import ejb.AttachmentManagerLocal;
 import ejb.MailManagerLocal;
+import ejb.SessionManagerLocal;
 import ejb.SubjectManagerLocal;
 import ejb.UserManagerLocal;
 import entity.Attachment;
@@ -47,6 +48,9 @@ public class UserBean implements Serializable {
 
     @EJB
     MailManagerLocal mailMan;
+    
+    @EJB
+    SessionManagerLocal sessionMan;
 
     private transient HttpSession session = null;
 
@@ -301,15 +305,14 @@ public class UserBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         RequestContext requestContext = RequestContext.getCurrentInstance();
         //  List<User> users = em.createNamedQuery("findByLogin").setParameter("userLogin", getLogin()).getResultList();
-        if (user != null) {
-            System.out.println("No users with this email");
-        } else {
+        if (user == null) {
             System.out.println("FAIL");
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка регистрации!", "Пользователь с данным именем уже есть в системе!"));
             return;
         }
         session = (HttpSession) context.getExternalContext().getSession(true);
         SessionListener.setSessionAttribute(session, "user", user);
+        sessionMan.addSession(session.getId(), user.getId());
 
         requestContext.addCallbackParam("loggedIn", user != null);
         System.out.println(user.toString());
@@ -326,6 +329,7 @@ public class UserBean implements Serializable {
 //            if(session!=null) session.invalidate();
 //            session = (HttpSession) facesContext.getExternalContext().getSession(true);
             SessionListener.setSessionAttribute(session, "user", user);
+            sessionMan.addSession(session.getId(), user.getId());
             if (!disableCookies) {
                 resetCookies(entity.getLogin(), entity.getPassword());
             }
@@ -351,6 +355,7 @@ public class UserBean implements Serializable {
 //            session = (HttpSession) facesContext.getExternalContext().getSession(true);
             SessionListener.setSessionAttribute(session, "user", user);
             SessionListener.setSessionAttribute(session, pathToPicture, user);
+            sessionMan.addSession(session.getId(), user.getId());
             if (!disableCookies) {
                 resetCookies(entity.getEmail(), entity.getPassword());
             }

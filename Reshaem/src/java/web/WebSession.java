@@ -1,5 +1,6 @@
 package web;
 
+import ejb.SessionManagerLocal;
 import ejb.UserManagerLocal;
 import entity.User;
 import java.io.Serializable;
@@ -7,9 +8,6 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import web.utils.SessionListener;
@@ -25,6 +23,9 @@ public class WebSession implements Serializable {
 
     @EJB
     UserManagerLocal um;
+    
+    @EJB
+    SessionManagerLocal sm;
 
     private static Logger log = Logger.getLogger(WebSession.class);
 
@@ -110,6 +111,7 @@ public class WebSession implements Serializable {
         Long uid = ((User) SessionListener.getSessionAttribute("user", true)).getId();
         session = SessionListener.getCurrentSession(true);
         SessionListener.setSessionAttribute(session, "user", um.getUserById(uid));
+        sm.addSession(session.getId(), uid);
     }
 
     public void resetSession() {

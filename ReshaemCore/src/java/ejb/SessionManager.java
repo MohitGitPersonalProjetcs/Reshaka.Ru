@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 @Singleton
 public class SessionManager implements SessionManagerLocal {
 
-    private final Map<String, Long> sessions = new HashMap<String, Long>();
+    private static final Map<String, Long> sessions = new HashMap<String, Long>();
     private static Logger log = Logger.getLogger(SessionManager.class);
     
     @PersistenceContext(unitName = "ReshaemCorePU")
