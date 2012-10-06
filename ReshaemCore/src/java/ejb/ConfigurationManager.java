@@ -1,6 +1,5 @@
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
 import entity.Order;
 import java.io.*;
 import java.net.URISyntaxException;
@@ -10,7 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,7 +33,8 @@ import org.w3c.dom.*;
  *
  * @author rogvold
  */
-@Singleton
+@Singleton @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
+@TransactionManagement(TransactionManagementType.BEAN)
 public class ConfigurationManager implements ConfigurationManagerLocal {
 
     Logger log = Logger.getLogger(ConfigurationManager.class.getName());
@@ -36,12 +42,12 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     public static final URL DEFAULT_XML_CONFIG_FILE = ConfigurationManager.class.getResource("/config.xml");
     public static final String CURRENT_XML_CONFIG_FILE = new File("./config.xml").getAbsolutePath();
 
-    @PostConstruct
+    @PostConstruct @Lock(LockType.WRITE)
      public void init() {
         reload();
     }
 
-    @PreDestroy
+    @PreDestroy @Lock(LockType.WRITE)
      public void save() {
         Document doc = null;
         File xmlFile = null;
@@ -105,14 +111,12 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         }
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
     public Object getParameter(String param) {
         return config.get(param);
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.WRITE)
     public void load() {
         load(CURRENT_XML_CONFIG_FILE);
     }
@@ -196,7 +200,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         }
     }
 
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Lock(LockType.READ)
     private String getParameterValue(Element elem) {
         Node node = elem.getFirstChild();
         if (node instanceof Text) {
@@ -206,25 +210,22 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         return null;
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Long getMainAdminId() {
         return Long.parseLong(getParameter("systemUserId").toString());
     }
     
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Long getAdminId() {
         return Long.parseLong(getParameter("mainAdminId").toString());
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public double getAdminPercent() {
         return Double.parseDouble(getParameter("adminPercent", "0.3").toString());
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
      public void load(String xmlFile) {
         if (log.isTraceEnabled()) {
             log.trace("load(xmlFile): xmlFile=" + xmlFile);
@@ -281,12 +282,12 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         }
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
      public void reload() {
         reload(CURRENT_XML_CONFIG_FILE);
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
      public void reload(String xmlFile) {
         if (log.isTraceEnabled()) {
             log.trace(">> reload(): xmlFile = " + xmlFile);
@@ -298,86 +299,73 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         }
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Object getParameter(String paramName, Object defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : value;
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public String getString(String paramName) {
         return getString(paramName, null);
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public String getString(String paramName, String defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : value.toString();
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Integer getInteger(String paramName) {
         return getInteger(paramName, null);
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Integer getInteger(String paramName, Integer defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Integer.valueOf(value.toString());
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
     public Long getLong(String paramName) {
         return getLong(paramName, null);
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Long getLong(String paramName, Long defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Long.valueOf(value.toString());
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Double getDouble(String paramName) {
         return getDouble(paramName, null);
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Double getDouble(String paramName, Double defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Double.valueOf(value.toString());
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Boolean getBoolean(String paramName) {
         return getBoolean(paramName, null);
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public Boolean getBoolean(String paramName, Boolean defaultValue) {
         Object value = getParameter(paramName);
         return value == null ? defaultValue : Boolean.valueOf(value.toString());
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public List getList(String paramName) {
         return getList(paramName, null);
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public <T> List<T> getList(String paramName, List<T> defaultValue) {
         Object value = getParameter(paramName);
         if (value instanceof List) {
@@ -387,13 +375,12 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         }
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
      public List<String> getParameterNames() {
         return Collections.synchronizedList(new ArrayList(config.keySet()));
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
      public void setString(String paramName, String value) {
         config.put(paramName, value);
         if (value == null) {
@@ -402,7 +389,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         save();
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
     public void setInteger(String paramName, Integer value) {
         config.put(paramName, value);
         if (value == null) {
@@ -411,7 +398,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         save();
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
     public void setLong(String paramName, Long value) {
         config.put(paramName, value);
         if (value == null) {
@@ -420,7 +407,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         save();
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
     public void setDouble(String paramName, Double value) {
         config.put(paramName, value);
         if (value == null) {
@@ -429,7 +416,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         save();
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
     public void setBoolean(String paramName, Boolean value) {
         config.put(paramName, value);
         if (value == null) {
@@ -438,7 +425,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         save();
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
     public void setParameter(String paramName, Object value) {
         config.put(paramName, value);
         if (value == null) {
@@ -447,8 +434,7 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
         save();
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
     public Map<Integer, String> getOrderStatusDescription() {
         Map map = new HashMap();
         try {
@@ -463,15 +449,14 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
             map.put(Order.RATED_ONLINE_ORDER_STATUS, getString("statusOnlineRated"));
             map.put(Order.PAYED_ONLINE_ORDER_STATUS, getString("statusOnlineAgreed"));
             map.put(Order.EXPIRED_ONLINE_ORDER_STATUS, getString("statusExpired"));
-
-
         } catch (Exception e) {
+            
+            log.error(" getOrderStatusDescription()");
         }
         return map;
     }
 
-    @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    @Override @Lock(LockType.READ)
     public Date getDate(String paramName) {
         String s = getString(paramName, "01/01/1495 00:00:00");
         SimpleDateFormat f = new SimpleDateFormat("MM/dd/yyyy HH:mm");
@@ -484,13 +469,13 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
 
     }
 
-    @Override
+    @Override @Lock(LockType.READ)
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Date getDate(String paramName, Date defaultValue) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
+    @Override @Lock(LockType.WRITE)
     public void setDate(String paramName, Date value) {
         SimpleDateFormat f = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         setString(paramName, f.format(value));

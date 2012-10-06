@@ -21,8 +21,7 @@ public class ReshakaScheduler {
     
     private static abstract class InstanceHolder {
         
-        private static ReshakaScheduler newInstance()
-        {
+        private static ReshakaScheduler newInstance() {
             try {
                 return new ReshakaScheduler();
             } catch (SchedulerException ex) {

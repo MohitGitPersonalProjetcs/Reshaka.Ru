@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
@@ -25,7 +26,6 @@ import org.quartz.TriggerBuilder;
 import quartz.ReshakaScheduler;
 import quartz.jobs.MoneyCheckerJob;
 import quartz.jobs.OrdersAutoRenewJob;
-import quartz.jobs.OrdersExpirationJob;
 
 /**
  * This Singleton startup EJB performs initial configuration at startup.
@@ -33,6 +33,7 @@ import quartz.jobs.OrdersExpirationJob;
  * @author danon
  */
 @Singleton
+@DependsOn("ConfigurationManager")
 @javax.ejb.Startup
 public class Startup {
 
