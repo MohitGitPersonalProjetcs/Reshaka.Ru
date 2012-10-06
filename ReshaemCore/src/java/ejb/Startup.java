@@ -24,6 +24,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import quartz.ReshakaScheduler;
 import quartz.jobs.MoneyCheckerJob;
+import quartz.jobs.OrdersAutoRenewJob;
 import quartz.jobs.OrdersExpirationJob;
 
 /**
@@ -38,13 +39,11 @@ public class Startup {
     private static Logger log = null;
     public static final String LOG4J_CONFIG = "/log4j.xml";
     @EJB
-    ConfigurationManagerLocal cm;
+    private ConfigurationManagerLocal cm;
     @EJB
-    MoneyManagerLocal monMan;
-    @EJB
-    EventEJBLocal evt;
+    private EventEJBLocal evt;
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
 
     @PostConstruct
     public void startup() {
@@ -67,9 +66,23 @@ public class Startup {
         try {
             ReshakaScheduler.getInstance().start();
 
+            // Shedule: Order Auto Renew
+            Trigger trigger = TriggerBuilder.newTrigger()
+                                            .startNow()
+                                            .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+                                                                               .withIntervalInHours(12)
+                                                                               .repeatForever())
+                                            .build();
+            ReshakaScheduler.getInstance().schedule(OrdersAutoRenewJob.class, trigger);
+            
             // Schedule: Order Expiration Check
-            Trigger trigger = TriggerBuilder.newTrigger().startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(24).repeatForever()).build();
-            ReshakaScheduler.getInstance().schedule(OrdersExpirationJob.class, trigger);
+//            trigger = TriggerBuilder.newTrigger()
+//                                    .startNow()
+//                                    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+//                                                                       .withIntervalInHours(24)
+//                                                                       .repeatForever())
+//                                    .build();
+//            ReshakaScheduler.getInstance().schedule(OrdersExpirationJob.class, trigger);
             
             // Schedule: Incoming Money Check 
             trigger = TriggerBuilder.newTrigger().startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(1).repeatForever()).build();

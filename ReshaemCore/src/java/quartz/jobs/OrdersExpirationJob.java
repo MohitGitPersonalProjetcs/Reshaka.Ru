@@ -1,6 +1,5 @@
 package quartz.jobs;
 
-import ejb.util.EJBUtils;
 import entity.OnlineHelp;
 import entity.Order;
 import java.util.Arrays;
@@ -9,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
+import org.apache.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -17,11 +16,13 @@ import org.quartz.JobExecutionException;
  * Job for Quartz that checks all orders for expiration 
  * and modifies statuses when needed.
  * The following policy is applied:
- *  - online orders are deleted after in (24 hours + relax_time) after start of the order;
- *  - offline orders are deleted immediately if the deadline is before current time stamp.
+ *  - online order is considered to be EXPIRED (24 hours + relax_time) after order deadline passed (in case it has NEW status);
+ *  - offline or online order is considered to be CLOSED in case it is in status FULL_PAYED/PAYED.
  * @author Danon
  */
 public class OrdersExpirationJob implements ReshakaJob {
+    
+    private Logger log = Logger.getLogger(OrdersExpirationJob.class);
     
     @Override
     public String getDescription() {
@@ -35,41 +36,70 @@ public class OrdersExpirationJob implements ReshakaJob {
 
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException {
+        if(log.isTraceEnabled()) {
+            log.trace(">> execute()");
+        }
         try {
             EntityManagerFactory f = Persistence.createEntityManagerFactory("ReshaemCorePU");
             EntityManager em = f.createEntityManager();
-            UserTransaction transaction = EJBUtils.resolve("java:comp/UserTransaction", UserTransaction.class);
-            transaction.begin();
+            em.getTransaction().begin();
             // Offline orders
             Query q = em.createQuery("update Order o set o.status=:ORDER_EXPIRED_STATUS"
                     + " where o.deadline <= CURRENT_TIMESTAMP"
                     + " and o.status in :ALLOWED_ORDERS"
                     + " and o.type = :ORDER_TYPE");
-            q.setParameter("ORDER_EXPIRED_STATUS", Order.EXPIRED_OFFLINE_ORDER_STATUS);
-            q.setParameter("ALLOWED_ORDERS", Arrays.asList(Order.NEW_OFFLINE_ORDER_STATUS, Order.RATED_OFFLINE_ORDER_STATUS));
+            q.setParameter("ORDER_EXPIRED_STATUS", Order.CLOSED_OFFLINE_ORDER_STATUS);
+            q.setParameter("ALLOWED_ORDERS", Arrays.asList(Order.FULL_PAYED_OFFLINE_ORDER_STATUS));
             q.setParameter("ORDER_TYPE", Order.OFFLINE_TYPE);
             int r = q.executeUpdate();
+            if(log.isTraceEnabled()) {
+                log.trace("execute(): "+r+" offline orders has been closed.");
+            }
             
             // Online orders
             q = em.createQuery("update Order o set o.status=:ORDER_EXPIRED_STATUS"
                     + " where o.deadline <= :DATE_THRESHOLD"
                     + " and o.status in :ALLOWED_ORDERS"
                     + " and o.type = :ORDER_TYPE");
-            q.setParameter("ORDER_EXPIRED_STATUS", Order.EXPIRED_ONLINE_ORDER_STATUS);
-            q.setParameter("ALLOWED_ORDERS", Arrays.asList(Order.NEW_ONLINE_ORDER_STATUS, Order.RATED_ONLINE_ORDER_STATUS));
+            q.setParameter("ORDER_EXPIRED_STATUS", Order.FINISHED_ONLINE_ORDER_STATUS);
+            q.setParameter("ALLOWED_ORDERS", Arrays.asList(Order.PAYED_ONLINE_ORDER_STATUS));
             q.setParameter("ORDER_TYPE", Order.ONLINE_TYPE);
             q.setParameter("DATE_THRESHOLD", new Date(System.currentTimeMillis()-
                     (OnlineHelp.RELAXATION_TIME+OnlineHelp.MAX_DURATION_TIME)*1000*60));
-            r += q.executeUpdate();
+            r = q.executeUpdate();
+            if(log.isTraceEnabled()) {
+                log.trace("execute(): "+r+" online orders has been closed.");
+            }
             
-            transaction.commit();
+            // Make some online orders expired
+            q = em.createQuery("update Order o set o.status=:ORDER_EXPIRED_STATUS"
+                    + " where o.deadline <= :DATE_THRESHOLD"
+                    + " and o.status in :ALLOWED_ORDERS"
+                    + " and o.type = :ORDER_TYPE");
+            q.setParameter("ORDER_EXPIRED_STATUS", Order.EXPIRED_ONLINE_ORDER_STATUS);
+            q.setParameter("ALLOWED_ORDERS", Arrays.asList(Order.NEW_ONLINE_ORDER_STATUS));
+            q.setParameter("ORDER_TYPE", Order.ONLINE_TYPE);
+            q.setParameter("DATE_THRESHOLD", new Date(System.currentTimeMillis()-
+                    (OnlineHelp.RELAXATION_TIME+OnlineHelp.MAX_DURATION_TIME)*1000*60));
+            r = q.executeUpdate();
+            if(log.isTraceEnabled()) {
+                log.trace("execute(): "+r+" online orders has been closed.");
+            }
+              
+            em.getTransaction().commit();
             em.close();
             f.close();
             
-            System.out.println(getName()+" finished: "+r+" rows modified");
+            if(log.isTraceEnabled()) {
+                log.trace("execute(): "+getName()+" finished: "+r+" rows modified");
+            }
+            System.out.println();
         } catch (Exception ex) {
-            System.err.println(getName()+" failed!");
-            ex.printStackTrace();
+            if(log.isDebugEnabled())
+                log.debug("execute(): job execution failed!", ex);
+        }
+        if(log.isTraceEnabled()) {
+            log.trace("<< execute()");
         }
     }
     

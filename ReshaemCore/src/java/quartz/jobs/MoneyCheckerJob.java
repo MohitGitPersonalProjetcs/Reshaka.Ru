@@ -27,7 +27,8 @@ public class MoneyCheckerJob implements ReshakaJob {
 
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException {
-        log.trace(">> execute(): started");
+        if(log.isTraceEnabled())
+            log.trace(">> execute(): started");
         if (mm==null) {
            mm = EJBUtils.resolve("java:global/ReshaemEE/ReshaemCore/MoneyManager!ejb.MoneyManagerLocal", MoneyManagerLocal.class);
            if(mm == null){
@@ -38,7 +39,8 @@ public class MoneyCheckerJob implements ReshakaJob {
         if(mm!=null) {
             mm.updateMoney();
         }
-        log.trace("<< execute(): finished.");
+        if(log.isTraceEnabled())
+            log.trace("<< execute(): finished.");
     }
     
 }
