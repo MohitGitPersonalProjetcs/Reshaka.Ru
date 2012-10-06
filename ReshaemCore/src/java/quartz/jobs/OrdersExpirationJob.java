@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
@@ -22,7 +23,7 @@ import org.quartz.JobExecutionException;
  */
 public class OrdersExpirationJob implements ReshakaJob {
     
-    private Logger log = Logger.getLogger(OrdersExpirationJob.class);
+    private static Logger log = Logger.getLogger(OrdersExpirationJob.class);
     
     @Override
     public String getDescription() {
@@ -39,10 +40,12 @@ public class OrdersExpirationJob implements ReshakaJob {
         if(log.isTraceEnabled()) {
             log.trace(">> execute()");
         }
+        EntityTransaction etx = null;
         try {
             EntityManagerFactory f = Persistence.createEntityManagerFactory("ReshaemCorePU");
             EntityManager em = f.createEntityManager();
-            em.getTransaction().begin();
+            etx = em.getTransaction();
+            etx.begin();
             // Offline orders
             Query q = em.createQuery("update Order o set o.status=:ORDER_EXPIRED_STATUS"
                     + " where o.deadline <= CURRENT_TIMESTAMP"
@@ -86,17 +89,18 @@ public class OrdersExpirationJob implements ReshakaJob {
                 log.trace("execute(): "+r+" online orders has been closed.");
             }
               
-            em.getTransaction().commit();
+            etx.commit();
             em.close();
             f.close();
             
             if(log.isTraceEnabled()) {
                 log.trace("execute(): "+getName()+" finished: "+r+" rows modified");
             }
-            System.out.println();
         } catch (Exception ex) {
             if(log.isDebugEnabled())
                 log.debug("execute(): job execution failed!", ex);
+            if(etx != null)
+                etx.setRollbackOnly();
         }
         if(log.isTraceEnabled()) {
             log.trace("<< execute()");
