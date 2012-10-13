@@ -38,31 +38,31 @@ public class MessageManager implements MessageManagerLocal {
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.REQUIRED)
     public List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate) {
-        if (log.isTraceEnabled()) {
-            log.trace(">> getIncomingMessages(): owner=" + owner);
-        }
+//        if (log.isTraceEnabled()) {
+//            log.trace(">> getIncomingMessages(): owner=" + owner);
+//        }
         List<Message> messages = null;
 
         Query q = null;
         Query setReadQuery = null;
         if (fromUser == null) {
-            if (log.isTraceEnabled()) {
-                log.trace("getIncomingMessages(): using query Message.findIncomingBetween");
-            }
+//            if (log.isTraceEnabled()) {
+//                log.trace("getIncomingMessages(): using query Message.findIncomingBetween");
+//            }
             q = em.createNamedQuery("Message.findIncomingBetween");
             setReadQuery = em.createNamedQuery("Message.updateReadIncomingBetween");
         } else {
             q = em.createNamedQuery("Message.findIncomingFromUserBetween");
             setReadQuery = em.createNamedQuery("Message.updateReadIncomingFromUserBetween");
-            if (log.isTraceEnabled()) {
-                log.trace("getIncomingMessages(): using query Message.findIncomingFromUserBetween");
-            }
+//            if (log.isTraceEnabled()) {
+//                log.trace("getIncomingMessages(): using query Message.findIncomingFromUserBetween");
+//            }
         }
 
         User u = em.find(User.class, owner);
         if (u == null) {
-            if (log.isTraceEnabled()) {
-                log.trace("<< getIncomingMessages(): no user with ID=" + owner);
+            if (log.isDebugEnabled()) {
+                log.debug("<< getIncomingMessages(): no user with ID=" + owner);
             }
             return Collections.EMPTY_LIST;
         }
@@ -72,8 +72,8 @@ public class MessageManager implements MessageManagerLocal {
         if (fromUser != null) {
             u = em.find(User.class, fromUser);
             if (u == null) {
-                if (log.isTraceEnabled()) {
-                    log.trace("<< getIncomingMessages(): no user with ID=" + fromUser);
+                if (log.isDebugEnabled()) {
+                    log.debug("<< getIncomingMessages(): no user with ID=" + fromUser);
                 }
                 return Collections.EMPTY_LIST;
             }
@@ -95,10 +95,10 @@ public class MessageManager implements MessageManagerLocal {
         
         messages = (List<Message>) q.getResultList();
         setReadQuery.executeUpdate();
-
-        if (log.isTraceEnabled()) {
-            log.trace("<< getIncomingMessages(): " + messages);
-        }
+        
+//        if (log.isTraceEnabled()) {
+//            log.trace("<< getIncomingMessages(): " + messages);
+//        }
         return messages;
     }
 
