@@ -8,6 +8,7 @@
             xmlns:ui="http://java.sun.com/jsf/facelets">
         <h:head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <link href="#{request.contextPath}/images/fav.ico" rel="shortcut icon" type="image/x-icon" />
             <title>Reshaka.RU</title>
             <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
             <!--            <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>-->
@@ -47,9 +48,6 @@
         </h:head>
 
         <h:body rendered="#{!'expired'.equals(param['status'])}">
-            <div style="width: 950px; color: red; font-weight: bold; display: none; margin: 0 auto;">
-                Это тестовый сайт. Все внесенные вами изменения будут удалены. Вы можете оставлять отзывы по улучшению функционала сайта, а также о найденных багах.
-            </div>
             <!-- include block -->
             <ui:insert name = "allincludes"> 
 
