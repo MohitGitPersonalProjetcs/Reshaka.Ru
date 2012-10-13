@@ -58,8 +58,8 @@ and open the template in the editor.
                                     </h:panelGroup>
 
 
-                                    <h:outputText value="#{selectedBean.order.deadline}">
-                                        <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />
+                                    <h:outputText value="#{selectedBean.order.deadlineString}">
+<!--                                        <f:convertDateTime timeZone="GMT+4" pattern="dd.MM.YYYY в HH.mm" />-->
                                     </h:outputText>
                                     
                                     <h:outputText value="Контактный Email:" rendered="#{ ( (selectedBean.order.employer.id == webSession.id ) or (webSession.group == 1))and (selectedBean.order.type == 1)}" />
