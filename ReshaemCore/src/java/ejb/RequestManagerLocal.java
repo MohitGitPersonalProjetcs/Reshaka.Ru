@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
 import entity.Request;
@@ -9,7 +5,9 @@ import java.util.List;
 import javax.ejb.Local;
 
 /**
- *
+ * Local interface for RequestManager EJB which is used for 
+ * working with user "reshaka-requests".
+ * 
  * @author rogvold
  */
 @Local
@@ -28,4 +26,6 @@ public interface RequestManagerLocal {
     public String getEmailByRequestId(Long reqId);
     
     public void setViewedRequest(Long reqId);
+
+    public int getFreshRequestsNumber();
 }

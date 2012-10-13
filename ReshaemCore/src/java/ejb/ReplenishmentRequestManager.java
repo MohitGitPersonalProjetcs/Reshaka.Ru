@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
 import entity.ReplenishmentRequest;
 import java.util.Date;
 import java.util.List;

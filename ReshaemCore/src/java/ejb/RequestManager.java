@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb;
 
 import com.sun.xml.ws.api.tx.at.Transactional;
@@ -92,7 +88,7 @@ public class RequestManager implements RequestManagerLocal {
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Request> getAllFreshRequests() {
-        Query q = em.createNamedQuery("getAllFreshRequests").setParameter("type", 0);
+        Query q = em.createNamedQuery("getAllFreshRequests").setParameter("type", Request.NEW_REQUEST_TYPE);
         return q.getResultList();
     }
 
@@ -104,10 +100,14 @@ public class RequestManager implements RequestManagerLocal {
     }
 
     @Override
-    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public void setViewedRequest(Long reqId) {
         Request req = em.find(Request.class, reqId);
-        req.setType(1);
+        req.setType(Request.OLD_REQUEST_TYPE);
         em.merge(req);
+    }
+
+    @Override
+    public int getFreshRequestsNumber() {
+        return ((Number)em.createQuery("select count(1) from Request r where r.type = "+Request.NEW_REQUEST_TYPE).getSingleResult()).intValue();
     }
 }

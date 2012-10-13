@@ -21,17 +21,13 @@ import javax.persistence.*;
 })
 public class Request implements Serializable {
     private static final long serialVersionUID = 1L;
+    
+    public static final int NEW_REQUEST_TYPE = 0;
+    public static final int OLD_REQUEST_TYPE = 1;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Column
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -48,6 +44,14 @@ public class Request implements Serializable {
 
     @Column
     private int type;
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public int getType() {
         return type;

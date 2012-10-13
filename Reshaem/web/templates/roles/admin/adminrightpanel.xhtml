@@ -29,7 +29,7 @@
                         <h:panelGroup style="font-size: large"><h:outputText style="font-size: smaller; font-weight: bolder;" rendered="#{chatBean.hasNewMessages()}" value="(#{chatBean.newMessagesNumber})"/></h:panelGroup>
                         
                         <h:link outcome="requests.xhtml" value="Запросы решак" style="font-size:small;" />
-                        <h:outputText value=""/>
+                        <h:panelGroup><h:outputText rendered="#{showRequestsBean.requestsNumber gt 0}" value="(#{showRequestsBean.requestsNumber})"/></h:panelGroup>
                         
                         <h:link outcome="users.xhtml" value="Все пользователи" style="font-size:small;" />
                         <h:outputText value=""/>
@@ -38,7 +38,7 @@
                         <h:outputText value=""/>
                         
                         <h:link outcome="replenishmentRequests.xhtml" value="Ввод средств" style="font-size:small;" />
-                        <h:outputText value=""/>
+                        <h:panelGroup><h:outputText rendered="#{showReplenishmentRequestsBean.allRepNumber gt 0}" value="(#{showReplenishmentRequestsBean.allRepNumber})"/></h:panelGroup>
                         
                         <h:link outcome="onlineHelp.xhtml" value="Online Help" style="font-size:small; color: red;" />
                         <h:outputText value=""/>

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package web;
 
 
@@ -23,14 +19,26 @@ import javax.faces.bean.RequestScoped;
 @RequestScoped
 public class ShowReplenishmentRequestsBean {
     @EJB
-    ReplenishmentRequestManagerLocal repMan;
+    private ReplenishmentRequestManagerLocal repMan;
+    
+    private List<ReplenishmentRequest> requests;
+    
+    @PostConstruct
+    private void init() {
+        requests = repMan.getAllReplenishmentRequests();
+    }
 
     public List<ReplenishmentRequest> getReps() {
-        return repMan.getAllReplenishmentRequests();
+        return requests;
+    }
+    
+    public int getAllRepNumber() {
+        return requests.size();
     }
     
     public void deleteRep(Long repId){
         repMan.deleteReplenishmentRequest(repId);
+        requests = repMan.getAllReplenishmentRequests();
     }
     
 }

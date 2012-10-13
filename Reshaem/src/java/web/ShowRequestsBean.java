@@ -1,13 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package web;
 
 import ejb.RequestManagerLocal;
 import ejb.UserManagerLocal;
-import entity.Request;
-import entity.User;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -17,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import web.utils.SessionListener;
 
 /**
  *
@@ -26,8 +19,6 @@ import web.utils.SessionListener;
 @ManagedBean
 @ViewScoped
 public class ShowRequestsBean implements Serializable {
-
-    private transient HttpSession session = null;
 
     @EJB
     RequestManagerLocal reqMan;
@@ -39,8 +30,11 @@ public class ShowRequestsBean implements Serializable {
 
     @PostConstruct
     private void init() {
-        Long adId = ((User) SessionListener.getSessionAttribute("user",true)).getId();
         this.requests = reqMan.getAllFreshRequests();
+    }
+    
+    public int getRequestsNumber() {
+        return requests.size();
     }
 
     public List<entity.Request> getRequests() {
