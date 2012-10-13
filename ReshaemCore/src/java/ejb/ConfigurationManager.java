@@ -470,7 +470,6 @@ public class ConfigurationManager implements ConfigurationManagerLocal {
     }
 
     @Override @Lock(LockType.READ)
-//    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Date getDate(String paramName, Date defaultValue) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

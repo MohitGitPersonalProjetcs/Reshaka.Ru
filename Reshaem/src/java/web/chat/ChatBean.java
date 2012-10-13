@@ -252,13 +252,13 @@ public class ChatBean implements Serializable {
             msgs.clear();
         }
 
-        msgs = mm.getOutcomingMessages(me.getId(), friendId, lastUpdate, null);
-        if (msgs != null) {
-            for (Message m : msgs) {
-                s.add(new ChatMessage(m));
-            }
-            msgs.clear();
-        }
+//        msgs = mm.getOutcomingMessages(me.getId(), friendId, lastUpdate, null);
+//        if (msgs != null) {
+//            for (Message m : msgs) {
+//                s.add(new ChatMessage(m));
+//            }
+//            msgs.clear();
+//        }
 
 
         for (ChatMessage m : s) {
@@ -268,11 +268,6 @@ public class ChatBean implements Serializable {
         }
 
         ctx.addCallbackParam("ok", !s.isEmpty());
-
-        if (s.isEmpty()) {
-            return;
-        }
-
 
         ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
     }
@@ -304,6 +299,7 @@ public class ChatBean implements Serializable {
             }
         });
 
+        log.debug("Requesting messages from "+lastUpdate+" till now");
         List<Message> msgs = mm.getIncomingMessages(me.getId(), friendId, lastUpdate, null);
         if (msgs != null) {
             for (Message m : msgs) {
@@ -319,20 +315,16 @@ public class ChatBean implements Serializable {
             }
             msgs.clear();
         }
+        
+        Date maxDate = new Date(0);
 
-
-        for (ChatMessage m : s) {
-            if (lastUpdate == null || lastUpdate.before(m.getDateSent())) {
-                lastUpdate = m.getDateSent();
-            }
-        }
-
+        for(ChatMessage m : s) 
+            if(maxDate.before(m.getDateSent()))
+                    maxDate = m.getDateSent();
+        if(lastUpdate == null || maxDate.after(lastUpdate))
+            lastUpdate = maxDate;
+        
         ctx.addCallbackParam("ok", !s.isEmpty());
-
-        if (s.isEmpty()) {
-            return;
-        }
-
 
         ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
     }
@@ -370,15 +362,15 @@ public class ChatBean implements Serializable {
             return false;
         }
         unreadMessagesNumber = mm.getUnreadMessagesNumber(me.getId(), null);
-        boolean result = unreadMessagesNumber > 0;
-        return result;
+        return unreadMessagesNumber > 0;
     }
 
     public int getNewMessagesNumber() {
-        if (me == null) {
+        // The method should be called right after hasNewMessages()
+        if (me == null) { 
             return 0;
         } else {
-            return unreadMessagesNumber;
+            return unreadMessagesNumber; // updated in hasNewMessages()
         }
     }
 }
