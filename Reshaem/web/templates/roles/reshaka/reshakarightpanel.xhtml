@@ -34,6 +34,10 @@ and open the template in the editor.
                         
                         <h:link outcome="ichat.xhtml" value="Мои сообщения" style="font-size:small;"/>
                         <h:panelGroup style="font-size: large;"><h:outputText style="font-size: smaller; font-weight: bolder;" rendered="#{chatBean.hasNewMessages()}" value="(#{chatBean.newMessagesNumber})"/></h:panelGroup>
+                        
+                        <h:panelGroup >
+                            <h:link outcome="news.xhtml" value="Мои новости" style="font-size: small;" />
+                        </h:panelGroup>
                     </h:panelGrid>
                 </p:panel>
 

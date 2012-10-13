@@ -26,7 +26,7 @@
                         <h:outputText value=""/>
                       
                         <h:link outcome="ichat.xhtml" value="Мои сообщения" style="font-size:small;"/>
-                        <h:panelGroup style="font-size: large"><h:outputText style="font-size: smaller; font-weight: bolder;" value="(#{chatBean.newMessagesNumber})"/></h:panelGroup>
+                        <h:panelGroup style="font-size: large"><h:outputText style="font-size: smaller; font-weight: bolder;" rendered="#{chatBean.hasNewMessages()}" value="(#{chatBean.newMessagesNumber})"/></h:panelGroup>
                         
                         <h:link outcome="requests.xhtml" value="Запросы решак" style="font-size:small;" />
                         <h:outputText value=""/>
