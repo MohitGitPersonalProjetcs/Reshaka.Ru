@@ -26,6 +26,7 @@ import org.quartz.TriggerBuilder;
 import quartz.ReshakaScheduler;
 import quartz.jobs.MoneyCheckerJob;
 import quartz.jobs.OrdersAutoRenewJob;
+import quartz.jobs.OrdersExpirationJob;
 
 /**
  * This Singleton startup EJB performs initial configuration at startup.
@@ -77,13 +78,13 @@ public class Startup {
             ReshakaScheduler.getInstance().schedule(OrdersAutoRenewJob.class, trigger);
             
             // Schedule: Order Expiration Check
-//            trigger = TriggerBuilder.newTrigger()
-//                                    .startNow()
-//                                    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-//                                                                       .withIntervalInHours(24)
-//                                                                       .repeatForever())
-//                                    .build();
-//            ReshakaScheduler.getInstance().schedule(OrdersExpirationJob.class, trigger);
+            trigger = TriggerBuilder.newTrigger()
+                                    .startNow()
+                                    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+                                                                       .withIntervalInHours(24)
+                                                                       .repeatForever())
+                                    .build();
+            ReshakaScheduler.getInstance().schedule(OrdersExpirationJob.class, trigger);
             
             // Schedule: Incoming Money Check 
             trigger = TriggerBuilder.newTrigger().startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(1).repeatForever()).build();
