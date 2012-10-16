@@ -25,16 +25,14 @@
                         <h:panelGroup>
                             <h:outputLabel value="Стоимость (RUR)"  style="margin-right: 1em;" /> 
                             <h:panelGroup>
-                                <p:inputText id="price2" style="width: 35px;" value="#{makeOrderBean.price}">
-                                    <f:validateDoubleRange minimum="0.0" />
-                                </p:inputText>
+                                <p:inputText id="price2" style="width: 35px;" value="#{makeOrderBean.price}"/>
                                 <p:tooltip for="price2" value="Введите предполагаемую стоимость" />
                             </h:panelGroup>
                         </h:panelGroup>
 
                         <h:panelGroup>
                             <h:outputLabel value="Дата/время: *" style="margin-right: 1em;" />  
-                            <p:calendar  id="online_help_deadline" mindate="#{makeOrderBean.minDate}" value="#{makeOrderBean.deadline}" pattern="MM/dd/yyyy HH:mm"  /> 
+                            <p:calendar  id="online_help_deadline" mindate="#{makeOrderBean.minDate}" value="#{makeOrderBean.deadline}" pattern="MM/dd/yyyy HH:mm" validatorMessage="Некорректная дата."/> 
                             <p:tooltip for="online_help_deadline" value="Указывается по МОСКОВСКОМУ времени" />
                         </h:panelGroup>
                         
@@ -68,9 +66,8 @@
                     </h:panelGrid>
                     
                     <h:outputLabel value="Ваш Email: * " style=" text-align: right; display: inline-block; width: 200px; margin-right: 25px;" /> 
-                    <p:inputText id="my_email" style="width: 400px;"
-                                 
-                                 required="true" value="#{makeOrderBean.fromEmail}" />
+                    <p:inputText id="my_email" style="width: 400px;"                
+                                 value="#{makeOrderBean.fromEmail}"/>
                     <p:watermark for="my_email" value="Например: vasya.pupkin@mail.ru"  />
                     <p:tooltip style="width: 200px;" for="my_email" value="Указывается E-mail, c которого будете писать во время экзамена, в случае если фото будет отправляться по MMS на E-mail указать адрес отправителя, это адрес примерного вида 79030000000@mms.beeline.ru. Чтобы получить этот адрес попробуйте отправить MMS себе на почту." />
                     <br/>

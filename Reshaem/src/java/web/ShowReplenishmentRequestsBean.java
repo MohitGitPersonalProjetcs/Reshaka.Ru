@@ -1,6 +1,5 @@
 package web;
 
-
 import ejb.ReplenishmentRequestManagerLocal;
 import entity.ReplenishmentRequest;
 import java.util.List;

@@ -25,9 +25,7 @@
                             <f:selectItems value="#{makeOrderBean.allSubjects}" var="subject" itemLabel="#{subject.subjectName}"/>  
                         </p:selectOneMenu> 
                         <h:panelGroup>
-                            <p:inputText id="price" style="width: 40px;" value="#{makeOrderBean.price}">
-                                <f:validateDoubleRange minimum="0.0" />
-                            </p:inputText>
+                            <p:inputText id="price" style="width: 40px;" value="#{makeOrderBean.price}" type="text"/>
                             <p:tooltip for="price" style="width: 250px;" value="Укажите примерную стоимость, на которую Вы рассчитываете. Оставьте поле пустым, если не знаете цену даже примерно. " />
                         </h:panelGroup>
                     </h:panelGrid>

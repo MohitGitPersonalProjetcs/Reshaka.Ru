@@ -18,9 +18,7 @@
                         <h:panelGroup>
                             <h:outputLabel value="Стоимость (RUR) :"  style=" margin-right: 2em;" />  
                             <h:panelGroup>
-                                <p:inputText id="price" style="width: 40px;" value="#{makeOrderBean.price}">
-                                    <f:validateDoubleRange minimum="0.0"  />
-                                </p:inputText>
+                                <p:inputText id="price" style="width: 40px;" value="#{makeOrderBean.price}"/>
                                 <p:tooltip for="price" style="width: 250px;" value="Укажите примерную стоимость, на которую Вы рассчитываете. Оставьте поле пустым, если не знаете цену даже примерно. " />
                             </h:panelGroup>
                         </h:panelGroup>
@@ -41,7 +39,6 @@
                         <h:panelGroup>
                             <p:autoComplete   id="aut"  completeMethod="#{makeOrderBean.completeTag}" value="#{makeOrderBean.tagsText}"
                                               >
-                                <!--                    <p:ajax event="itemSelect" listener=""  update="mypa" />-->
                                 <p:ajax event="keydown" />
                             </p:autoComplete>
                             <p:watermark for="aut" value="Подразделы"  />
@@ -70,7 +67,9 @@
                         </h:panelGroup>
                         <p:panel rendered="false">
                             <h:panelGroup style="color: red;"  >
-                                "ВНИМАНИЕ! После того, как ваш заказ будет просмотрен, необходимо будет внести предоплату, равную половине от стоимости решения. До внесения предоплаты решение задачи начато НЕ будет! При несвоевременной предоплате и согласии на решение, срок решения может быть автоматически продлен! Имейте это ввиду и НЕ указывайте в этой форме сразу "предельный" срок!" 
+                                "ВНИМАНИЕ! После того, как ваш заказ будет просмотрен, необходимо будет внести предоплату, равную половине от стоимости решения. 
+                                До внесения предоплаты решение задачи начато НЕ будет! При несвоевременной предоплате и согласии на решение, срок решения может быть автоматически продлен! 
+                                Имейте это ввиду и НЕ указывайте в этой форме сразу "предельный" срок!" 
                             </h:panelGroup>
                         </p:panel>
                     </h:panelGroup>

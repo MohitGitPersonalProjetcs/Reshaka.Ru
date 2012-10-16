@@ -10,10 +10,12 @@ import entity.Subject;
 import entity.Tag;
 import entity.User;
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -23,7 +25,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
-//import org.primefaces.model.UploadedFile;
 import web.FileUploadController;
 import web.utils.SessionListener;
 import web.utils.StringUtils;
@@ -88,18 +89,14 @@ public class MakeOrderBean implements Serializable {
     @PostConstruct
     private void init() {
         SubjectConverter.sm = subjMan;
-//        Map<Long, String> map = subjMan.getAllSubjectsMap();
-//        for (Map.Entry<Long, String> entry : map.entrySet()) {
-//            Subject s = new Subject();
-//            s.setId(entry.getKey());
-//            s.setSubjectName(entry.getValue());
-//            subjects.add(s);
-//        }
-//        subjects.add("");
-//        Subject notSelectedSubject = new Subject();
-//        notSelectedSubject.setSubjectName("не выбран");
-//        subjects.add(notSelectedSubject);
         subjects.addAll(subjMan.getAllSubjects());
+        User u = (User)SessionListener.getSessionAttribute("user", false);
+        
+        if(u != null && u.getId() != null) {
+            u = userMan.getUserById(u.getId());
+            if(u != null && u.getEmail().contains("@"))
+                order.setFromEmail(u.getEmail());
+        }
     }
 
     public String getTagsText() {
@@ -118,12 +115,16 @@ public class MakeOrderBean implements Serializable {
         order.setId(id);
     }
 
-    public int getDuration() {
-        return order.getDuration();
+    public String getDuration() {
+        return ""+order.getDuration();
     }
 
-    public void setDuration(int duration) {
-        order.setDuration(duration);
+    public void setDuration(String duration) {
+        try {
+            order.setDuration(Integer.parseInt(duration));
+        } catch(Exception ex) {
+            order.setDuration(-1);
+        }
     }
 
     public Long getConditionId() {
@@ -175,12 +176,19 @@ public class MakeOrderBean implements Serializable {
         order.setEmployer(employer);
     }
 
-    public double getPrice() {
-        return order.getPrice();
+    public String getPrice() {
+        if(order.getPrice() == 0.0)
+            return "0.0";
+        return NumberFormat.getInstance(new Locale("ru", "RU")).format(order.getPrice());
     }
 
-    public void setPrice(double price) {
-        order.setPrice(price);
+    public void setPrice(String price) {
+        try {
+            double val = Double.parseDouble(price);
+            order.setPrice(val);
+        } catch(Exception ex) {
+            order.setPrice(-1);
+        }
     }
 
     public void setStatus(int status) {
@@ -269,6 +277,79 @@ public class MakeOrderBean implements Serializable {
 
         return list;
     }
+    
+    private boolean validateOnlineOrder(FacesContext fc, RequestContext rc) {
+        if(order.getDuration() < 0) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Недопустимое значение поля 'Продолжительность'"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+        
+        if(order.getPrice() < 0) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Занчение в поле 'Цена' введено некорректно"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+        
+        if ((order.getDeadline() == null) && ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName())))) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать дату/время и предмет"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+
+        if (order.getDeadline() == null) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли ввести дату/время"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+
+        if ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName()))) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать предмет"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+        
+        if (order.getFromEmail() == null || order.getFromEmail().trim().isEmpty()) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Пожалуйста, укажите адрес электронной почты."));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+        return true;
+    }
+    
+    private boolean validateOfflineOrder(FacesContext fc, RequestContext rc) {
+        if(order.getPrice() < 0) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Занчение в поле 'Цена' введено некорректно"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+        
+        if ((order.getDeadline() == null) && ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName())))) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать срок и предмет"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+
+        if (order.getDeadline() == null) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли ввести срок"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+
+        if ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName()))) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать предмет"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+
+        if(fileUploadController.getFiles().isEmpty()) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Пожалуйста, загрузите файл с увловием задачи"));
+            rc.addCallbackParam("offline", false);
+            return false;
+        }
+        
+        return true;
+    }
 
     public void submitOrder(ActionEvent event) {
         if (order.getDescription() == null) {
@@ -278,25 +359,8 @@ public class MakeOrderBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         RequestContext rc = RequestContext.getCurrentInstance();
 
-        if ((order.getDeadline() == null) && ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName())))) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать срок и предмет"));
-            rc.addCallbackParam("offline", false);
+        if(!validateOfflineOrder(fc, rc))
             return;
-        }
-
-        if (order.getDeadline() == null) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли ввести срок"));
-            rc.addCallbackParam("offline", false);
-            return;
-        }
-
-        if ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName()))) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать предмет"));
-            rc.addCallbackParam("offline", false);
-            return;
-        }
-
-
 
         System.out.println("submit order from bean getUser() = " + getUser());
 
@@ -341,26 +405,10 @@ public class MakeOrderBean implements Serializable {
         }
         FacesContext fc = FacesContext.getCurrentInstance();
         RequestContext rc = RequestContext.getCurrentInstance();
-
-        if ((order.getDeadline() == null) && ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName())))) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать дату/время и предмет"));
-            rc.addCallbackParam("offline", false);
+        
+        if(!validateOnlineOrder(fc, rc))
             return;
-        }
-
-        if (order.getDeadline() == null) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли ввести дату/время"));
-            rc.addCallbackParam("offline", false);
-            return;
-        }
-
-        if ((order.getSubject() == null) || (Subject.NOT_SELECTED_SUBJECT_NAME.equals(order.getSubject().getSubjectName()))) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Вы забыли выбрать предмет"));
-            rc.addCallbackParam("offline", false);
-            return;
-        }
-
-
+        
         System.out.println("submit order from bean getUser() = " + getUser());
 
         order.setEmployer(getUser());
