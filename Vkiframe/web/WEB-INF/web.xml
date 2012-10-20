@@ -17,6 +17,10 @@
         <servlet-name>redirect</servlet-name>
         <servlet-class>servlets.redirect</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>OrderEntryServlet</servlet-name>
+        <servlet-class>servlets.OrderEntryServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
@@ -28,6 +32,10 @@
     <servlet-mapping>
         <servlet-name>redirect</servlet-name>
         <url-pattern>/redirect</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OrderEntryServlet</servlet-name>
+        <url-pattern>/orderentry</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -10,4 +10,10 @@
   <module>
     <ejb>ReshaemCore.jar</ejb>
   </module>
+  <module>
+    <web>
+      <web-uri>Vkiframe.war</web-uri>
+      <context-root>/Vkiframe</context-root>
+    </web>
+  </module>
 </application>
