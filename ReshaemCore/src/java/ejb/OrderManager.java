@@ -734,4 +734,11 @@ public class OrderManager implements OrderManagerLocal {
             }
         }
     }
+
+    @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    public Subject getFuckingSubjectById(Long subjectId) {
+        Subject subj = em.find(Subject.class, subjectId);
+        return subj;
+    }
 }

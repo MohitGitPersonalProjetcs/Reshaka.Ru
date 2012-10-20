@@ -1,18 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package web;
 
 import ejb.ConfigurationManagerLocal;
 import ejb.MessageManagerLocal;
 import ejb.MoneyManagerLocal;
+import ejb.SystemManagerLocal;
 import ejb.UserManagerLocal;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import web.utils.Tools;
 
 /**
  *
@@ -30,6 +28,9 @@ public class AdminToolsBean {
 
     @EJB
     ConfigurationManagerLocal confMan;
+    
+    @EJB
+    SystemManagerLocal sysMan;
 
     @EJB
     MessageManagerLocal messMan;
@@ -104,6 +105,10 @@ public class AdminToolsBean {
         userMan.banUser(userId);
         if (gr == 3)
             userMan.banReshaka(userId);
+    }
+    
+    public void resetJPACaches() {
+        sysMan.resetJPA();
     }
     
 //    public void 

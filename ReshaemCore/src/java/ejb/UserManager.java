@@ -23,7 +23,8 @@ import org.apache.log4j.Logger;
 @Stateless
 public class UserManager implements UserManagerLocal {
 
-    private static Logger log = Logger.getLogger(AttachmentManager.class.getName());
+    private static Logger log = Logger.getLogger(UserManager.class.getName());
+    
     @PersistenceContext(unitName = "ReshaemCorePU")
     EntityManager em;
     @EJB

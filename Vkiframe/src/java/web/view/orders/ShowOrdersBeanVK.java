@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package web.view.orders;
 
 import ejb.OrderManagerLocal;
@@ -15,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import org.primefaces.model.SortOrder;
 
 /**
  *

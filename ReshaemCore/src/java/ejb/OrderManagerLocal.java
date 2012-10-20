@@ -84,4 +84,6 @@ public interface OrderManagerLocal {
     
     public boolean isExpired(Long orderId);
 
+    public Subject getFuckingSubjectById(Long subjectId);
+    
 }
