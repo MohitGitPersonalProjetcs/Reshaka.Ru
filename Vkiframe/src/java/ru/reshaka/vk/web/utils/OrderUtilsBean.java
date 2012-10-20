@@ -1,4 +1,8 @@
-package web.orders;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.reshaka.vk.web.utils;
 
 import ejb.ConfigurationManagerLocal;
 import ejb.DealManagerLocal;
@@ -14,7 +18,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import web.utils.Tools;
 
 /**
  *
@@ -100,29 +103,17 @@ public class OrderUtilsBean {
         System.out.println("current order id is " + getCurrentOrderId());
     }
 
-    
-    
     public void addOffer(Long orderId, Long userId, double price) {
+        System.out.println("plug is " + getPlug());
+        System.out.println("Current order id is " + getCurrentOrderId());
         System.out.println("try to add offer orderId = " + orderId + " userID = " + userId + " price = " + price);
         FacesContext context = FacesContext.getCurrentInstance();
+
         orderMan.addOffer(orderId, userId, price);
-        
-        double minP = minPrice(orderId);
-        if (price >= minP){
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Уведомление.", "Заявка отправлена!"));
-        }else {
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка.", "Вы можете указать цену не менee " + minP + " р." ));
-        }
- 
 
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Уведомление.", "Заявка отправлена!"));
     }
 
-    public void deleteOffer(Long offerId , Long orderId){
-        //there is no cheking in EJB!!!
-        System.out.println("deleteOffer(): offerId = " + offerId);
-        orderMan.deleteOffer(offerId , orderId);
-    }
-    
     public List<User> employeesList(Long orderId) {
         return orderMan.getEmployees(orderId);
     }
@@ -161,29 +152,25 @@ public class OrderUtilsBean {
     }
 
     public String tooltipTextForRatedOrderStatus(Long orderId) {
-        System.out.println("tooltipTextForRatedOrderStatus occured selectedBean.order.id = " + orderId);
+        System.out.println("offerByOrderId occured selectedBean.order.id = " + orderId);
         List<Offer> list = orderMan.getOffers(orderId);
-        System.out.println("tooltipTextForRatedOrderStatus(orderId = " + orderId  +  "): list = " + list);
         String text = "Заказ оценен следующими решающими: ";
         int k = 0;
         for (Offer off : list) {
-//            System.out.println("off = " + off);
             if (k == 0) {
                 text = text + loginById(off.getUserId());
             } else {
-                text = text+ ", " + loginById(off.getUserId());
+                text = ", " + loginById(off.getUserId());
             }
-//            System.out.println("text = " + text);
             k++;
         }
-        System.out.println("text = " + text);
         return text;
     }
 
     public String bracketsForRatedOrderStatus(Long orderId) {
         System.out.println("offerByOrderId occured selectedBean.order.id = " + orderId);
         List<Offer> list = orderMan.getOffers(orderId);
-        String text = "(" + list.size() + ")";
+        String text = "(" + list.size()+")";
         return text;
     }
 //    public ArrayList<String> employeesList(Long orderId) {
@@ -225,13 +212,4 @@ public class OrderUtilsBean {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Ошибка обновления"));
         }
     }
-
-    public int orderedAmountOfUser(Long userId) {
-        return orderMan.getOrderedAmount(userId);
-    }
-    
-    public int timePassed(Date date){
-        return Tools.getPassedHours(date);
-    }
-    
 }

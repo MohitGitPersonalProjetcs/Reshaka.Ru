@@ -29,6 +29,10 @@
         <servlet-name>redirected</servlet-name>
         <servlet-class>servlets.redirected</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>VKAuthorisation</servlet-name>
+        <servlet-class>ru.reshaka.vk.web.servlets.VKAuthorisation</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
@@ -44,6 +48,10 @@
     <servlet-mapping>
         <servlet-name>redirected</servlet-name>
         <url-pattern>/redirected</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VKAuthorisation</servlet-name>
+        <url-pattern>/VKAuthorisation</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>1</session-timeout>
