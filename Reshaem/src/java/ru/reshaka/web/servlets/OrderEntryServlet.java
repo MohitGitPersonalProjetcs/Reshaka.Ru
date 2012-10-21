@@ -2,6 +2,7 @@ package ru.reshaka.web.servlets;
 
 import ejb.AttachmentManagerLocal;
 import ejb.OrderManagerLocal;
+import ejb.UserManagerLocal;
 import ejb.util.FileUtils;
 import ejb.util.ReshakaUploadedFile;
 import entity.Order;
@@ -16,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +28,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import web.utils.SessionListener;
 
@@ -33,6 +37,7 @@ import web.utils.SessionListener;
  * 
  * @author danon
  */
+@MultipartConfig(fileSizeThreshold=40*1024*1024) @WebServlet("/orderentry")
 public class OrderEntryServlet extends HttpServlet {
     
     private static final Logger log = Logger.getLogger(OrderEntryServlet.class);
@@ -61,11 +66,12 @@ public class OrderEntryServlet extends HttpServlet {
     private String redir = DEFAULT_REDIR_URL;
     
     @EJB
-    private AttachmentManagerLocal am;
+    private UserManagerLocal um;
     
     @EJB
     private OrderManagerLocal om;
     
+
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -82,36 +88,41 @@ public class OrderEntryServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             redir = getValidParameter(request, REDIR_URL_PARAM, DEFAULT_REDIR_URL);
-            
             HttpSession session = request.getSession(false);
             User user = (User)SessionListener.getSessionAttribute(session, "user");
+            
+            if(user == null) {
+                redirect(response, redir, user+" Cannot submit order. Operation is not permitted.");
+            }
+            
+            user = um.getUserById(user.getId());
+            
             if(user == null || user.getUserGroup() != User.ADMIN && user.getUserGroup() != User.USER) {
-                redirect(response, redir, "Cannot submit order. Operation is not permitted.");
+                redirect(response, redir, user+" Cannot submit order. Operation is not permitted.");
             }
             
             Order o = createOrder(request, type, user, response);
             boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
             if(!isMultipartContent && o.getType() == Order.OFFLINE_TYPE) {
-                redirect(response, ERROR_REDIR_URL, "Moultipart content is required for offline order type.");
+                redirect(response, ERROR_REDIR_URL, "Multipart content is required for offline order type.");
             }
             List<ReshakaUploadedFile> files = new LinkedList<>();
-            if(isMultipartContent) {
-                FileItemFactory factory = new DiskFileItemFactory();
-                ServletFileUpload upload = new ServletFileUpload(factory);
-                List<FileItem> fields = upload.parseRequest(request);
-                for(FileItem f : fields) {
-                    if(f.getFieldName().equalsIgnoreCase(ORDER_CONDITION_PARAM) && !f.isFormField()) {
-                        log.debug("File: "+f.getName()+" uploaded");
-                        files.add(convertUploadedFile(f));
-                        break;
-                    }
+            FileItem f = getFileItem(request, ORDER_CONDITION_PARAM);
+            if(f!=null && !f.isFormField()) {
+                if(log.isDebugEnabled()) {
+                    log.debug("File: "+f.getName()+" uploaded");
                 }
+                files.add(convertUploadedFile(f));
+            }
+            if(log.isTraceEnabled()) {
+                log.trace("Submitting order: "+o);
             }
             om.submitOrder(o, files);
-        } catch (ServletException | FileUploadException ex) {
+        } catch (ServletException ex) {
             System.out.println("exc = " + ex);
             redirect(response, ERROR_REDIR_URL, "Unexpected server error.");
-        }  
+        } 
+        redirect(response, redir, "Redirecting to "+redir);
     }
     
     public static ReshakaUploadedFile convertUploadedFile(FileItem fileItem) {
@@ -123,7 +134,7 @@ public class OrderEntryServlet extends HttpServlet {
             try (FileOutputStream os = new FileOutputStream(f)) {
                 FileUtils.copyStream(fileItem.getInputStream(), os);
             }
-            return new ReshakaUploadedFile(fileItem.getName(), fileItem.getContentType(), f);
+            return new ReshakaUploadedFile(FilenameUtils.getName(fileItem.getName()), fileItem.getContentType(), f);
         } catch (IOException ex) {
            log.error("convertUploadedFile() ", ex);
         }
@@ -131,6 +142,11 @@ public class OrderEntryServlet extends HttpServlet {
     }
     
     private String getValidParameter(HttpServletRequest request, String name) {
+//        String param = "";
+//        if(ServletFileUpload.isMultipartContent(request)) {
+//            param = request.getPart(name).
+//        }
+        
         final String param = request.getParameter(name);
         return param == null ? "" : param;
     }
@@ -138,6 +154,23 @@ public class OrderEntryServlet extends HttpServlet {
     private String getValidParameter(HttpServletRequest request, String name, String defaultValue) {
         final String param = getValidParameter(request, name);
         return param.isEmpty() ? defaultValue : param;
+    }
+    
+    private FileItem getFileItem(HttpServletRequest request, String name) {
+        // Validate file.
+        Object fileObject = request.getAttribute(name);
+        if (fileObject == null) {
+            // No file uploaded.
+            return null;
+        } else if (fileObject instanceof FileUploadException) {
+            // File upload is failed.
+            FileUploadException fileUploadException = (FileUploadException) fileObject;
+            log.debug("Failed to upload file. ", fileUploadException);
+            return null;
+        } else if(fileObject instanceof FileItem) {
+            return (FileItem)fileObject;
+        }
+        return null;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -183,16 +216,16 @@ public class OrderEntryServlet extends HttpServlet {
 
     private void redirect(HttpServletResponse response, String redir, String message) throws ServletException
     {
-//        if(log.isDebugEnabled()) {
-//            log.debug(">> redirect(): url="+redir+" - "+message);
-//        }
-//        try {
-//            if(!response.isCommitted())
-//                response.sendRedirect(redir);
-//        } catch (IOException ex) {
-//            log.error("redirect(): IOException", ex);
-//            throw new ServletException("Unexpected server error.", ex);
-//        }
+        if(log.isDebugEnabled()) {
+            log.debug(">> redirect(): url="+redir+" - "+message);
+        }
+        try {
+            if(!response.isCommitted())
+                response.sendRedirect(redir);
+        } catch (IOException ex) {
+            log.error("redirect(): IOException", ex);
+            throw new ServletException("Unexpected server error.", ex);
+        }
     }
 
     private Order createOrder(HttpServletRequest request, int type, User u, HttpServletResponse response) throws ServletException

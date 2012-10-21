@@ -84,6 +84,12 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE_WEB" />
     </logger>
+    
+    <logger name="ru.reshaka" additivity="false">
+        <level value="TRACE" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE_WEB" />
+    </logger>
 		
 	<!-- ** -->
 	

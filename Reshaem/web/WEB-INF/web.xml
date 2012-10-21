@@ -22,10 +22,6 @@
         <servlet-class>servlets.openId</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>OrderEntryServlet</servlet-name>
-        <servlet-class>ru.reshaka.web.servlets.OrderEntryServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>auth</servlet-name>
         <servlet-class>servlets.auth</servlet-class>
     </servlet>
@@ -52,10 +48,6 @@
     <servlet-mapping>
         <servlet-name>redirected</servlet-name>
         <url-pattern>/redirected</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>OrderEntryServlet</servlet-name>
-        <url-pattern>/orderentry</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>VKAuthorisation</servlet-name>
@@ -89,6 +81,31 @@
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
+    
+    <filter>
+        <description>
+            Check for multipart HttpServletRequests and parse the multipart form data so that all
+            regular form fields are available in the parameterMap of the HttpServletRequest and that
+            all form file fields are available as attribute of the HttpServletRequest. The attribute
+            value of a form file field can be an instance of FileItem or FileUploadException.
+        </description>
+        <filter-name>MultipartRequestFilter</filter-name>
+        <filter-class>web.utils.MultipartRequestFilter</filter-class>
+        <init-param>
+            <description>
+                Sets the maximum file size of the uploaded file in bytes. Set to 0 to indicate an
+                unlimited file size. The example value of 1048576 indicates a maximum file size of
+                1MB. This parameter is not required and can be removed safely.
+            </description>
+            <param-name>maxFileSize</param-name>
+            <param-value>41943040</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>MultipartRequestFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
     <error-page>
         <error-code>404</error-code>
         <location>/error404.xhtml</location>
