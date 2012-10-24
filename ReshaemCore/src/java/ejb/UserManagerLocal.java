@@ -89,4 +89,7 @@ public interface UserManagerLocal {
     public UserSettings getUserSettingsByUserId(Long userId);
     
     public boolean userExistsById(Long userId);
+    
+    public User getRandomUser();
+    
 }

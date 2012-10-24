@@ -847,4 +847,12 @@ public class UserManager implements UserManagerLocal {
         }
         return false;
     }
+
+    @Override
+    public User getRandomUser() {
+        Query q = em.createQuery("select u from User u where u.userGroup = :group");
+        q.setParameter("group",User.USER);
+        List<User> users = q.getResultList();
+        return users.get(0);
+    }
 }

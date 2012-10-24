@@ -1,6 +1,5 @@
 package ejb;
 
-import com.sun.xml.ws.api.tx.at.Transactional;
 import ejb.util.FileUtils;
 import ejb.util.ReshakaUploadedFile;
 import entity.Attachment;

@@ -8,6 +8,9 @@
             xmlns:ui="http://java.sun.com/jsf/facelets">
         <h:head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            
+            
+            
             <title>Reshaka.RU</title>
             <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
             <ui:insert name="headscripts">
@@ -37,6 +40,7 @@
         </h:head>
 
         <h:body rendered="#{!'expired'.equals(param['status'])}">
+            <img src="#{request.contextPath}/images/vk_logo.jpg" style="display: none;" title="vk:vkImage" />
             <div style="width: 950px; color: red; font-weight: bold; display: none; margin: 0 auto;">
                 Это тестовый сайт. Все внесенные вами изменения будут удалены. Вы можете оставлять отзывы по улучшению функционала сайта, а также о найденных багах.
             </div>
@@ -120,8 +124,10 @@
                                 <a href="javascript:void()" onclick="sys_comments_dlg.show();" >добавить отзыв о проекте</a> | <a href="#{request.contextPath}/feedbacks.xhtml" > все отзывы</a> <br/>
                             </h:panelGroup>
                             © Reshaka.RU all rights reserved
+                            <h:panelGroup rendered ="#{webSession.group==1}">
 							<a href="http://yandex.ru/cy?base=0&amp;host=reshaka.ru"><img src="http://www.yandex.ru/cycounter?reshaka.ru" width="88" height="31" alt="Яндекс цитирования" border="0" /></a>
 <a title="Google PR" href="//google-pagerank.net" target="_blank"><img src="//google-pagerank.net/rank.php?s=1" alt="Google PR"/></a>
+                            </h:panelGroup>
                         </p>	
                     </div>	
                 </div>

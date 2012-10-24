@@ -342,3 +342,15 @@ root {
     background-image: none !important;
 /*    color: black !important;*/
 }
+
+.online_student{
+    display: inline-block;
+    width: 250px;
+    height: 218px;
+}
+
+.offline_student{
+    display: inline-block;
+    width: 250px;
+    height: 218px;
+}

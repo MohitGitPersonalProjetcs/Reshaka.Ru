@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <!--<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -11,14 +7,14 @@ and open the template in the editor.
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">-->
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <body>
         <ui:composition template="#{request.contextPath}/Vkiframe/templates/template.xhtml">
 
             <ui:define name="vk_tabs">
                 <ui:include src="#{request.contextPath}/Vkiframe/templates/tabs.xhtml">
-<!--                    <ui:param name="tab_no" value="1" />-->
+                    <!--                    <ui:param name="tab_no" value="1" />-->
                 </ui:include>
             </ui:define>
 
@@ -31,32 +27,45 @@ and open the template in the editor.
                 </script>
 
                 <br/>
+                <h1 style="text-align: center;">
+                    Заказ offline - помощи
+                </h1>
                 <div>
-                    <h:form>
+                    <form action="#{request.contextPath}/orderentry" method="post" enctype="multipart/form-data">
                         <span>
-                            <h:outputLabel class="pedit_label" style="width: 200px;" value="Стоимость(RUR):" />
-                            <h:inputText class="text" style="width: 40px;" />
+                            <label class="pedit_label" style="width: 200px;" >Стоимость(RUR):</label>
+                            <!--                            <h:inputText class="text" style="width: 40px;" />-->
+                            <input type="text" class="text" name="order_price" />
+                            <div style="padding-top: 5px; color: #999;width: 250px; height: 28px; display: inline-block;">
+                                на сколько вы рассчитываете
+                            </div>   
                             <br/>
 
-                            <h:outputLabel class="pedit_label" style="width: 200px;" value="Срок:" />
+                            <label class="pedit_label" style="width: 200px;">Срок:</label>
                             <span id="deadspan" >
-                                <h:inputText class="text" style="margin-left: -3px;" />
+                                <input type="text" class="text"  name="order_deadline" />
                             </span>
+                            <div style="padding-top: 5px; color: #999;width: 250px; height: 28px; display: inline-block;">
+                                крайний срок
+                            </div>  
+                            <br/>
 
+                            <label class="pedit_label" style="width: 200px;">Загрузите условие:</label>
+                            <span id="deadspan" >
+                                <input type="file" class="text"   name="order_condition" />
+                            </span>
+                            <div style="padding-top: 5px; color: #999;width: 200px; height: 28px;display: inline-block;">
+                                если несколько файлов, загрузите архив в с ними
+                            </div>  
 
                         </span>
                         <br/>
-                        <h:outputLabel class="pedit_label" style="width: 200px;" value="Предмет:" />
-                        <h:selectOneMenu  class="fwDefault" enabledClass="enabled_class">
-                            <f:selectItem  itemLabel="Физика"/>
-                            <f:selectItem  itemLabel="Математика" />
-                            <f:selectItem  itemLabel="Информатика" />
-                            <f:selectItem  itemLabel="Английский язык" />
-                            <f:selectItem  itemLabel="Физика"/>
-                            <f:selectItem  itemLabel="Математика" />
-                            <f:selectItem  itemLabel="Информатика" />
-                            <f:selectItem  itemLabel="Английский язык" />
-                        </h:selectOneMenu>
+                        <label class="pedit_label" style="width: 200px;">Предмет:</label>
+                        <select class="fwDefault" name="order_subject" >
+                            <c:forEach items="#{makeOrderBean.allSubjects}" var="subj"  >
+                                <option value="#{subj.id}" > #{subj.subjectName}</option>
+                            </c:forEach>
+                        </select>
                         <br/>
                         <div style="display: block; font-size: 11px;">
                             <div style="color: #555;
@@ -67,23 +76,30 @@ and open the template in the editor.
                                 Дополнительная информация:
                             </div>
                             <span style="width: 298px; float: left;">
-                                <h:inputTextarea style=" width: 280px;
-                                                 height: 80px;
-                                                 line-height: 1.27em;"
-                                                 />
+                                <!--                                <h:inputTextarea style=" width: 280px;
+                                                                                 height: 80px;
+                                                                                 line-height: 1.27em;"
+                                                                                 />-->
+
+                                <textarea placeholder="кактегорически запрещается указывать здесь свои контактные данные" name="order_description" style=" width: 280px;
+                                          height: 80px;
+                                          line-height: 1.27em;" /> 
                             </span>
                             <div style="padding-top: 5px;
                                  color: #999;
                                  width: 150px;
                                  height: 28px;
-                                 float: left;
                                  display: inline-block;">
                                 Требования к оформлению, указания, прочее
-                            </div>                         
-                        </div>
-                        <br/>
+                            </div>   
 
-                    </h:form>
+                        </div>
+                        <br/> <br/>
+                        <input type="hidden" name="date_format" value="MM/dd/yyyy HH:mm"/>
+                        <input type="hidden" name="order_type" value="offline"/>
+                        <input type="submit" style="display: block; height: 40px; cursor: poiner; margin-top: 50px; margin-left: 600px;" value="Отправить заказ!"/>
+
+                    </form>
                 </div>
 
             </ui:define>

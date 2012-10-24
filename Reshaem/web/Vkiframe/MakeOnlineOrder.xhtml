@@ -27,24 +27,36 @@
                 </script>
 
                 <br/>
+                <h1 style="text-align: center;">
+                    Заказ помощи на экзамене
+                </h1>
                 <div>
                     <form action="#{request.contextPath}/orderentry" method="post" enctype="multipart/form-data">
                         <span>
                             <label class="pedit_label" style="width: 200px;" >Стоимость(RUR):</label>
                             <!--                            <h:inputText class="text" style="width: 40px;" />-->
                             <input type="text" class="text" name="order_price" />
+                            <div style="padding-top: 5px; color: #999;width: 250px; height: 28px; display: inline-block;">
+                                на сколько вы рассчитываете
+                            </div>   
                             <br/>
 
                             <label class="pedit_label" style="width: 200px;">Срок:</label>
                             <span id="deadspan" >
                                 <input type="text" class="text"  name="order_deadline" />
                             </span>
+                            <div style="padding-top: 5px; color: #999;width: 250px; height: 28px; display: inline-block;">
+                                крайний срок
+                            </div>  
                             <br/>
 
                             <label class="pedit_label" style="width: 200px;">Загрузите условие:</label>
                             <span id="deadspan" >
-                                <input type="file" class="text"  name="order_condition" />
+                                <input type="file" class="text"   name="order_condition" />
                             </span>
+                            <div style="padding-top: 5px; color: #999;width: 200px; height: 28px;display: inline-block;">
+                                если несколько файлов, загрузите архив в с ними
+                            </div>  
 
                         </span>
                         <br/>
@@ -69,7 +81,7 @@
                                                                                  line-height: 1.27em;"
                                                                                  />-->
 
-                                <textarea name="order_description" style=" width: 280px;
+                                <textarea placeholder="кактегорически запрещается указывать здесь свои контактные данные" name="order_description" style=" width: 280px;
                                           height: 80px;
                                           line-height: 1.27em;" /> 
                             </span>
@@ -77,15 +89,16 @@
                                  color: #999;
                                  width: 150px;
                                  height: 28px;
-                                 float: left;
                                  display: inline-block;">
                                 Требования к оформлению, указания, прочее
                             </div>   
+
                         </div>
-                        <br/>
+                        <br/> <br/>
                         <input type="hidden" name="date_format" value="MM/dd/yyyy HH:mm"/>
                         <input type="hidden" name="order_type" value="offline"/>
-                        <input type="submit" value="Submit"/>
+                        <input type="submit" style="display: block; height: 40px; cursor: poiner; margin-top: 50px; margin-left: 600px;" value="Отправить заказ!"/>
+
                     </form>
                 </div>
 

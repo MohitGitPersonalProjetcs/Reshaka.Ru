@@ -28,15 +28,15 @@ import web.utils.openIdUtils;
  *
  * @author rogvold
  */
-@WebServlet(name = "openId", urlPatterns = {"/openId"})
-public class openId extends HttpServlet {
+@WebServlet(name = "dummyLogin", urlPatterns = {"/dummyLogin"})
+public class dummyLogin extends HttpServlet {
 
     @EJB
     ConfigurationManagerLocal confMan;
 
     @EJB
     UserManagerLocal userMan;
-    
+
     @EJB
     SessionManagerLocal sm;
 
@@ -55,73 +55,13 @@ public class openId extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        // PrintWriter out = response.getWriter();
-        try (PrintWriter out = response.getWriter()) {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-//            System.out.println("-----------------------------------------------------------");
-//            System.out.println("openId -> processRequest");
-//            System.out.println("--------------------");
-//
-//
-//            Map params = request.getParameterMap();
-//
-//            System.out.println("greetings from servlet! params = " + params);
-//
-//            Iterator i = params.keySet().iterator();
-//            String s = "?";
-//            System.out.println("wtf s = " + s);
-//            int k = 0;
-//            while (i.hasNext()) {
-//
-//                String key = (String) i.next();
-//                if (("code".equals(key) || ("token".equals(key)))) {
-//                    continue;
-//                }
-//                String value = ((String[]) params.get(key))[0];
-//                if (k == 0) {
-//                    s = s + "" + key + "=" + value;
-//                } else {
-//                    s = s + "&" + key + "=" + value;
-//                }
-//                k++;
-//            }
-//
-//            s = "index.xhtml" + s;
-//
-//            System.out.println("s = " + s);
-//            out.println("<html>" + "<head><title> Receipt </title>");
-//
-//            System.out.println("<h3>POST PARAMETERS: "
-//                    + "token : " + request.getParameter("token") + ""
-//                    + "");
-//
-//            String json = getJson(request.getParameter("token"));
-//            out.println("<br/> json is " + json);
-//            openIdUtils utils = new openIdUtils();
-//            out.println("<br/> extracted id is " + utils.extractIdFromJson(json));
-//
-//            System.out.println("JSON = " + json);
-//
-//            if (!isSignedIn()) {
-//                openIdAuthorisation(json);
-//                System.out.println("openIdAuthorisation success... ");
-//                response.sendRedirect("index.xhtml");
-//            } else {
-//                makeBundle(utils.extractIdFromJson(json));
-//                response.sendRedirect("index.xhtml");
-//            }
-//
-//
-//
-//            response.sendRedirect("index.xhtml");
-        }
+        
+            session = request.getSession(true);
+            User user = userMan.getRandomUser();
+            SessionListener.setSessionAttribute(session, "user", user); 
+            sm.addSession(session.getId(), (user == null) ? null : user.getId());
+            response.sendRedirect("index.xhtml");
     }
-    
-    
-
 
     private void openIdAuthorisation(String json) {
         openIdUtils utils = new openIdUtils();
@@ -129,10 +69,9 @@ public class openId extends HttpServlet {
         User user = userMan.openIdAuthorisation(map);
         System.out.println("openId auth: user = " + user);
         System.out.println("openIdAuthorisation: session = " + session);
-//       session = (HttpSession) facesContext.getExternalContext().getSession(false);
         SessionListener.setSessionAttribute(session, "user", user); // working with session in servlet...
         sm.addSession(session.getId(), (user == null) ? null : user.getId());
-        
+
     }
 
     private void makeBundle(Map<String, String> map) {
@@ -141,8 +80,6 @@ public class openId extends HttpServlet {
             System.out.println("Trying to fuck the system!!!");
             return;
         }
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        session = (HttpSession) context.getExternalContext().getSession(true);
         SessionListener.setSessionAttribute(session, "user", user);
         sm.addSession(session.getId(), (user == null) ? null : user.getId());
         System.out.println("makeBundle(): success");
@@ -178,13 +115,13 @@ public class openId extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         response.setContentType("text/html");
-      //  processRequest(request, response);
+        response.setContentType("text/html");
+        //  processRequest(request, response);
         try (PrintWriter out = response.getWriter()) {
-            
+
             session = request.getSession(true);
             // working with get params
-            
+
             System.out.println("-----------------------------------------------------------");
             System.out.println("openId -> processRequest");
             System.out.println("--------------------");
@@ -216,10 +153,10 @@ public class openId extends HttpServlet {
             s = "index.xhtml" + s;
 
             System.out.println("s = " + s);
-            
-            out.println("s = " + s );
+
+            out.println("s = " + s);
             // !! end;
-            
+
             out.println("<html>" + "<head><title> Receipt </title>");
             System.out.println("<h3>POST PARAMETERS: "
                     + "token : " + request.getParameter("token") + ""
@@ -235,9 +172,10 @@ public class openId extends HttpServlet {
             if (!SessionUtils.isSignedIn()) {
                 out.println("is not signed in. trying to make authorisation; json = " + json);
                 openIdAuthorisation(json);
-                if (SessionUtils.isSignedIn())
-                out.println("openIdAuthorisation success... ");
-                
+                if (SessionUtils.isSignedIn()) {
+                    out.println("openIdAuthorisation success... ");
+                }
+
                 response.sendRedirect(s);
             } else {
                 makeBundle(utils.extractIdFromJson(json));

@@ -6,7 +6,7 @@
             xmlns:p="http://primefaces.org/ui">
         <h:head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <meta name="Description" content="Problem solving service"/>
+            <meta name="Description" content="Закажите решение задач или помощь на экзамене."/>
             <title>Reshaka.Ru</title>
             <meta http-equiv="Refresh" content="1; url=#{(param['redirect']==null ? request.contextPath : param['redirect'])}"/>
             <script type="text/javascript" src="#{request.contextPath}/js/jquery.min.js"></script>
@@ -23,6 +23,7 @@
                     <h:link outcome="index.xhtml" value="главную страницу">
                         <f:param name="status" value="post-expired"/>
                     </h:link>
+                    <img src="#{request.contextPath}/images/vk_logo.jpg" style="display: none;" title="vk:vkImage" />
                 </div>
             </div>
             <div id="fill" style="height: 1000px; cursor: progress;"></div>

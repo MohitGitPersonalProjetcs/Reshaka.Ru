@@ -1,6 +1,4 @@
 package ru.reshaka.web.servlets;
-
-import ejb.AttachmentManagerLocal;
 import ejb.OrderManagerLocal;
 import ejb.UserManagerLocal;
 import ejb.util.FileUtils;

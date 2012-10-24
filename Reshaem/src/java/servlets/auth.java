@@ -1,6 +1,5 @@
 package servlets;
 
-//import additional.Consts;
 import ejb.ConfigurationManagerLocal;
 import java.io.IOException;
 import java.io.PrintWriter;

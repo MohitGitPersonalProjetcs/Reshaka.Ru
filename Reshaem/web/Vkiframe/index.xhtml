@@ -27,7 +27,10 @@ and open the template in the editor.
                 <div style="width: 620px; margin: 0 auto; margin-top: 30px;">
                     <div class="student_picture" style="display: inline-block; width: 260px; margin-right: 80px;">
                         <div >
-                            <img src="#{request.contextPath}/Vkiframe/images/offline_student.png" />
+<!--                            <img src="#{request.contextPath}/Vkiframe/images/offline_student.png" class="offline_student" />-->
+                            <a href="#{request.contextPath}/Vkiframe/MakeOfflineOrder.xhtml">
+                                <span style="" class="offline_student"/>
+                            </a>
                         </div>
                         <div style="margin: 0 auto; width: 180px; color: #999; text-align: center;">
                             Нужно сделать кучу заданий, контрольных?
@@ -37,7 +40,10 @@ and open the template in the editor.
 
                     <div class="student_picture" style="display: inline-block; width: 260px;">
                         <div >
-                            <img src="#{request.contextPath}/Vkiframe/images/online_student.png" />
+<!--                            <img src="#{request.contextPath}/Vkiframe/images/online_student.png" />-->
+                            <a href="#{request.contextPath}/Vkiframe/MakeOnlineOrder.xhtml">
+                                <span class="online_student"/>
+                            </a>
                         </div>
                         <div style="margin: 0 auto; width: 180px; color: #999; text-align: center;">
                             Завтра экзамен? Чтож, не проблема! Закажите online-помощь на экзамене!
@@ -51,13 +57,13 @@ and open the template in the editor.
                      padding: 10px;
                      text-align: center;
                      font-size: 13px;
-/*                     border-radius: 12px;  Opera 10.5, IE9, Saf5, Chrome, FF4+, iOS 4, Android 2.1+ */
+                     /*                     border-radius: 12px;  Opera 10.5, IE9, Saf5, Chrome, FF4+, iOS 4, Android 2.1+ */
 
                      /* useful if you don't want a bg color from leaking outside the border: */
-/*                     -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;*/
-/*                     border-width: 1px;*/
-/*                     border-style: solid;*/
-/*                     border-color: #999;*/
+                     /*                     -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;*/
+                     /*                     border-width: 1px;*/
+                     /*                     border-style: solid;*/
+                     /*                     border-color: #999;*/
                      margin: 0 auto;
                      margin-top: 50px;
                      ">

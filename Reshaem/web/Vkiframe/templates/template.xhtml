@@ -11,6 +11,26 @@
             <script type="text/javascript" src="#{request.contextPath}/Vkiframe/scripts/jquery-ui-sliderAccess.js"></script>
             <link rel="stylesheet" media="all" type="text/css" href="#{request.contextPath}/Vkiframe/css/jquery-ui-1.8.16.custom.css"/>
 
+            <style type="text/css">
+                .offline_student:hover{
+                    background-image: url('#{request.contextPath}/Vkiframe/images/offlineSelected.jpg');
+                    background-size: 100%; 
+                    cursor: pointer;
+                }
+                .online_student:hover{
+                    background-image: url('#{request.contextPath}/Vkiframe/images/onlineSelected.jpg');
+                    background-size: 100%; 
+                    cursor: pointer;
+                }
+
+                .offline_student{
+                    background-image: url('#{request.contextPath}/Vkiframe/images/offline_student.png');
+                }
+                .online_student{
+                    background-image: url('#{request.contextPath}/Vkiframe/images/online_student.png');
+                }
+            </style>
+
         </head>
 
         <h:body style="background-color: white;">

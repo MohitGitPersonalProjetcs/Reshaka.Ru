@@ -33,6 +33,10 @@
         <servlet-name>VKAuthorisation</servlet-name>
         <servlet-class>ru.reshaka.vk.web.servlets.VKAuthorisation</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>dummyLogin</servlet-name>
+        <servlet-class>servlets.dummyLogin</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
@@ -52,6 +56,10 @@
     <servlet-mapping>
         <servlet-name>VKAuthorisation</servlet-name>
         <url-pattern>/VKAuthorisation</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dummyLogin</servlet-name>
+        <url-pattern>/dummyLogin</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>1</session-timeout>
@@ -81,7 +89,6 @@
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
-    
     <filter>
         <description>
             Check for multipart HttpServletRequests and parse the multipart form data so that all
@@ -105,7 +112,6 @@
         <filter-name>MultipartRequestFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
     <error-page>
         <error-code>404</error-code>
         <location>/error404.xhtml</location>
