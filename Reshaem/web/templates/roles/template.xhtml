@@ -8,9 +8,9 @@
             xmlns:ui="http://java.sun.com/jsf/facelets">
         <h:head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            
-            
-            
+
+
+
             <title>Reshaka.RU</title>
             <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
             <ui:insert name="headscripts">
@@ -37,6 +37,7 @@
             <script id="rhlpscrtg" type="text/javascript" charset="utf-8" async="async"
             src="https://web.redhelper.ru/service/main.js?c=reshaka"></script>
             <!--/Redhelper -->
+
         </h:head>
 
         <h:body rendered="#{!'expired'.equals(param['status'])}">
@@ -124,9 +125,11 @@
                                 <a href="javascript:void()" onclick="sys_comments_dlg.show();" >добавить отзыв о проекте</a> | <a href="#{request.contextPath}/feedbacks.xhtml" > все отзывы</a> <br/>
                             </h:panelGroup>
                             © Reshaka.RU all rights reserved
+
+
                             <h:panelGroup rendered ="#{webSession.group==1}">
-							<a href="http://yandex.ru/cy?base=0&amp;host=reshaka.ru"><img src="http://www.yandex.ru/cycounter?reshaka.ru" width="88" height="31" alt="Яндекс цитирования" border="0" /></a>
-<a title="Google PR" href="//google-pagerank.net" target="_blank"><img src="//google-pagerank.net/rank.php?s=1" alt="Google PR"/></a>
+                                <a href="http://yandex.ru/cy?base=0&amp;host=reshaka.ru"><img src="http://www.yandex.ru/cycounter?reshaka.ru" width="88" height="31" alt="Яндекс цитирования" border="0" /></a>
+                                <a title="Google PR" href="//google-pagerank.net" target="_blank"><img src="//google-pagerank.net/rank.php?s=1" alt="Google PR"/></a>
                             </h:panelGroup>
                         </p>	
                     </div>	
@@ -151,6 +154,31 @@
                     <p:poll async="true" process="@this" interval="10" autoStart="true" listener="#{webSession.updateParameters}"/>
                 </h:form>
             </h:panelGroup>
+
+            <!--Openstat-->
+            <span id="openstat2286087" style="display: none;"></span>
+            <script type="text/javascript">
+                var openstat = { counter: 2286087, image: 93, color: "ff9822", next: openstat };
+                (function(d, t, p) {
+                    var j = d.createElement(t); j.async = true; j.type = "text/javascript";
+                    j.src = ("https:" == p ? "https:" : "http:") + "//openstat.net/cnt.js";
+                    var s = d.getElementsByTagName(t)[0]; s.parentNode.insertBefore(j, s);
+                })(document, "script", document.location.protocol);
+            </script>
+            <!--/Openstat-->
+
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+                document.write("<a style='display:none;' href='http://www.liveinternet.ru/click' "+
+                    "target=_blank><img src='//counter.yadro.ru/hit?t27.6;r"+
+                    escape(document.referrer)+((typeof(screen)=="undefined")?"":
+                    ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+                    screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+                    ";"+Math.random()+
+                    "' alt='' title='LiveInternet: показано количество просмотров и"+
+                    " посетителей' "+
+                    "border='0' width='88' height='120'><\/a>")
+                //--></script><!--/LiveInternet-->
+
         </h:body>
     </f:view>
 </html>

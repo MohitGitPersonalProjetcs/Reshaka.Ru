@@ -1,6 +1,7 @@
 package ru.reshaka.vk.web.servlets;
 
 import ejb.ConfigurationManagerLocal;
+import ejb.SessionManagerLocal;
 import ejb.UserManagerLocal;
 import entity.User;
 import java.io.IOException;
@@ -9,14 +10,12 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import web.utils.SessionListener;
-import web.utils.SessionUtils;
 
 /**
  *
@@ -29,6 +28,8 @@ public class VKAuthorisation extends HttpServlet {
     UserManagerLocal userMan;
     @EJB
     ConfigurationManagerLocal confMan;
+    @EJB
+    SessionManagerLocal sm;
 
     /**
      * Processes requests for both HTTP
@@ -42,6 +43,8 @@ public class VKAuthorisation extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        session = request.getSession();
+        
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
@@ -72,10 +75,12 @@ public class VKAuthorisation extends HttpServlet {
                 out.println("</html>");
             }
             String s = "index.xhtml";
-            if (!SessionUtils.isSignedIn()) {
+            
+//            if (!SessionUtils.isSignedIn()) {
 //                while(!SessionUtils.isSignedIn()){
                 out.println("is not signed in. trying to make authorisation");
                 User user = openIdAuthorisation(viewer_id);
+//                SessionListener.setSessionAttribute(session, "user", user);
                 out.println("viewer_id = " + viewer_id);
                 out.println("user = " + user);
 //                }
@@ -83,9 +88,10 @@ public class VKAuthorisation extends HttpServlet {
                     out.println("openIdAuthorisation success... ");
                     response.sendRedirect(s);
 //                }
-            } else {
-                response.sendRedirect(s);
-            }
+//            } 
+//            else {
+//                response.sendRedirect(s);
+//            }
 
 
 
@@ -123,6 +129,8 @@ public class VKAuthorisation extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+//        SessionListener.setSessionAttribute(request.getSession(), null, request);
+        
         processRequest(request, response);
     }
 
@@ -162,9 +170,8 @@ public class VKAuthorisation extends HttpServlet {
         map.put("vkontakte", uid);
         User user = userMan.openIdAuthorisation(map);
         System.out.println("VK Iframe: user = " + user);
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        session = (HttpSession) facesContext.getExternalContext().getSession(true);
         SessionListener.setSessionAttribute(session, "user", user);
+        sm.addSession(session.getId(), user.getId());
         return user;
     }
 }
