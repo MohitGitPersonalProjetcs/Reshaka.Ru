@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
-        <head>
+    <f:view xmlns="http://www.w3.org/1999/xhtml" 
+            xmlns:ui="http://java.sun.com/jsf/facelets" 
+            xmlns:h="http://java.sun.com/jsf/html" 
+            xmlns:p="http://primefaces.org/ui"
+            xmlns:f="http://java.sun.com/jsf/core">
+        <h:head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
             <link href="#{request.contextPath}/Vkiframe/css/VkCSS.css" rel="stylesheet" type="text/css" />
             <script type="text/javascript" src="#{request.contextPath}/Vkiframe/scripts/jquery-1.7.1.min.js"></script>
@@ -31,16 +35,16 @@
                 }
             </style>
 
-        </head>
+        </h:head>
 
         <h:body style="background-color: white;">
 
             <!--            <div style="display: block; width: 770px; height: 600px;  border-width: 1px; border-color: #2B587A; border-style: solid;">-->
             <div class="header" style="overflow: visible;">
-                <a href="javascript:void();" target="_top" class="logo"></a><br/>
+                <a href="#{request.contextPath}/Vkiframe/index.xhtml"  class="logo"></a><br/>
                 <span style="display: block; color: green; text-align: right;  margin-top: 40px; margin-right: 20px;" >
                     <h:panelGroup rendered="#{webSession.signedIn}">
-                        online
+                        online <a href="#{request.contextPath}/Vkiframe/billing.xhtml" style="color: orange; text-decoration: none;">(#{userBean.currentBalance} руб.)</a>
                     </h:panelGroup>
                 </span>
             </div>

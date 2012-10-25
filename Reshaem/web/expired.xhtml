@@ -3,12 +3,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <f:view xmlns:h="http://java.sun.com/jsf/html" 
             xmlns:f="http://java.sun.com/jsf/core"
+            xmlns:c="http://java.sun.com/jsp/jstl/core"
             xmlns:p="http://primefaces.org/ui">
         <h:head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
             <meta name="Description" content="Закажите решение задач или помощь на экзамене."/>
             <title>Reshaka.Ru</title>
-            <meta http-equiv="Refresh" content="1; url=#{(param['redirect']==null ? request.contextPath : param['redirect'])}"/>
+            <c:if test="#{param['redirect']!=null  or !param['redirect'].isEmpty()}">
+                <meta http-equiv="Refresh" content="1; url=#{param['redirect']}"/>
+            </c:if>
+            <c:if test="#{param['redirect']==null  or param['redirect'].isEmpty()}">
+                <meta http-equiv="Refresh" content="0; url=/"/>
+            </c:if>
             <script type="text/javascript" src="#{request.contextPath}/js/jquery.min.js"></script>
         </h:head>
         <script type="text/javascript">

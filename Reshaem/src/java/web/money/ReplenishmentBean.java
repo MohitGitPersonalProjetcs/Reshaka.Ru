@@ -101,6 +101,7 @@ public class ReplenishmentBean implements Serializable {
     }
 
     public String getYandexLink() {
+        System.out.println("getYandexLink() occured");
         return getLinkForYandexPayment(getId(), getMoney());
     }
 
