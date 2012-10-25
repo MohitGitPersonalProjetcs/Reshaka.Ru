@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
-
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <body>
         <ui:composition template="#{request.contextPath}/Vkiframe/templates/template.xhtml">
@@ -19,7 +18,7 @@ and open the template in the editor.
             <ui:define name="content">
 
                 <h3>
-                    Здесь вы можете управлять своими заказами
+                    Мои заказы
                 </h3>
 
                 <table class="wikiTable" >
@@ -36,9 +35,6 @@ and open the template in the editor.
                             </th>
                             <th scope="col">
                                 Дата
-                            </th>
-                            <th scope="col">
-                                Теги
                             </th>
                             <th scope="col">
                                 Тип
@@ -73,10 +69,6 @@ and open the template in the editor.
                                     </h:outputText>
                                 </td>
 
-                                <td>
-                                    #{order.tags}
-                                </td>
-
                                 <td style="color: #2B587A;">
                                     <c:if test="#{order.type == 0}">
                                         Оффлайн заказ
@@ -88,87 +80,123 @@ and open the template in the editor.
                                 </td>
                             </tr>
 
-                            <tr  class="sab" style="margin: 0; padding: 0px;   display: none;" >
-                                <td colspan="6" style="padding: 0px;">
-                                    <div id="spanid#{order.id}" style="display: table-row; border-collapse: collapse; text-align: justify; vertical-align: inherit; height: 150px;">
-                                        <!--                                        <h:panelGrid columns="2">-->
-                                        <h:outputLabel class="pedit_label" style="width: 120px;" value="ID" />
-                                        <h:outputLabel value="#{order.id}" />
-                                        <br/>
-
-                                        <h:panelGroup rendered="#{ ( order.status == 1) or (order.status==11)}" >
-                                            <h:outputLabel value="Предложили помощь: " class="pedit_label" style="vertical-align: top; width: 120px;" />
-                                            <div style="display: inline-block;  color: #0000e5;">
-                                                <div style=" overflow: auto; max-height: 50px; width: 300px; display:inline-block; margin-top:4px; ">
-                                                    <c:forEach items="#{orderUtilsBean.offersByOrderId(order.id)}" var="offer">
-                                                        <h:link outcome="#{request.contextPath}/Vkiframe/profile.xhtml" value="#{orderUtilsBean.loginById(offer.userId)}">
-                                                            <f:param name="id" value="#{offer.userId}"/>
-                                                        </h:link>, 
-                                                    </c:forEach>
-
-
-
-
-                                                </div>
-                                                <div style=" text-align: left;">
-                                                    <a href="javascript:void();" onclick="$('#rated_span#{order.id} div').css('display','table-row'); $('#spanid#{order.id}').css('display', 'none');">
-                                                        Выбрать
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </h:panelGroup>
-                                    </div>
-                                    <h:panelGroup id="rated_span#{order.id}" style=" max-height: 150px; overflow: auto; display:block;" rendered="#{ ( order.status == 1) or (order.status==11)}">
-                                        <div style="display: none; text-align: left;" >
-                                            <h3>
-                                                Выберите решающего
-                                            </h3>
-                                            <!--                                        <table>
-                                                                                        <tr>-->
-                                            <!--                                                <span style="display: inline-block; width: 300px;">-->
-                                            <table style=" margin-left: 5px;" class="wikiTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">
-                                                            Решака
-                                                        </th>
-                                                        <th scope="col">
-                                                            Предложенная стоимость
-                                                        </th>
-                                                        <th scope="col">
-
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <c:forEach items="#{orderUtilsBean.offersByOrderId(order.id)}" var="off">
-                                                    <tr >
-                                                        <td>
-                                                            <h:link outcome="#{request.contextPath}/Vkiframe/profile.xhtml" value="#{orderUtilsBean.loginById(off.userId)}">
-                                                                <f:param name="id" value="#{offer.userId}"/>
+                            <tr  class="sab" style="margin: 0; padding: 0px; border: none; display: none;" >
+                                <td colspan="5" style="padding: 0px;">
+                                    <table class="order_info" style="width: 100%; text-align: left;">
+                                        <tr>
+                                            <td style="width: 350px;">
+                                                <div class="grid_title">Информация</div>
+                                                <h:panelGrid columns="2">
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Номер заказа:" />
+                                                    <h:outputLabel class="grid_value" value="#{order.id}" style="width: 200px;" />
+                                                    
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Тип заказа:" />
+                                                    <h:outputLabel class="grid_value" style="width: 200px;">
+                                                        <c:if test="#{order.type == 0}">
+                                                            Оффлайн заказ
+                                                        </c:if>
+                                                        <c:if test="#{order.type == 1}">
+                                                            Онлайн-помощь
+                                                        </c:if>
+                                                    </h:outputLabel>
+                                                    
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Статус:" />
+                                                    <h:outputLabel class="grid_value" value="#{orderUtilsBean.russianOrderStatus(order.id)}" style="width: 200px;" />
+                                                    
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Предмет:" />
+                                                    <h:outputLabel class="grid_value" value="#{order.subject.subjectName}" style="width: 200px;" />
+                                                    
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Дата размещения:" />
+                                                    <h:outputLabel class="grid_value" value="#{order.hireDateString}" style="width: 200px;" />
+                                                    
+                                                    <c:if test="#{order.type == 0}">
+                                                        <h:outputLabel class="grid_label" style="width: 120px;" value="Срок:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.deadlineString}" style="width: 200px;" />
+                                                    </c:if>
+                                                    <c:if test="#{order.type == 1}">
+                                                        <h:outputLabel class="grid_label" style="width: 120px;" value="Длительность:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.duration}" style="width: 200px;" />
+  
+                                                        <h:outputLabel class="grid_label" style="width: 120px;" value="Email:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.fromEmail}" style="width: 200px;" />
+                                                    </c:if>
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Скачать решение:"/>
+                                                    <h:outputLabel class="grid_value" style="width: 200px;" rendered="#{(order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0}">
+                                                            <h:link value="Скачать" rendered="#{(order.employer.id == webSession.id) or (order.employee.id == webSession.id ) }" outcome="download" target="_blank">
+                                                                <f:param name="id" value="#{order.solutionId}"/>
                                                             </h:link>
-                                                        </td>
-                                                        <td>
-                                                            #{off.price}
-                                                        </td>
-                                                        <td>
-                                                            <a href="javascript:void();" style="text-decoration: none;">
-                                                                Выбрать
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                            <!--                                                </span>-->
-
-                                            <span style="display: inline-block; width:250px;">
+                                                    </h:outputLabel>
+                                                    <h:outputLabel class="grid_value" style="width: 200px;" rendered="#{!((order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0)}">
+                                                            Недоступно
+                                                    </h:outputLabel>
+                                                </h:panelGrid>
+                                            </td>
                                                 
-                                            </span>
-                                        </div>
-                                        <!--                                            </tr>
-                                                                                </table>-->
+                                            <td>
+                                                <div class="grid_title">Операции</div>
+                                                <div>
+                                                    <div id="spanid#{order.id}" style="display: table-row; border-collapse: collapse; text-align: justify; vertical-align: inherit; height: 150px;">
+                                                        <h:panelGrid columns="2" rendered="#{ ( order.status == 1) or (order.status==11)}" >
+                                                            <h:outputLabel value="Предложили помощь: " class="grid_label" style="width: 100px; vertical-align: top;" />
+                                                            <span class="grid_value" style="width: 200px;">
+                                                                    #{orderUtilsBean.offersByOrderId(order.id).size()} решак(а)
+                                                                    <span style="margin-left: 10px;"><a href="javascript:void();" onclick="$('#rated_span#{order.id} div').css('display','table-row'); $('#spanid#{order.id}').css('display', 'none');">
+                                                                        Выбрать
+                                                                    </a></span>
+                                                            </span>
+                                                        </h:panelGrid>
+                                                    </div>
+                                                    <h:panelGroup id="rated_span#{order.id}" style=" max-height: 150px; overflow: auto; display: block;" rendered="#{ ( order.status == 1) or (order.status==11)}">
+                                                        <div style="display: none; text-align: left;" >
+                                                            <b>
+                                                                Выбор решающего:
+                                                            </b> <a href="javascript:void(0);" onclick="$('#spanid#{order.id}').css('display', 'table-row'); $('#rated_span#{order.id} div').css('display','none');">Назад</a>
+                                                            <table>
+                                                                <tr><td>
+                                                                    <span style="display: inline-block; width: 300px;">
+                                                                        <table style=" margin-left: 5px;" class="wikiTable">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th scope="col">
+                                                                                        Решака
+                                                                                    </th>
+                                                                                    <th scope="col">
+                                                                                        Предложенная стоимость
+                                                                                    </th>
+                                                                                    <th scope="col">
 
-                                    </h:panelGroup>
-
+                                                                                    </th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <c:forEach items="#{orderUtilsBean.offersByOrderId(order.id)}" var="off">
+                                                                                <tr >
+                                                                                    <td>
+                                                                                        <h:link outcome="#{request.contextPath}/Vkiframe/profile.xhtml" value="#{orderUtilsBean.loginById(off.userId)}">
+                                                                                            <f:param name="id" value="#{offer.userId}"/>
+                                                                                        </h:link>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        #{off.price}
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <a href="javascript:void();" style="text-decoration: none;">
+                                                                                            Выбрать
+                                                                                        </a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </c:forEach>
+                                                                        </table>
+                                                                    </span>
+                                                                    
+                                                                </td></tr>
+                                                            </table>
+                                                        </div>    
+                                                    </h:panelGroup>
+                                                    <div>Удалить заказ</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
 
