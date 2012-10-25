@@ -384,7 +384,8 @@ div.tabscontainer div.curvedContainer .tabcontent{
     padding:20px;
     padding-left: 5px;
     font-size:14px;
-    font-family: "CenturyGothicRegular", "Century Gothic", Arial, Helvetica, sans-serif;
+    font: 11px/1.28 "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
+/*    font-family: "CenturyGothicRegular", "Century Gothic", Arial, Helvetica, sans-serif;*/
 }
 
 div.tabs div.tab{

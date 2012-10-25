@@ -17,7 +17,7 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
 
-    <body>
+    <h:body>
         <ui:composition template="#{request.contextPath}/Vkiframe/templates/template.xhtml">
 
             <ui:define name="vk_tabs">
@@ -100,13 +100,12 @@ and open the template in the editor.
                             <br/><br/>
                             <span style="font-weight: bold;" >Cпособ 1. </span> С помощью своего кошелька Яндекс Денег:
                             
-                            <h:form prependId="false" >
+                            <h:form >
                                 <h:outputText value="Сумма: " />  
                                 <h:inputText value="#{replenishmentBean.money}" id="yainput">
-                                    <p:ajax event="keyup" update="qwerty" />
+                                    <p:ajax event="keyup" update="qwerty"  />
                                 </h:inputText>
-                                <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple;" >
-                                    <span class="replenish_button" style=" color: black; text-decoration: none; padding: 3px;">Пополнить</span>
+                                <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple; margin-left: 20px;" ><span class="replenish_button" style=" color: black; ">Пополнить (#{replenishmentBean.money})</span>
                                 </h:outputLink>
                             </h:form>
 
@@ -176,5 +175,5 @@ and open the template in the editor.
 
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>
