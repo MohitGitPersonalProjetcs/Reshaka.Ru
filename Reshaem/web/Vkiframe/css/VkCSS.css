@@ -229,6 +229,48 @@ input.text, input.search, textarea, input.big_text {
     font-size: 11px;
     padding: 4px 10px 0 0;
 }
+
+.pedit_value {
+    color: black;
+    /*    width: 160px;*/
+    display: inline-block;
+    text-align: left;
+    font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+    font-size: 11px;
+    padding: 4px 0 0 10px ;
+}
+
+.grid_label {
+    color: #555;
+    /*    width: 160px;*/
+    display: inline-block;
+    text-align: right;
+    font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+    font-size: 11px;
+    padding: 0 8px 0 0;
+}
+
+.grid_value {
+    color: black;
+    /*    width: 160px;*/
+    display: inline-block;
+    text-align: left;
+    font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+    font-size: 11px;
+    padding: 0 0 0 8px ;
+}
+
+.order_info table, .order_info td {
+    border: none;
+}
+
+.order_info .grid_title {
+    text-align: left;
+    margin-left: 10px;
+    display: block;
+    font-weight: bold;
+}
+
 tr {
 /*    display: table-row;*/
 /*    vertical-align: inherit;*/

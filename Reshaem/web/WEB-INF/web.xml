@@ -110,7 +110,7 @@
     </filter>
     <filter-mapping>
         <filter-name>MultipartRequestFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/orderentry</url-pattern>
     </filter-mapping>
     <error-page>
         <error-code>404</error-code>
