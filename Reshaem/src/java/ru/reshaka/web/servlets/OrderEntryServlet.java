@@ -43,8 +43,8 @@ public class OrderEntryServlet extends HttpServlet {
     public static final int POST_TYPE = 0;
     public static final int GET_TYPE = 1;
     
-    public static final String DEFAULT_REDIR_URL = "index.xhtml";
-    public static final String ERROR_REDIR_URL = "index.xhtml";
+    public static final String DEFAULT_REDIR_URL = "Vkiframe/index.xhtml";
+    public static final String ERROR_REDIR_URL = "Vkiframe/orderIsNotUploaded.xhtml";
     
     private static final String ORDER_TYPE_PARAM = "order_type";
     private static final String ORDER_DEADLINE_PARAM = "order_deadline";

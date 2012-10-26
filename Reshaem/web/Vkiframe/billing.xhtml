@@ -42,6 +42,14 @@ and open the template in the editor.
                             $(".curvedContainer .tabcontent").css("display","none");
                             $(".curvedContainer #tab_content_"+index).css("display","block");
                         });
+                        
+                        $(".replenishmentTabLink").click(function() {
+                            $(".tabs .tab[id^=tab_menu]").removeClass("selected");
+                            $(".curvedContainer .tabcontent").css("display","none");
+                            $(".curvedContainer #tab_content_5").css("display","block");
+                            $(".tabs  #tab_menu_5").addClass("selected");
+                        });
+                        
                     });
                 </script>
                 <div class="tabscontainer">
@@ -77,9 +85,8 @@ and open the template in the editor.
                                     <img src="#{request.contextPath}/Vkiframe/images/vk_qiwi_money_logo.png" style="height: 70%;" />
                                 </div>
                             </div>
-                            <!--                        <div class="arrow"></div>-->
                         </div>
-                        <div class="tab last" id="tab_menu_4">
+                        <div class="tab" id="tab_menu_4">
                             <div class="link">
                                 <div style=" display: block; width: 90px; margin: 0 auto;">
                                     <div style="margin: 0 auto;">
@@ -90,6 +97,17 @@ and open the template in the editor.
                             </div>
                             <!--                        <div class="arrow"></div>-->
                         </div>
+                        <div class="tab last" id="tab_menu_5">
+                            <div class="link">
+                                <div style=" display: block; width: 90px; margin: 0 auto;">
+                                    <div style="margin: 0 auto;">
+                                        Заявка на ввод
+                                    </div>
+                                    <img src="#{request.contextPath}/Vkiframe/images/vk_repl_form.png" style="height: 70%;" />
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="curvedContainer">
                         <div class="tabcontent" id="tab_content_0"  style="display: block; ">
@@ -99,10 +117,10 @@ and open the template in the editor.
                             Вы можете пополнить счет через систему <span style="font-weight: bold;" >Яндекс деньги</span> следующими способами:
                             <br/><br/>
                             <span style="font-weight: bold;" >Cпособ 1. </span> С помощью своего кошелька Яндекс Денег:
-                            
+
                             <h:form >
                                 <h:outputText value="Сумма: " />  
-                                <h:inputText value="#{replenishmentBean.money}" id="yainput">
+                                <h:inputText value="#{replenishmentBean.money}" class="text" id="yainput">
                                     <p:ajax event="keyup" update="qwerty"  />
                                 </h:inputText>
                                 <h:outputLink target="blank_" id="qwerty" value="#{replenishmentBean.yandexLink}" style="color: purple; margin-left: 20px;" ><span class="replenish_button" style=" color: black; ">Пополнить (#{replenishmentBean.money})</span>
@@ -112,7 +130,7 @@ and open the template in the editor.
                             <br/><br/>
                             <span style="font-weight: bold;" >Cпособ 2. </span> Положить деньги на наш кошелек Яндекс Денег <span style="font-weight: bold;">410011373789086</span> через терминал или банковским переводом (учитывая комиссию терминала/банка (0-5%) и комиссию Яндекс Денег за ввод (0-2%). Сохранить чек об оплате. 
                             Оформить 
-                            <span onclick="replenishment_dlg.show();moneyTabs.select(3);" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
+                            <span class="replenishmentTabLink" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
                                 заявку на ввод средств
                             </span> .   
 
@@ -120,19 +138,26 @@ and open the template in the editor.
 
                             <br/>Как перевести деньги через терминал можно посмотреть <a href=" http://www.youtube.com/watch?v=fDA8cDYpzUw" target="_blank">здесь</a> .
                         </div>
+
                         <div class="tabcontent" id="tab_content_2" style="display: none; ">
                             Вы можете пополнить счет через систему <span style="font-weight: bold;" >Webmoney</span> следующими способами:
                             <br/><br/>
-                            <span style="font-weight: bold;" >Cпособ 1. </span> С помощью своего кошелька, используя 
-                            <span onclick="replenishment_dlg.show();moneyTabs.select(1);" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
-                                форму
-                            </span>
-                            на нашем сайте.
+                            <span style="font-weight: bold;" >Cпособ 1. </span> С помощью своего кошелька Webmoney:
+                            <form id="ppayp" name="ppappa" target="_blank" method="POST" action="https://merchant.webmoney.ru/lmi/payment.asp">
+                                Сумма:
+                                <input type="text" name="LMI_PAYMENT_AMOUNT" class="text" />
+                                <input type="hidden" name="LMI_PAYMENT_DESC" value="replenishment"/>
+                                <input type="hidden" name="LMI_PAYMENT_NO" value="#{webSession.id}"/>
+                                <input type="hidden" name="LMI_PAYEE_PURSE" value="R125208907646"/>
+                                <input type="hidden" name="LMI_SIM_MODE" value="0"/>
+                                <input type="submit" value="Пополнить"/>
+                            </form>
+
 
                             <br/><br/>
                             <span style="font-weight: bold;" >Cпособ 2. </span> Положить деньги на наш кошелек Webmoney <span style="font-weight: bold;" >R125124129663 </span> через терминал или банковским переводом (учитывая комиссию терминала/банка (0-5%) и комиссию Webmoney за ввод (0-2%). Сохранить чек об оплате. 
                             Оформить 
-                            <span onclick="replenishment_dlg.show();moneyTabs.select(3);" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
+                            <span class="replenishmentTabLink" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
                                 заявку на ввод средств
                             </span> .   
 
@@ -146,7 +171,7 @@ and open the template in the editor.
                             <br/><br/>
                             <span style="font-weight: bold;" >Cпособ 1. </span> 
                             Перевод на банковскую карту СберБанка "тут буду реквезиты". Далее необходимо оформить 
-                            <span onclick="replenishment_dlg.show();moneyTabs.select(3);" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
+                            <span class="replenishmentTabLink" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
                                 заявку на ввод средств
                             </span> . 
                             В заявке указать сумму, дату, время, тип платежа - "Банковский перевод". В качестве чека загрузить сканированную или сфотографированную квитанцию об оплате. Пополнение баланса этим способом может происходить с задержкой до 24 часов. 
@@ -155,12 +180,47 @@ and open the template in the editor.
                             <span style="font-weight: bold;" >Cпособ 2. </span> 
                             Перевести деньги на номер Билайн 9646228094. Далее необходимо оформить 
 
-                            <span onclick="replenishment_dlg.show();moneyTabs.select(3);" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
+                            <span class="replenishmentTabLink" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
                                 заявку на ввод средств
                             </span> . 
                             В заявке указать сумму, дату, время, тип платежа - "Оплата мобильного". В качестве чека загрузить сканированную или сфотографированную квитанцию об оплате. Пополнение баланса этим способом может происходить с задержкой до 24 часов. Наша внутренняя комиссия при оплате этим способом составляет 7%!
 
                             <br/>Как перевести деньги через терминал можно посмотреть <a href="http://www.youtube.com/watch?v=DJzAaRNw5Is" target="_blank">здесь</a> .
+
+                        </div>
+
+                        <div class="tabcontent" id="tab_content_5" style="display: none; ">
+                            <h3>
+                                Форма заявки
+                            </h3>
+                            Выберите один из предложенных в выпадающем списке способов пополнения счета.
+                            <br/>
+                            <form style="margin-top: 20px;" action="#{request.contextPath}/replservl" method="post" enctype="multipart/form-data">
+                                <label class="pedit_label" style="width: 200px;" >Сумма (руб.):</label><input type="text" name="money" placeholder="money" class="text" /> <br/>
+                                <label class="pedit_label" style="width: 200px;" >Тип:</label>
+                                <select class="fwDefault" name="type" >
+                                    <option value="mobile" >Оплата мобильного</option>
+                                    <option value="bank" >Банковский перевод</option>
+                                    <option value="yandex-money" >Яндекс Деньги (через терминал)</option>
+                                    <option value="webmoney" >Webmoney (через терминал)</option>
+                                    <option value="other" >Другое</option>
+                                </select>
+                                <br/>
+                                <label class="pedit_label" style="width: 200px;" >Квитанция:</label>
+                                <input type="file" class="text"   name="attachment" title="Загрузите фотографию квитанции об оплате" />
+                                <br/>
+                                <label class="pedit_label" style="width: 200px;" ></label>
+                                <textarea placeholder="описание (любой текст)" name="text" style=" width: 280px;
+                                          height: 80px;
+                                          line-height: 1.27em;" />
+
+
+
+                                <input type="submit" style="display: block; height: 40px; cursor: poiner; margin-top: 50px; margin-left: 500px;" value="Отправить!"/>
+                            </form>
+
+
+
                         </div>
                     </div>
                 </div>

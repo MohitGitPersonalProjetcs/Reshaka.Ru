@@ -84,16 +84,12 @@ and open the template in the editor.
                         <p:tab id="tab2" title="Webmoney" rendered="#{webSession.group == 2}">
                             <form id="ppayp" name="ppappa" method="POST" action="https://merchant.webmoney.ru/lmi/payment.asp">
                                 Сумма:
-
                                 <input type="text" name="LMI_PAYMENT_AMOUNT" />
                                 <input type="hidden" name="LMI_PAYMENT_DESC" value="replenishment"/>
                                 <input type="hidden" name="LMI_PAYMENT_NO" value="#{webSession.id}"/>
                                 <input type="hidden" name="LMI_PAYEE_PURSE" value="R125208907646"/>
                                 <input type="hidden" name="LMI_SIM_MODE" value="0"/>
-
-
                                 <input type="submit" value="Пополнить"/>
-
                             </form>
                             <!--                                <h:form>
                                                                 <p:commandLink value="fwertwert"  action="#{replenishmentBean.linkForWebmoneyPayment}">
