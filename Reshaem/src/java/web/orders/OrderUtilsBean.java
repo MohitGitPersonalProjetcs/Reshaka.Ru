@@ -155,7 +155,6 @@ public class OrderUtilsBean {
 
     public ArrayList<Offer> offersByOrderId(Long orderId) {
         System.out.println("offerByOrderId occured selectedBean.order.id = " + orderId);
-//        ArrayList<Offer> offers = new ArrayList();
         ArrayList<Offer> list = new ArrayList(orderMan.getOffers(orderId));
         return list;
     }

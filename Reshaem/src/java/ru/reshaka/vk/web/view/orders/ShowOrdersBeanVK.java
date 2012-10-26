@@ -31,7 +31,9 @@ public class ShowOrdersBeanVK {
     private int page = 0;
     private Long userId;
     private int ordersAmount;
-
+    List<Order> data ;
+    
+    
     public ShowOrdersBeanVK() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
@@ -45,6 +47,8 @@ public class ShowOrdersBeanVK {
 
     @PostConstruct
     private void init() {
+//        data = orderMan.getAllOrders();
+        data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
         this.ordersAmount = orderMan.getOrdersCount(null, null, -1, 0, 1000000, null, ReshakaSortOrder.UNSORTED);
     }
 
@@ -65,6 +69,7 @@ public class ShowOrdersBeanVK {
             return;
         }
         this.page += 1;
+        data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
     }
 
     public boolean shouldShowNextButton() {
@@ -90,13 +95,14 @@ public class ShowOrdersBeanVK {
             return;
         }
         this.page -= 1;
+        data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
     }
 
     public List<Order> getOrders() {
         if (userId == null) {
             return null;
         }
-        List<Order> data = orderMan.getOrders(null, userId, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
+//        List<Order> data = orderMan.getOrders(null, userId, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
         return data;
     }
 
@@ -105,7 +111,8 @@ public class ShowOrdersBeanVK {
 //        if (userId == null) {
 //            return null;
 //        }
-        List<Order> data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
+        //FFFFFFFFFUUUUUUUUUUUUUUUUUUUUUUUUCCCCCCCCCCCCCCCCCCKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+//        data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
         return data;
     }
 }

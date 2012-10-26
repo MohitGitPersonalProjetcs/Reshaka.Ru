@@ -321,68 +321,55 @@ root {
 }
 
 .Agreed{
-    color: #FFFF99 !important;
+    background-color: #FFFF99 !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 
 .New{
-    color: #00cc00 !important;
+    background-color: #99FFCC !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 
 .NewOnline{
-    color: #00cc00 !important;
+    background-color: #99FFCC !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 
 .Rated{
-    color: #0000e5 !important;
+    background-color: #CCFF99 !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 .RatedOnline{
-    color: #0000e5 !important;
+    background-color: #CCFF99 !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 
 .Solved{
-    color: #CCCCFF !important;
+    background-color: #CCCCFF !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 
 .PrepayedOnline{
-    color: #CCCCFF !important;
+    background-color: #CCCCFF !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 
 .Payed{
-    color: #FFCC99 !important;
+    background-color: #FFCC99 !important;
     background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 .DoneOnline{
-    color: #FFCC99 !important;
+    background-color: #FFCC99 !important;
     background-image: none !important;
-/*    color: black !important;*/
-}
-
-.ExpiredOnline{
-    color: #e2e2e2 !important;
-    background-image: none !important;
-/*    color: black !important;*/
-}
-
-
-.ExpiredOffline{
-    color: #e2e2e2 !important;
-    background-image: none !important;
-/*    color: black !important;*/
+    color: black !important;
 }
 
 .online_student{

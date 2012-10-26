@@ -44,7 +44,7 @@
                 <a href="#{request.contextPath}/Vkiframe/index.xhtml"  class="logo"></a><br/>
                 <span style="display: block; color: green; text-align: right;  margin-top: 40px; margin-right: 20px;" >
                     <h:panelGroup rendered="#{webSession.signedIn}">
-                        online <a href="#{request.contextPath}/Vkiframe/billing.xhtml" style="color: orange; text-decoration: none;">(#{userBean.currentBalance} руб.)</a>
+                        online <a href="#{request.contextPath}/Vkiframe/billing.xhtml" style="color: orange; text-decoration: none;">(#{userBean.userBalance(webSession.id)} руб.)</a> |<span style="color: #DAE1E8;">Вы #{webSession.user.login} </span>
                     </h:panelGroup>
                 </span>
             </div>

@@ -351,7 +351,7 @@
                                     <h:panelGrid id="tab7_id_p" columns="2">
                                         <h:outputText value="Заказ решён этим человеком: " />
                                         <h:outputText value="#{orderUtilsBean.loginById(selectedBean.order.employee.id)}"/> 
-                                        <h:outputText value="Теперь вы можете оплатить вторую половину стоимости и скачать решение" style="color: red;" />
+                                        <h:outputText value="Теперь вы можете оплатить вторую половину стоимости (#{selectedBean.order.price / 2 } руб.) и скачать решение" style="color: red;" />
                                         <br/>
 
                                         <p:commandButton value="Оплатить" oncomplete="order_info_dlg.hide();" update=":main_panel" actionListener="#{dealBean.makeFinalPayment(selectedBean.order.id)}" rendered="#{dealBean.canFinishDeal(selectedBean.order.id,webSession.id )}" />
