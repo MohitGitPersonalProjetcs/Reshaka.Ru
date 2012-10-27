@@ -87,7 +87,7 @@
                                         <tr>
                                             <td style="width: 350px;">
                                                 <div class="grid_title" style="padding-bottom: 3px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DEE4E8;">Информация</div>
-                                                <h:panelGrid columns="2">
+                                                <h:panelGrid columns="2" rowClasses="orderDescriptionTable" >
                                                     <h:outputLabel class="grid_label" style="width: 120px;" value="Номер заказа:" />
                                                     <h:outputLabel class="grid_value" value="#{order.id}" style="width: 200px;" />
 
@@ -121,11 +121,19 @@
                                                         <h:outputLabel class="grid_label" style="width: 120px;" value="Email:" />
                                                         <h:outputLabel class="grid_value" value="#{order.fromEmail}" style="width: 200px;" />
                                                     </c:if>
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Скачать решение:"/>
+
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Условие:"/>
+                                                    <h:outputLink value="/download.xhtml" class="grid_value" style="width: 200px;" >
+                                                        <h:outputText value="Скачать" style="color: blue;" />
+                                                        <f:param name="id" value="#{order.conditionId}" />
+                                                    </h:outputLink>
+
+                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Решение:"/>
                                                     <h:outputLabel class="grid_value" style="width: 200px;" rendered="#{(order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0}">
-                                                        <h:link value="Скачать" rendered="#{(order.employer.id == webSession.id) or (order.employee.id == webSession.id ) }" outcome="download" target="_blank">
-                                                            <f:param name="id" value="#{order.solutionId}"/>
-                                                        </h:link>
+                                                        <h:outputLink value="/download.xhtml" rendered="#{(order.employer.id == webSession.id) or (order.employee.id == webSession.id ) }" >
+                                                            <h:outputText value="Скачать" style="color: blue;" />
+                                                            <f:param name="id" value="#{order.solutionId}" />
+                                                        </h:outputLink>
                                                     </h:outputLabel>
                                                     <h:outputLabel class="grid_value" style="width: 200px;" rendered="#{!((order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0)}">
                                                         Недоступно
@@ -146,6 +154,7 @@
 
                                                     <!--  for rated -->
                                                     <h:panelGroup rendered="#{ ( order.status == 1) or (order.status==11)}" >
+                                                       Ваш заказ оценили. Вы можете выбрать решающего.
                                                         <div id="spanid#{order.id}" style="display: table-row; border-collapse: collapse; text-align: justify; vertical-align: inherit; height: 150px;">
                                                             <h:panelGrid columns="2" >
                                                                 <h:outputLabel value="Предложили помощь: " class="grid_label" style="width: 100px; vertical-align: top;" />
@@ -182,7 +191,7 @@
                                                                                     <c:forEach items="#{orderUtilsBean.offersByOrderId(order.id)}" var="off">
                                                                                         <tr >
                                                                                             <td>
-                                                                                                <h:link outcome="#{request.contextPath}/Vkiframe/profile.xhtml" value="#{orderUtilsBean.loginById(off.userId)}">
+                                                                                                <h:link outcome="#{request.contextPath}/profile.xhtml" target="_blank" value="#{orderUtilsBean.loginById(off.userId)}">
                                                                                                     <f:param name="id" value="#{off.userId}"/>
                                                                                                 </h:link>
                                                                                             </td>
@@ -223,16 +232,27 @@
                                                     <!-- agreed (offline) -->
                                                     <h:panelGroup rendered="#{order.status == 3}">
                                                         <h:outputText value="Сейчас заказ решает: " style="text-align: left; margin-left: 15px;" />
-                                                        <h:link outcome="#{request.contextPath}/Vkiframe/profile.xhtml" value="#{orderUtilsBean.loginById(order.employee.id)}">
+                                                        <h:link outcome="#{request.contextPath}/profile.xhtml" target="_blank" value="#{orderUtilsBean.loginById(order.employee.id)}">
                                                             <f:param name="id" value="#{order.employee.id}"/>
                                                         </h:link>
                                                     </h:panelGroup>
                                                     <!-- end for agreed -->
 
+                                                    <!-- agreed (online (payed)) -->
+                                                    <h:panelGroup rendered="#{order.status == 13}">
+                                                        <h:outputText value="Вам будет помогать:  " style="text-align: left; margin-left: 15px;" />
+                                                        <h:link outcome="#{request.contextPath}/profile.xhtml" target="_blank" value="#{orderUtilsBean.loginById(order.employee.id)}">
+                                                            <f:param name="id" value="#{order.employee.id}"/>
+                                                        </h:link>
+                                                        <br/> <br/>
+                                                        Высылайте условия задач на адрес <span style="color: red;">online.reshaka@gmail.com</span>
+                                                    </h:panelGroup>
+                                                    <!-- end agreed -->
+
                                                     <!-- solved (offline) -->
                                                     <h:panelGroup rendered="#{order.status == 4}" style="margin-left: 15px; ">
                                                         <h:outputText value="Заказ решён этим человеком: " style="text-align: left; margin-left: 15px;" />
-                                                        <h:link outcome="#{request.contextPath}/Vkiframe/profile.xhtml" value="#{orderUtilsBean.loginById(order.employee.id)}">
+                                                        <h:link outcome="#{request.contextPath}/profile.xhtml" target="_blank" value="#{orderUtilsBean.loginById(order.employee.id)}">
                                                             <f:param name="id" value="#{order.employee.id}"/>
                                                         </h:link>
                                                         <br/> <br/>
@@ -248,10 +268,14 @@
                                                         </h:form>
                                                     </h:panelGroup>
                                                     <!-- end for solved -->
-                                                    
+
                                                     <!-- payed (offline) -->
                                                     <h:panelGroup rendered="#{order.status == 5}">
-                                                        Заказ оплачен. Вы можете скачать решение.
+                                                        Заказ оплачен. Вы можете скачать решение. <br/><br/>
+                                                        Выполнил: 
+                                                        <h:link outcome="#{request.contextPath}/profile.xhtml" target="_blank" value="#{orderUtilsBean.loginById(order.employee.id)}">
+                                                            <f:param name="id" value="#{order.employee.id}"/>
+                                                        </h:link>
                                                     </h:panelGroup>
                                                     <!-- end payed -->
 
@@ -283,6 +307,10 @@
                     </tbody>
                 </table>
 
+
+                <div style="display: inline-block; margin-left: 20px;">
+                    Нажмите на строчку с заказом для более детальной информации
+                </div>
 
                 <div style="text-align: right;">
                     <h:panelGroup>

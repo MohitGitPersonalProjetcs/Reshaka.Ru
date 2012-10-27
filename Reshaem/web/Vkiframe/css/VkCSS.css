@@ -184,6 +184,18 @@ tabs li.current_link a, .tabs li.current_link  span, .tl_links span.current_sp {
     font-size: 11px;
 }
 
+.orderDescriptionTable{
+    padding:1px;
+}
+
+.orderDescriptionTable td{
+    padding:1px;
+}
+
+.orderDescriptionTable tr{
+    padding:1px;
+}
+
 input.text, input.search, textarea, input.big_text {
     background: white;
     color: black;

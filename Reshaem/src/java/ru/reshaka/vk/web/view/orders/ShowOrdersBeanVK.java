@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.reshaka.vk.web.view.orders;
 
 import ejb.OrderManagerLocal;
@@ -15,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import org.primefaces.model.SortOrder;
 
 /**
  *
@@ -47,9 +42,8 @@ public class ShowOrdersBeanVK {
 
     @PostConstruct
     private void init() {
-//        data = orderMan.getAllOrders();
-        data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
-        this.ordersAmount = orderMan.getOrdersCount(null, null, -1, 0, 1000000, null, ReshakaSortOrder.UNSORTED);
+        data = orderMan.getOrders(null, userId, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
+        this.ordersAmount = orderMan.getOrdersCount(null, userId, -1, 0, 1000000, null, ReshakaSortOrder.UNSORTED);
     }
 
     public int getPage() {
@@ -69,7 +63,7 @@ public class ShowOrdersBeanVK {
             return;
         }
         this.page += 1;
-        data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
+        data = orderMan.getOrders(null, userId, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
     }
 
     public boolean shouldShowNextButton() {
@@ -95,7 +89,7 @@ public class ShowOrdersBeanVK {
             return;
         }
         this.page -= 1;
-        data = orderMan.getOrders(null, null, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
+        data = orderMan.getOrders(null, userId, -1, page * ShowOrdersBeanVK.ORDERS_PER_PAGE, ShowOrdersBeanVK.ORDERS_PER_PAGE, "id", ReshakaSortOrder.DESCENDING);
     }
 
     public List<Order> getOrders() {
