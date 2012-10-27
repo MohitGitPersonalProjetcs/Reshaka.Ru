@@ -74,7 +74,7 @@ public class VKAuthorisation extends HttpServlet {
                 out.println("</body>");
                 out.println("</html>");
             }
-            String s = "index.xhtml";
+            String s = "/Vkiframe/index.xhtml";
             
 //            if (!SessionUtils.isSignedIn()) {
 //                while(!SessionUtils.isSignedIn()){
