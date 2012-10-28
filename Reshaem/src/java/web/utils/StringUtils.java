@@ -1,5 +1,11 @@
 package web.utils;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +44,24 @@ public class StringUtils {
         }
         return text.substring(0, a);
     }
-    
-     public static String getFirstWord(String text) {
+
+    public static String getFirstWord(String text) {
         int a = text.indexOf(",");
         if (a < 0) {
             return text;
         }
         return text.substring(0, a);
+    }
+    
+    public static String decode(String value, String charsetName) {
+        Charset charset = Charset.forName(charsetName);
+        if(value == null) {
+            return null;
+        }
+        return new String(value.getBytes(charset));
+    }
+    
+    public static String convertEncodings(String value, String srcCharset, String dstCharset) {
+        return decode(decode(value, srcCharset), dstCharset);
     }
 }

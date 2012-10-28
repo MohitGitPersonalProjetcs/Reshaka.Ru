@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.reshaka.web.servlets;
 
 import ejb.AttachmentManagerLocal;
@@ -10,13 +6,11 @@ import ejb.UserManagerLocal;
 import ejb.util.FileUtils;
 import ejb.util.ReshakaUploadedFile;
 import entity.Attachment;
-import entity.Order;
 import entity.ReplenishmentRequest;
 import entity.User;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +27,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import web.utils.SessionListener;
+import web.utils.StringUtils;
 
 /**
  *
@@ -43,6 +38,8 @@ public class ReplenismentRequestServlet extends HttpServlet {
 
     private static final Logger log = Logger.getLogger(ReplenismentRequestServlet.class);
 
+    private static final String SERVLET_ENCODING = "ISO-8859-1";
+    
     public static final int POST_TYPE = 0;
     public static final int GET_TYPE = 1;
 
@@ -125,8 +122,8 @@ public class ReplenismentRequestServlet extends HttpServlet {
     }
 
     private String getValidParameter(HttpServletRequest request, String name) {
-        final String param = request.getParameter(name);
-        return param == null ? "" : param;
+        String param = request.getParameter(name);
+        return param == null ? "" : StringUtils.decode(param, SERVLET_ENCODING);
     }
 
     private String getValidParameter(HttpServletRequest request, String name, String defaultValue) {
