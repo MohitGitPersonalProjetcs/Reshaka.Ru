@@ -8,6 +8,7 @@ import entity.User;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import web.utils.SessionListener;
+import web.utils.StringUtils;
 
 /**
  * A simple servlet for submitting orders.
@@ -39,6 +41,8 @@ import web.utils.SessionListener;
 public class OrderEntryServlet extends HttpServlet {
     
     private static final Logger log = Logger.getLogger(OrderEntryServlet.class);
+    
+    private static final String SERVLET_ENCODING = "ISO-8859-1";
 
     public static final int POST_TYPE = 0;
     public static final int GET_TYPE = 1;
@@ -85,6 +89,8 @@ public class OrderEntryServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, int type, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            System.err.println("Request Encoding: "+request.getCharacterEncoding());
+            
             redir = getValidParameter(request, REDIR_URL_PARAM, DEFAULT_REDIR_URL);
             HttpSession session = request.getSession(false);
             User user = (User)SessionListener.getSessionAttribute(session, "user");
@@ -140,14 +146,11 @@ public class OrderEntryServlet extends HttpServlet {
     }
     
     private String getValidParameter(HttpServletRequest request, String name) {
-//        String param = "";
-//        if(ServletFileUpload.isMultipartContent(request)) {
-//            param = request.getPart(name).
-//        }
-        
-        final String param = request.getParameter(name);
-        return param == null ? "" : param;
+        String param = request.getParameter(name);
+        return param == null ? "" : StringUtils.decode(param, SERVLET_ENCODING);
     }
+    
+    
     
     private String getValidParameter(HttpServletRequest request, String name, String defaultValue) {
         final String param = getValidParameter(request, name);

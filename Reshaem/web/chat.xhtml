@@ -369,7 +369,7 @@
                                       fileUploadListener="#{chatBean.fileUploadController.handleFileUpload}"/>
                     </h:panelGroup>
                     <div style="float: right; margin: 10px;">
-                        <h:link value="Закрыть" onclick="dlg_upload.hide();"/>
+                        <a href="#" onclick="dlg_upload.hide();">Закрыть</a>
                     </div>
                     <p:growl id="fileUploadGrowl" showDetail="true"/>
                 </p:dialog>

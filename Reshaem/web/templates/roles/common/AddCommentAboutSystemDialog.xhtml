@@ -31,7 +31,7 @@
                     <div style="float: right; margin: 10px;">
                         <h:panelGrid columns="2">
                             <p:commandButton oncomplete="sys_comments_dlg.hide();" value="Отправить" actionListener="#{feedbacksBean.addComment()}" update=":growl" />
-                            <h:link value="Закрыть" onclick="sys_comments_dlg.hide();"/>
+                            <a href="#" onclick="sys_comments_dlg.hide();">Закрыть</a>
                         </h:panelGrid>
                     </div>
                 </h:form>
