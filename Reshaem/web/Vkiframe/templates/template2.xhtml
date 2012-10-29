@@ -4,9 +4,8 @@
     <f:view xmlns="http://www.w3.org/1999/xhtml" 
             xmlns:ui="http://java.sun.com/jsf/facelets" 
             xmlns:h="http://java.sun.com/jsf/html" 
-            xmlns:p="http://primefaces.org/ui"
             xmlns:f="http://java.sun.com/jsf/core">
-        <h:head>
+        <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
             <link href="#{request.contextPath}/Vkiframe/css/VkCSS.css" rel="stylesheet" type="text/css" />
             <script type="text/javascript" src="#{request.contextPath}/Vkiframe/scripts/jquery-1.7.1.min.js"></script>
@@ -17,12 +16,12 @@
 
             <style type="text/css">
                 .offline_student:hover{
-                    background-image: url('#{request.contextPath}/Vkiframe/images/Rogvold.jpg');
+                    background-image: url('#{request.contextPath}/Vkiframe/images/offlineSelected.jpg');
                     background-size: 100%; 
                     cursor: pointer;
                 }
                 .online_student:hover{
-                    background-image: url('#{request.contextPath}/Vkiframe/images/Folko.jpg');
+                    background-image: url('#{request.contextPath}/Vkiframe/images/onlineSelected.jpg');
                     background-size: 100%; 
                     cursor: pointer;
                 }
@@ -35,7 +34,7 @@
                 }
             </style>
 
-        </h:head>
+        </head>
 
         <h:body style="background-color: white;">
 

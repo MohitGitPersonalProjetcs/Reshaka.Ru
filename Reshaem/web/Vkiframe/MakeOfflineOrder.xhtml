@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html>
-<!--<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core" 
-      xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets">-->
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <body>
-        <ui:composition template="#{request.contextPath}/Vkiframe/templates/template.xhtml">
+        <ui:composition template="#{request.contextPath}/Vkiframe/templates/template2.xhtml">
 
             <ui:define name="vk_tabs">
                 <ui:include src="#{request.contextPath}/Vkiframe/templates/tabs.xhtml">
@@ -35,34 +33,34 @@
                 <div>
                     <form action="#{request.contextPath}/orderentry" accept-charset="UTF-8" method="post" enctype="multipart/form-data">
                         <span>
-                            <label class="pedit_label" style="width: 200px;" >Стоимость(RUR):</label>
+                            <label class="pedit_label" style="width: 160px;" >Стоимость(руб.):</label>
                             <!--                            <h:inputText class="text" style="width: 40px;" />-->
-                            <input type="text" class="text" name="order_price" />
-                            <div style="padding-top: 5px; color: #999;width: 250px; height: 28px; display: inline-block;">
+                            <input type="text" class="text" name="order_price" placeholder="Например: 500" />
+                            <div style="padding-top: 5px; color: #999;width: 160px; margin-left:  10px; height: 28px; display: inline-block;">
                                 на сколько вы рассчитываете
                             </div>   
                             <br/>
 
-                            <label class="pedit_label" style="width: 200px;">Срок:</label>
+                            <label class="pedit_label" style="width: 160px;">Срок:</label>
                             <span id="deadspan" >
                                 <input type="text" class="text"  name="order_deadline" />
                             </span>
-                            <div style="padding-top: 5px; color: #999;width: 250px; height: 28px; display: inline-block;">
+                            <div style="padding-top: 5px; color: #999;width: 150px; margin-left:  10px; height: 28px; display: inline-block;">
                                 крайний срок
                             </div>  
                             <br/>
 
-                            <label class="pedit_label" style="width: 200px;">Загрузите условие:</label>
+                            <label class="pedit_label" style="width: 160px;">Загрузите условие:</label>
                             <span id="deadspan" >
-                                <input type="file" class="text"   name="order_condition" />
+                                <input type="file" class="text"  style="width: 160px;"  name="order_condition" />
                             </span>
-                            <div style="padding-top: 5px; color: #999;width: 200px; height: 28px;display: inline-block;">
+                            <div style="padding-top: 5px; color: #999;width: 250px; margin-left:  10px; height: 28px;display: inline-block;">
                                 если несколько файлов, загрузите архив с ними
                             </div>  
 
                         </span>
                         <br/>
-                        <label class="pedit_label" style="width: 200px;">Предмет:</label>
+                        <label class="pedit_label" style="width: 160px;">Предмет:</label>
                         <select class="fwDefault" name="order_subject" >
                             <c:forEach items="#{makeOrderBean.allSubjects}" var="subj"  >
                                 <option value="#{subj.id}" > #{subj.subjectName}</option>
@@ -71,27 +69,23 @@
                         <br/>
                         <div style="display: block; font-size: 11px;">
                             <div style="color: #555;
-                                 width: 200px;
+                                 width: 160px;
                                  padding: 4px 10px 0 0;
                                  text-align: right;
                                  float: left;">
-                                Дополнительная информация:
+                                Дополнительно:
                             </div>
-                            <span style="width: 298px; float: left;">
+                            <span style="width: 250px; float: left;">
                                 <!--                                <h:inputTextarea style=" width: 280px;
                                                                                  height: 80px;
                                                                                  line-height: 1.27em;"
                                                                                  />-->
 
-                                <textarea placeholder="кактегорически запрещается указывать здесь свои контактные данные" name="order_description" style=" width: 280px;
+                                <textarea placeholder="кактегорически запрещается указывать здесь свои контактные данные" name="order_description" style=" width: 240px;
                                           height: 80px;
                                           line-height: 1.27em;"/> 
                             </span>
-                            <div style="padding-top: 5px;
-                                 color: #999;
-                                 width: 150px;
-                                 height: 28px;
-                                 display: inline-block;">
+                            <div style="padding-top: 5px; color: #999; width: 180px; margin-left:  10px; height: 28px;display: inline-block;">
                                 Требования к оформлению, указания, прочее
                             </div>   
 
@@ -100,7 +94,7 @@
                         <input type="hidden" name="date_format" value="MM/dd/yyyy HH:mm"/>
                         <input type="hidden" name="order_type" value="offline"/>
                         <input type="hidden" name="redir" value="Vkiframe/orderUploaded.xhtml"/>
-                        <input type="submit" style="display: block; height: 40px; cursor: poiner; margin-top: 50px; margin-left: 600px;" value="Отправить заказ!"/>
+                        <input type="submit" style="display: block; height: 40px; cursor: poiner; margin-top: 50px; margin-left: 400px;" value="Отправить заказ!"/>
 
                     </form>
                 </div>
