@@ -15,6 +15,9 @@
             <script type="text/javascript" src="#{request.contextPath}/Vkiframe/scripts/jquery-ui-sliderAccess.js"></script>
             <link rel="stylesheet" media="all" type="text/css" href="#{request.contextPath}/Vkiframe/css/jquery-ui-1.8.16.custom.css"/>
 
+            <!--            <script type="text/javascript" src="http://vkontakte.ru/js/api/share.js?9" charset="windows-1251"></script>-->
+
+
             <style type="text/css">
                 .offline_student:hover{
                     background-image: url('#{request.contextPath}/Vkiframe/images/Rogvold.jpg');
@@ -47,6 +50,16 @@
                         online <a href="#{request.contextPath}/Vkiframe/billing.xhtml" style="color: orange; text-decoration: none;">(#{userBean.userBalance(webSession.id)} руб.)</a> <span style="color: #DAE1E8;">| #{webSession.user.login} </span>
                     </h:panelGroup>
                 </span>
+            </div>
+            <!--for vk-->
+            <div style="position: absolute; top: 10px; right: 20px;">
+                <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:inline-block;width:32px;height:32px;
+                   margin:0 0 6px;
+                   background:url(#{request.contextPath}/images/icons.png) -224px 0" 
+                   href="#" 
+                   onclick="window.open('http://vkontakte.ru/share.php?url=http%3A%2F%2Fvk.com/app2965828', '_blank', 'scrollbars=0, resizable=1, menubar=0, left=200, top=200, width=554, height=421, toolbar=0, status=0');return false" title="Рассказать друзьям" target="_blank"></a> 
+
+
             </div>
 
             <ui:insert name="vk_tabs">
