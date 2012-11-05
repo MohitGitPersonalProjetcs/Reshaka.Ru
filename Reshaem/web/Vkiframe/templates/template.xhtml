@@ -38,6 +38,19 @@
                 }
             </style>
 
+            <script type="text/javascript">
+                        
+                $(function(){
+                    sustainSession();
+                })
+                var updateInterval = 10000;
+                function sustainSession() {
+                    var p = $.get("void",function(d){
+                    });
+                    setTimeout(sustainSession, updateInterval);
+                }
+            </script>
+
         </h:head>
 
         <h:body style="background-color: white;">
@@ -52,7 +65,7 @@
                 </span>
             </div>
             <!--for vk-->
-            <div style="position: absolute; top: 10px; right: 20px;">
+            <div style="position: absolute; top: 10px; right: 20px; display: none;">
                 <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:inline-block;width:32px;height:32px;
                    margin:0 0 6px;
                    background:url(#{request.contextPath}/images/icons.png) -224px 0" 

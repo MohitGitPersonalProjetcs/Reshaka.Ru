@@ -34,6 +34,20 @@
                 }
             </style>
 
+
+            <script type="text/javascript">
+                        
+                $(function(){
+                    sustainSession();
+                })
+                var updateInterval = 10000;
+                function sustainSession() {
+                    var p = $.get("void",function(d){
+                    });
+                    setTimeout(sustainSession, updateInterval);
+                }
+            </script>
+
         </head>
 
         <h:body style="background-color: white;">

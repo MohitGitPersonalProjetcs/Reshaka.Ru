@@ -56,7 +56,6 @@
                                 <td>
                                     <span class="#{orderUtilsBean.orderStatus(order.id)}">
                                         #{orderUtilsBean.russianOrderStatus(order.id)}
-
                                     </span>
                                 </td>
 
@@ -115,14 +114,24 @@
                                                         <h:outputLabel class="grid_value" value="#{order.deadlineString}"  />
                                                     </c:if>
                                                     <c:if test="#{order.type == 1}">
+
+                                                        <h:outputLabel class="grid_label"  value="Начало:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.deadlineString}"  />
+
                                                         <h:outputLabel class="grid_label" value="Длительность:" />
                                                         <h:outputLabel class="grid_value" value="#{order.duration}"  />
 
                                                         <h:outputLabel class="grid_label" value="Email:" />
                                                         <h:outputLabel class="grid_value" value="#{order.fromEmail}"  />
                                                     </c:if>
+                                                    
+                                                    <c:if test="#{order.type == 0}">
+                                                        <h:outputLabel class="grid_label"  value="Условие:"/>
+                                                    </c:if>
+                                                    <c:if test="#{order.type == 1}">
+                                                        <h:outputLabel class="grid_label"  value="Примеры:"/>
+                                                    </c:if>
 
-                                                    <h:outputLabel class="grid_label"  value="Условие:"/>
                                                     <h:outputLink value="/download.xhtml" class="grid_value"  >
                                                         <h:outputText value="Скачать" style="color: blue;" />
                                                         <f:param name="id" value="#{order.conditionId}" />
@@ -154,7 +163,7 @@
 
                                                     <!--  for rated -->
                                                     <h:panelGroup rendered="#{ ( order.status == 1) or (order.status==11)}" >
-                                                       Ваш заказ оценили. Вы можете выбрать решающего.
+                                                        Ваш заказ оценили. Вы можете выбрать решающего.
                                                         <div id="spanid#{order.id}" style="display: table-row; border-collapse: collapse; text-align: justify; vertical-align: inherit; height: 150px;">
                                                             <h:panelGrid columns="2" >
                                                                 <h:outputLabel value="Предложили помощь: " class="grid_label" style="width: 100px; vertical-align: top;" />
