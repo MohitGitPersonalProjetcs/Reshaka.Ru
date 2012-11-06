@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.apache.log4j.Logger;
 
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  * @author rogvold
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class MobileOrderViewBean {
 
     private static final Logger log = Logger.getLogger(MobileOrderViewBean.class);
@@ -32,8 +33,10 @@ public class MobileOrderViewBean {
     private void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
         Map<String, String> map = fc.getExternalContext().getRequestParameterMap();
+        String s = "";
         try {
-            orderId = Long.parseLong(map.get(ID_FIELD));
+            s = map.get(ID_FIELD);
+            orderId = Long.parseLong(s);
             if (log.isTraceEnabled()) {
                 log.trace("init(): orderId = " + orderId);
             }
@@ -42,7 +45,7 @@ public class MobileOrderViewBean {
             orderId = null;
             order = null;
             if (log.isTraceEnabled()) {
-                log.trace("init(): exception occured while receiving orderId: exc = " + e.toString());
+                log.trace("init(): exception occured while receiving orderId: exc = " + e.toString() +" ; s = " + s);
             }
         }
     }
