@@ -32,11 +32,16 @@
 
             <div id="m">
                 <div id="mhead" class="mhead">
+                    <div class="btn home">
+                        <a href="#{request.contextPath}/mobile/index.xhtml" class="b">
+                            <i > Назад  </i>
+                        </a>
+                    </div>
 
                     <div class="btn back">
                         <div class="b">
                             <div class="title">
-                                <h1>Reshaka.Ru - помощь в решении задач<br/>  студентам и школьникам</h1>
+                                <h1>Пополнение счета</h1>
                             </div>
                         </div>
                     </div>
@@ -63,48 +68,33 @@
                             <ul class="main_menu">
 
                                 <li class="friends">
-                                    <a href="#{request.contextPath}/mobile/makeOfflineOrder.xhtml" class="al_menu">
+                                    <a href="#{request.contextPath}/mobile/yandex.xhtml" class="al_menu">
                                         <i></i>
-                                        <span>Заказать решение задания</span>
+                                        <span>Через Яндекс-Деньги</span>
                                     </a>
                                 </li>
 
                                 <li class="friends">
-                                    <a href="#{request.contextPath}/mobile/makeOnlineOrder.xhtml" class="al_menu">
+                                    <a href="#{request.contextPath}/mobile/webmoney.xhtml" class="al_menu">
                                         <i></i>
-                                        <span>Заказать помощь на экзамене</span>
+                                        <span>Через Webmoney</span>
                                     </a>
                                 </li>
 
-                                <li class="friends">
-                                    <a class="al_menu">
-                                        <span style="height: 25px;"> </span>
-                                    </a>
-                                </li>
 
                                 <li class="photos">
-                                    <a href="#{request.contextPath}/mobile/orders.xhtml" class="al_menu">
+                                    <a href="#{request.contextPath}/mobile/other.xhtml" class="al_menu">
                                         <i></i>
-                                        <span>Мои Заказы</span>
+                                        <span>Другие способы</span>
                                     </a>
                                 </li>
 
-                                <li class="mail">
-                                    <a href="#{request.contextPath}/mobile/billing.xhtml" class="al_menu" data-header="Сообщения" >
-                                        <i></i><span>Пополнить счет</span>
-                                    </a>
-                                </li>
-                                <li class="feed">
-                                    <a href="#" class="al_menu" data-header="Новости" >
-                                        <i></i>
-                                        <span>Мои сообщения</span>
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                     </div></div>
                 <div id="mfoot" class="mfoot"><ul class="main_menu">
-                        <li><a href="#{request.contextPath}/index.xhtml">Полная версия</a></li>
+                        <li><a href="#" >Настройки</a></li>
+                        <li><a href="#">Полная версия</a></li>
                         <li><a href="#">Выход</a></li>
                     </ul>
                 </div>

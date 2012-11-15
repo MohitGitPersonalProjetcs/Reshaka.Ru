@@ -33,7 +33,7 @@
                 <div>
                     <form action="#{request.contextPath}/orderentry" accept-charset="UTF-8" method="post" enctype="multipart/form-data">
                         <span>
-                            <label class="pedit_label" style="width: 160px;" >Стоимость(руб.):</label>
+                            <label class="pedit_label" style="width: 160px;" >Стоимость(руб.) <span style="color:red;">* </span>:</label>
                             <!--                            <h:inputText class="text" style="width: 40px;" />-->
                             <input type="text" class="text" name="order_price" placeholder="Например: 500" />
                             <div style="padding-top: 5px; color: #999;width: 160px; margin-left:  10px; height: 28px; display: inline-block;">
@@ -41,7 +41,7 @@
                             </div>   
                             <br/>
 
-                            <label class="pedit_label" style="width: 160px;">Срок:</label>
+                            <label class="pedit_label" style="width: 160px;">Срок <span style="color:red;">* </span>:</label>
                             <span id="deadspan" >
                                 <input type="text" class="text"  name="order_deadline" />
                             </span>
@@ -50,7 +50,7 @@
                             </div>  
                             <br/>
 
-                            <label class="pedit_label" style="width: 160px;">Загрузите условие:</label>
+                            <label class="pedit_label" style="width: 160px;">Загрузите условие <span style="color:red;">* </span>:</label>
                             <span id="deadspan" >
                                 <input type="file" class="text"  style="width: 160px;"  name="order_condition" />
                             </span>
@@ -60,7 +60,7 @@
 
                         </span>
                         <br/>
-                        <label class="pedit_label" style="width: 160px;">Предмет:</label>
+                        <label class="pedit_label" style="width: 160px;">Предмет <span style="color:red;">* </span>:</label>
                         <select class="fwDefault" name="order_subject" >
                             <c:forEach items="#{makeOrderBean.allSubjects}" var="subj"  >
                                 <option value="#{subj.id}" > #{subj.subjectName}</option>

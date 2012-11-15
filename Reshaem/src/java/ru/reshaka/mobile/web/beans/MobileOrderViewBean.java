@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.apache.log4j.Logger;
@@ -25,10 +24,11 @@ public class MobileOrderViewBean {
 
     @EJB
     OrderManagerLocal orderMan;
-    
+
     private Long orderId;
+
     private Order order;
-    
+
     @PostConstruct
     private void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
@@ -45,7 +45,7 @@ public class MobileOrderViewBean {
             orderId = null;
             order = null;
             if (log.isTraceEnabled()) {
-                log.trace("init(): exception occured while receiving orderId: exc = " + e.toString() +" ; s = " + s);
+                log.trace("init(): exception occured while receiving orderId: exc = " + e.toString() + " ; s = " + s);
             }
         }
     }
@@ -58,7 +58,11 @@ public class MobileOrderViewBean {
         return order;
     }
 
-    
-    
-    
+    public Order orderById(Long oId) {
+        try {
+            return orderMan.getOrderById(oId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

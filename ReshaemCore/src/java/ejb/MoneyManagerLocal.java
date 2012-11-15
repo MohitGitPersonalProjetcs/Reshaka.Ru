@@ -31,6 +31,8 @@ public interface MoneyManagerLocal {
 
     public String getLinkForYandexPayment(Long userId,double money);
     
+    public String getMobileLinkForYandexPayment(Long userId, double money);
+    
     void updateMoney();
     
     public void testWM();

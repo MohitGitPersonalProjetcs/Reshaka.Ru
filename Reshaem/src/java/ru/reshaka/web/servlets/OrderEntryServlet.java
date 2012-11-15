@@ -83,6 +83,8 @@ public class OrderEntryServlet extends HttpServlet {
 
     private static final String REDIR_URL_PARAM = "redir";
 
+    private static final String ERROR_REDIR_PARAM = "error_redir";
+
     public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy HH:mm";
 
     private String redir = DEFAULT_REDIR_URL;
@@ -92,6 +94,8 @@ public class OrderEntryServlet extends HttpServlet {
 
     @EJB
     private OrderManagerLocal om;
+
+    private String errorUrl = ERROR_REDIR_URL;
 
     /**
      * Processes requests for both HTTP
@@ -125,10 +129,10 @@ public class OrderEntryServlet extends HttpServlet {
                 redirect(response, redir, user + " Cannot submit order. Operation is not permitted.");
             }
 
-            Order o = createOrder(request, type, user, response);
+
             boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
-            if (!isMultipartContent && o.getType() == Order.OFFLINE_TYPE) {
-                redirect(response, ERROR_REDIR_URL, "Multipart content is required for offline order type.");
+            if (!isMultipartContent && getValidParameter(request, ORDER_TYPE_PARAM).equals("offline")) {
+                redirect(response, errorUrl, "Multipart content is required for offline order type.");
             }
             List<ReshakaUploadedFile> files = new LinkedList<>();
             FileItem f = getFileItem(request, ORDER_CONDITION_PARAM);
@@ -139,12 +143,18 @@ public class OrderEntryServlet extends HttpServlet {
                 files.add(convertUploadedFile(f));
             }
             if (log.isTraceEnabled()) {
-                log.trace("Submitting order: " + o);
+                log.trace("Submitting order from vk iframe ");
             }
+            if (files.isEmpty() && getValidParameter(request, ORDER_TYPE_PARAM).equals("offline")) {
+                redirect(response, errorUrl, "File is not specified.");
+                return;
+            }
+            
+            Order o = createOrder(request, type, user, response);
             om.submitOrder(o, files);
         } catch (ServletException ex) {
             System.out.println("exc = " + ex);
-            redirect(response, ERROR_REDIR_URL, "Unexpected server error.");
+            redirect(response, errorUrl, "Unexpected server error.");
         }
         redirect(response, redir, "Redirecting to " + redir);
     }
@@ -255,13 +265,16 @@ public class OrderEntryServlet extends HttpServlet {
             o.setHireDate(new Date());
             o.setEmployer(u);
 
-            String param = getValidParameter(request, ORDER_TYPE_PARAM);
+            String param = getValidParameter(request, ERROR_REDIR_PARAM, ERROR_REDIR_URL);
+            errorUrl = param;
+
+            param = getValidParameter(request, ORDER_TYPE_PARAM);
             if (param.equalsIgnoreCase("online")) {
                 o.setType(Order.ONLINE_TYPE);
             } else if (param.equalsIgnoreCase("offline")) {
                 o.setType(Order.OFFLINE_TYPE);
             } else {
-                redirect(response, ERROR_REDIR_URL, "Incorrect order type specified: " + param);
+                redirect(response, errorUrl, "Incorrect order type specified: " + param);
             }
 
             param = getValidParameter(request, ORDER_DESCRIPTION_PARAM);
@@ -275,7 +288,7 @@ public class OrderEntryServlet extends HttpServlet {
 
             param = getValidParameter(request, ORDER_SUBJECT_PARAM);
             if (param.isEmpty()) {
-                redirect(response, ERROR_REDIR_URL, "Subject is not specified.");
+                redirect(response, errorUrl, "Subject is not specified.");
             }
             o.setSubject(om.getFuckingSubjectById(Long.valueOf(param)));
 
@@ -290,22 +303,22 @@ public class OrderEntryServlet extends HttpServlet {
             } else {
                 year = getValidParameter(request, ORDER_DEADLINE_YEAR_PARAM);
                 if (year.isEmpty()) {
-                    redirect(response, ERROR_REDIR_URL, "Year is not specified.");
+                    redirect(response, errorUrl, "Year is not specified.");
                 }
 
                 month = getValidParameter(request, ORDER_DEADLINE_MONTH_PARAM);
                 if (month.isEmpty()) {
-                    redirect(response, ERROR_REDIR_URL, "Month is not specified.");
+                    redirect(response, errorUrl, "Month is not specified.");
                 }
 
                 day = getValidParameter(request, ORDER_DEADLINE_DAY_PARAM);
                 if (day.isEmpty()) {
-                    redirect(response, ERROR_REDIR_URL, "Day is not specified.");
+                    redirect(response, errorUrl, "Day is not specified.");
                 }
 
                 time = getValidParameter(request, ORDER_DEADLINE_TIME_PARAM);
                 if (time.isEmpty()) {
-                    redirect(response, ERROR_REDIR_URL, "Time is not specified.");
+                    redirect(response, errorUrl, "Time is not specified.");
                 }
 
                 deadline = month + "/" + day + "/" + year + " " + time;
@@ -314,7 +327,7 @@ public class OrderEntryServlet extends HttpServlet {
 
 
             if (deadline.isEmpty()) {
-                redirect(response, ERROR_REDIR_URL, "Deadline is not specified.");
+                redirect(response, errorUrl, "Deadline is not specified.");
             }
             o.setDeadline(df.parse(deadline));
 

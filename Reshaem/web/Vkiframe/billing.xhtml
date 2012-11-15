@@ -178,7 +178,7 @@ and open the template in the editor.
 
                             <br/><br/>
                             <span style="font-weight: bold;" >Cпособ 2. </span> 
-                            Перевести деньги на номер Билайн 9646228094. Далее необходимо оформить 
+                            Перевести деньги на номер Билайн <span style="font-weight: bold;">9646228094</span>. Далее необходимо оформить 
 
                             <span class="replenishmentTabLink" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
                                 заявку на ввод средств
@@ -196,13 +196,16 @@ and open the template in the editor.
                             Выберите один из предложенных в выпадающем списке способов пополнения счета.
                             <br/>
                             <form style="margin-top: 20px;" action="#{request.contextPath}/replservl" method="post" enctype="multipart/form-data">
-                                <label class="pedit_label" style="width: 90px;" >Сумма (руб.):</label><input type="text" name="money" placeholder="Например: 300" class="text" /> <br/>
+                                <label class="pedit_label" style="width: 90px;" >Сумма (руб.):</label>
+                                <input type="text" name="money" placeholder="Например: 300" class="text" /> <br/>
+
                                 <label class="pedit_label" style="width: 90px;" >Тип:</label>
                                 <select class="fwDefault" name="type" >
                                     <option value="mobile" >Оплата мобильного</option>
                                     <option value="bank" >Банковский перевод</option>
                                     <option value="yandex-money" >Яндекс Деньги (через терминал)</option>
                                     <option value="webmoney" >Webmoney (через терминал)</option>
+                                    <option value="qiwi" >QIWI (через терминал)</option>
                                     <option value="other" >Другое</option>
                                 </select>
                                 <br/>

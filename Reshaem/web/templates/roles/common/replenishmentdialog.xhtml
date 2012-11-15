@@ -23,24 +23,24 @@ and open the template in the editor.
                     <p:tabView cache="false" widgetVar="moneyTabs" id="tab_view_r">
 
                         <p:tab id="tab1" title="Яндекс Деньги" rendered="#{webSession.group == 2}">
-<!--                            <script type="text/javascript">
-        
-//                                $(document).ready(function(){
-//                                    $('#yainput').keydown(sKeydown);
-//
-//                                });
-                                                                
-                                function sKeydown(e)  {
-                                    alert(e);
-//                                    alert(e.keyCode);
-                                    //                                        alert('checking');
-//                                    if(e.keyCode == 13 || e.keyCode == 10) {
-//                                        alert('redirect');
-//                                        $('.replenish_button').click();
-//                                    }
-                                }
-                              
-                            </script>-->
+                            <!--                            <script type="text/javascript">
+                                    
+                            //                                $(document).ready(function(){
+                            //                                    $('#yainput').keydown(sKeydown);
+                            //
+                            //                                });
+                                                                                            
+                                                            function sKeydown(e)  {
+                                                                alert(e);
+                            //                                    alert(e.keyCode);
+                                                                //                                        alert('checking');
+                            //                                    if(e.keyCode == 13 || e.keyCode == 10) {
+                            //                                        alert('redirect');
+                            //                                        $('.replenish_button').click();
+                            //                                    }
+                                                            }
+                                                          
+                                                        </script>-->
                             <h:form >
                                 <!--                                <h:panelGrid columns="3" id="yandex_replenishment" width="430">-->
                                 <h:outputText value="Сумма: " />  
@@ -136,6 +136,7 @@ and open the template in the editor.
                                         <f:selectItem itemLabel="Банковский перевод" itemValue="bank" />  
                                         <f:selectItem itemLabel="Яндекс Деньги" itemValue="yandex-money" />  
                                         <f:selectItem itemLabel="Webmoney" itemValue="webmoney" />  
+                                        <f:selectItem itemLabel="QIWI(терминал)" itemValue="qiwi" /> 
                                         <f:selectItem itemLabel="Другое" itemValue="other" />  
                                     </p:selectOneMenu>  
                                     <!--                                    <h:outputLink target="blank_" id="qwerty3"  style="color: purple;" onclick="replenishment_dlg.hide()" >Пополнить </h:outputLink>-->
@@ -168,13 +169,13 @@ and open the template in the editor.
                                 <hr/>
                                 <br/>
                                 <div style="text-align: right;" >
-                                     <p:commandButton value="Подать заявку" update=":growl" oncomplete="hideRepUploadControl();replenishment_dlg.hide();"  actionListener="#{replenishmentRequestBean.addReplenishmentRequest()}" />
+                                    <p:commandButton value="Подать заявку" update=":growl" oncomplete="hideRepUploadControl();replenishment_dlg.hide();"  actionListener="#{replenishmentRequestBean.addReplenishmentRequest()}" />
                                 </div>
                             </h:form>
                         </p:tab>
                     </p:tabView>
                     <div style="float: right; margin: 10px;">
-                            <h:link value="Отмена" onclick="replenishment_dlg.hide();"/>
+                        <h:link value="Отмена" onclick="replenishment_dlg.hide();"/>
                     </div> 
                 </h:panelGroup>
             </p:dialog>

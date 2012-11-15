@@ -33,7 +33,7 @@
                 <div>
                     <form action="#{request.contextPath}/orderentry" method="post" accept-charset="UTF-8" enctype="multipart/form-data">
                         <span>
-                            <label class="pedit_label" >Стоимость(руб.):</label>
+                            <label class="pedit_label" >Стоимость(руб.) <span style="color:red;">* </span>:</label>
                             <!--                            <h:inputText class="text" style="width: 40px;" />-->
                             <input placeholder="Например: 1000" type="text" class="text" name="order_price" />
                             <div style="padding-top: 5px; color: #999;width: 200px; margin-left:  10px; height: 28px; display: inline-block;">
@@ -41,7 +41,7 @@
                             </div>   
                             <br/>
 
-                            <label class="pedit_label" >Начало:</label>
+                            <label class="pedit_label" >Начало <span style="color:red;">* </span>:</label>
                             <span id="deadspan" >
                                 <input type="text" class="text"  name="order_deadline" />
                             </span>
@@ -50,7 +50,7 @@
                             </div>  
                             <br/>
 
-                            <label class="pedit_label" >Продолжительность:</label>
+                            <label class="pedit_label" >Продолжительность <span style="color:red;">* </span>:</label>
                             <span id="duration" >
                                 <input type="text" placeholder="Например: 120" class="text"  name="order_duration" />
                             </span>
@@ -59,7 +59,7 @@
                             </div>  
                             <br/>
 
-                            <label class="pedit_label">Ваш Email:</label>
+                            <label class="pedit_label">Ваш Email <span style="color:red;">* </span>:</label>
                             <span id="duration" >
                                 <input type="text" placeholder="vasya.pupkin@mail.ru" class="text"  name="order_from_email" />
                             </span>
@@ -78,7 +78,7 @@
 
                         </span>
                         <br/>
-                        <label class="pedit_label">Предмет:</label>
+                        <label class="pedit_label">Предмет <span style="color:red;">* </span>:</label>
                         <select class="fwDefault" name="order_subject" >
                             <c:forEach items="#{makeOrderBean.allSubjects}" var="subj"  >
                                 <option value="#{subj.id}" > #{subj.subjectName}</option>
