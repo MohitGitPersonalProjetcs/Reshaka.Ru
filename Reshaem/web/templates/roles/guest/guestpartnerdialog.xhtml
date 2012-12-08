@@ -18,7 +18,7 @@ and open the template in the editor.
             <p:dialog header="Хочу тоже решать задачи! Заявка. " id="partner_dialog" widgetVar="guest_partner_dlg" width="650" position="top">
                 <h:form>
                     <p:panel>
-<!--                        <h:panelGrid columns="1" >-->
+                        <h:panelGrid columns="2" >
                             <h:panelGrid columns="2" width="100%;">
                                 <h:outputText style="color: red;" value="Email* :" />
                                 <p:inputText value="#{requestBean.email}" />
@@ -40,8 +40,18 @@ and open the template in the editor.
 
                             </h:panelGrid>
 
-        
-<!--                        </h:panelGrid>-->
+                            <h:panelGrid width="60%" style="margin-left: 4em;" >
+                                <h:outputText value="Отметьте галочкой предметы, которыми вы владеете"/>
+                                <p:scrollPanel mode="native"  style="height: 100px;">
+                                    <p:selectManyCheckbox converter="subjectConverter2"  value="#{requestBean.selectedSubjects}"  
+                                                          layout="pageDirection">  
+                                        <f:selectItems value="#{requestBean.allSubjects}" itemLabel="#{subject.subjectName}" var="subject" />  
+                                    </p:selectManyCheckbox> 
+                                </p:scrollPanel>
+
+                            </h:panelGrid>
+
+                        </h:panelGrid>
 
                         <h:outputText value="Несколько слов о себе" />
                         <br/>

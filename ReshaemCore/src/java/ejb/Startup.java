@@ -24,6 +24,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import quartz.ReshakaScheduler;
+import quartz.jobs.MailQueueJob;
 import quartz.jobs.MoneyCheckerJob;
 import quartz.jobs.OrdersAutoRenewJob;
 import quartz.jobs.OrdersExpirationJob;
@@ -89,6 +90,17 @@ public class Startup {
             // Schedule: Incoming Money Check 
             trigger = TriggerBuilder.newTrigger().startNow().withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(1).repeatForever()).build();
             ReshakaScheduler.getInstance().schedule(MoneyCheckerJob.class, trigger);
+            
+            //Schedule: Mailing.
+            trigger = TriggerBuilder.newTrigger()
+                    .startNow()
+                    .withSchedule(SimpleScheduleBuilder
+                    .simpleSchedule()
+                    .withIntervalInMinutes(1)
+                    .repeatForever()).build();
+            ReshakaScheduler.getInstance().schedule(MailQueueJob.class, trigger);
+            
+            
         } catch (Exception ex) {
         }
 

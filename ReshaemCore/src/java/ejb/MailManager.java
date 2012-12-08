@@ -32,8 +32,11 @@ import javax.persistence.PersistenceContext;
 @TransactionAttribute(value = TransactionAttributeType.SUPPORTS)
 public class MailManager implements MailManagerLocal {
 
+    public static final String MAIL_JNDI = "mail/myMailSession";
+    
     @Resource(name = "mail/myMailSession")
     private Session mailSession;
+    
     @PersistenceContext(unitName = "ReshaemCorePU")
     EntityManager em;
     @EJB

@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
+import ru.reshaka.core.email.MailQueue;
 
 /**
  *
@@ -237,8 +238,15 @@ public class OrderManager implements OrderManagerLocal {
             Subject sub = em.find(Subject.class, order.getSubject().getId());
             order.setSubject(sub);
             em.merge(order);
-        } catch (Exception exc) { // hardcode ((((
+            
+            String mailText = "Заказ по предмету " + sub.getSubjectName() + " размещен в системе Reshaka.Ru .";
+            MailQueue.getInstance().addSubscribersMail(sub, "Новый заказ в системе Reshaka.Ru", mailText);
+            
+        } catch (Exception exc) { 
         }
+        
+        
+        
         mailMan.newOrder(order.getId());
         messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), "Размещение заказа", "Ваш заказ (ID=" + order.getId() + ") успешно размещен в системе. Дождитесть пока он не будет оценен решающим", null);
         return order;

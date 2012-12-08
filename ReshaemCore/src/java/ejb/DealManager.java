@@ -12,6 +12,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import ru.reshaka.core.email.MailQueue;
+import ru.reshaka.core.email.MyMail;
 
 /**
  *
@@ -70,22 +72,28 @@ public class DealManager implements DealManagerLocal {
         }
         if (monMan.enoughMoney(empr.getId(), order.getPrice() / 2.0)) {
 
-//            monMan.transferMoney(empr.getId(), empr.getId(), empe.getId(), (1 - confMan.getAdminPercent()) * (order.getPrice() / 2.0), "prepayment");
-//            monMan.transferMoney(empr.getId(), empr.getId(), confMan.getMainAdminId(), confMan.getAdminPercent() * (order.getPrice() / 2.0), "prepayment");
             monMan.transferMoney(empr.getId(), empr.getId(), confMan.getMainAdminId(), order.getPrice() / 2.0, "prepayment");
-//!!!
+            //!!!
 
             order.setStatus(3);//half-paid
-            order =  em.merge(order);
+            order = em.merge(order);
             //sending message to employee from admin 
 //            messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), "Внесена предоплата за заказ " + order.getId().toString(), "Можете начинать решать", order.getConditionId());
             String theme = "Внесена предоплата за заказ ID=" + order.getId();
             String text = "";
+            String mailText = "";
+
             if (order.getType() == Order.OFFLINE_TYPE) {
                 text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
                         + "\n\nВнесена предоплата за заказа ID=" + order.getId() + ""
                         + "\n\n Дедлайн: " + order.getDeadlineString() + ""
                         + "\n\n\nC уважением, администрация Reshaka.Ru";
+                mailText = "<br/> Внеcена предоплата за заказ ID=" + order.getId() + ""
+                        + "<br/><br/>"
+                        + "Дедлайн: " + order.getDeadlineString() + ""
+                        + "<br/>";
+                MailQueue.getInstance().addMyMail(new MyMail(theme, mailText, order.getEmployee().getEmail(), order.getEmployer().getLogin()));
+
             }
             if (order.getType() == Order.ONLINE_TYPE) {
                 text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
@@ -93,11 +101,16 @@ public class DealManager implements DealManagerLocal {
                         + "\n\n Время начала онлайн-помощи: " + order.getDeadlineString() + ""
                         + "\n Продолжительность: " + order.getDuration() + " мин. "
                         + "\n\n\nC уважением, администрация Reshaka.Ru";
+                mailText = "<br/> Внеcена предоплата за заказ ID=" + order.getId() + ""
+                        + "<br/><br/>Время начала онлайн-помощи: " + order.getDeadlineString() + ""
+                        + "<br/> Продолжительность: " + order.getDuration() + " мин. "
+                        + "<br/>";
+                MailQueue.getInstance().addMyMail(new MyMail(theme, mailText, order.getEmployee().getEmail(), order.getEmployer().getLogin()));
             }
-            mailMan.sendMail(order.getEmployee().getEmail(), theme, text);
+
+//            mailMan.sendMail(order.getEmployee().getEmail(), theme, text);
             messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), theme, text, order.getConditionId());
 
-            //            mailMan.sendStatusChange(order.getId());
         }
 
     }
@@ -181,7 +194,7 @@ public class DealManager implements DealManagerLocal {
         em.merge(order);
 //        mailMan.sendStatusChange(order.getId());
         String theme = "Решение доступно для скачивания.";
-        String text = "Решение заказа ID=" + order.getId()+ " доступно для скачивания. "
+        String text = "Решение заказа ID=" + order.getId() + " доступно для скачивания. "
                 + "\n\n Вы можете его скачать, нажав конпку информации о заказе (i) -> скачать решение. "
                 + "\n\n\nC уважением, администрация Reshaka.Ru";
         messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), theme, text, order.getSolutionId());
