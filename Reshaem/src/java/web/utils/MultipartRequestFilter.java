@@ -1,6 +1,7 @@
 package web.utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 
 /**
  *
@@ -171,17 +173,32 @@ public class MultipartRequestFilter implements Filter {
     private void processFileField(FileItem fileField, HttpServletRequest request) {
         if (fileField.getName().length() <= 0) {
             // No file uploaded.
-            request.setAttribute(fileField.getFieldName(), null);
+            addAttributeValue(request, fileField.getFieldName(), null);
         } else if (maxFileSize > 0 && fileField.getSize() > maxFileSize) {
             // File size exceeds maximum file size.
-            request.setAttribute(fileField.getFieldName(), new FileUploadException(
+            addAttributeValue(request, fileField.getFieldName(), new FileUploadException(
                 "File size exceeds maximum file size of " + maxFileSize + " bytes."));
             // Immediately delete temporary file to free up memory and/or disk space.
             fileField.delete();
         } else {
             // File uploaded with good size.
-            request.setAttribute(fileField.getFieldName(), fileField);
+            addAttributeValue(request, fileField.getFieldName(), fileField);
         }
+    }
+    
+    private static void addAttributeValue(HttpServletRequest request, String name, final Object value) {
+        if(value == null) {
+            return;
+        }
+        final Object attrValue = request.getAttribute(name);
+        if(attrValue == null) {
+            request.setAttribute(name, value);
+        } else if(attrValue instanceof List) {
+            ((List)attrValue).add(value);
+        } else {
+            request.setAttribute(name, new ArrayList(){{ add(attrValue); add(value); }});
+        }
+        
     }
 
     // Utility (may be refactored to public utility class) ----------------------------------------

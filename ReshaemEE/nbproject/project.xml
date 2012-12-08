@@ -15,10 +15,6 @@
                     <file>${reference.Reshaem.dist-ear}</file>
                     <path-in-war>/</path-in-war>
                 </library>
-                <library>
-                    <file>${reference.Vkiframe.dist-ear}</file>
-                    <path-in-war>/</path-in-war>
-                </library>
             </web-module-additional-libraries>
         </data>
         <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
