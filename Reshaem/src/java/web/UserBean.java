@@ -48,7 +48,7 @@ public class UserBean implements Serializable {
 
     @EJB
     MailManagerLocal mailMan;
-    
+
     @EJB
     SessionManagerLocal sessionMan;
 
@@ -72,7 +72,7 @@ public class UserBean implements Serializable {
     private UserSettings settings;
 
     private boolean agreed;
-    
+
     private String recoveryEmail;
 
     public static int COOKIE_AGE = 3600 * 24 * 366;
@@ -85,8 +85,6 @@ public class UserBean implements Serializable {
         this.recoveryEmail = recoveryEmail;
     }
 
-    
-    
     public boolean isAgreed() {
         return agreed;
     }
@@ -377,11 +375,14 @@ public class UserBean implements Serializable {
 
     public String logOut(ActionEvent actionEvent) {
         entity = null;
+        System.out.println("logOut occured");
+        flushCookies();
         FacesContext context = FacesContext.getCurrentInstance();
         session = (HttpSession) context.getExternalContext().getSession(false);
         session.invalidate();
+
         context.getExternalContext().getSession(true);
-        flushCookies();
+
         return "index.xhtml?faces-redirect=true";
     }
 
@@ -400,6 +401,7 @@ public class UserBean implements Serializable {
         response.addCookie(loginCookie);
         response.addCookie(passwordCookie);
         response.addCookie(emailCookie);
+        System.out.println("cookies are flushed... ");
     }
 
     private void resetCookies(String login, String password) {
@@ -449,7 +451,6 @@ public class UserBean implements Serializable {
 //        System.out.println("get comments occured");
 //        return userMan.getComments(userId);
 //    }
-
     public void updateUserSettings(Long userId, UserSettings settings) {
         userMan.updateUserSettings(userId, settings);
     }
@@ -470,22 +471,22 @@ public class UserBean implements Serializable {
         }
         return 0;
     }
-    
-    public void recoverPassword(String email){
+
+    public void recoverPassword(String email) {
         FacesContext fc = FacesContext.getCurrentInstance();
         RequestContext rc = RequestContext.getCurrentInstance();
         if (userMan.userExists(email) == false) {
             System.out.println("such user does not exist");
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Ошибка", "Пользователь с данным email не зарегистрирован"));
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка", "Пользователь с данным email не зарегистрирован"));
             rc.addCallbackParam("recovery", false);
             return;
         }
         userMan.recoverPassword(email);
-        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Уведомление","Новый пароль выслан на почту " +email));
+        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Уведомление", "Новый пароль выслан на почту " + email));
         rc.addCallbackParam("recovery", true);
     }
-    
+
     public static String userOnlineStatus(Long id) {
-        return SessionListener.isOnline(id)+"";
+        return SessionListener.isOnline(id) + "";
     }
 }

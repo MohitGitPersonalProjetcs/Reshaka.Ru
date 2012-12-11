@@ -28,15 +28,20 @@
                 </c:if>
                 <link href="#{request.contextPath}/css/default.css" rel="stylesheet" type="text/css" />
 
-                <!--[if lte IE 6]>
-                <link rel="stylesheet" href="css/cssf-ie6.css" type="text/css" media="screen" /><![endif]-->
-                <!--[if IE 7]>
-                <link rel="stylesheet" href="css/cssf-ie7.css" type="text/css" media="screen" /><![endif]-->
             </c:if>
             <!-- RedHelper -->
             <script id="rhlpscrtg" type="text/javascript" charset="utf-8" async="async"
             src="https://web.redhelper.ru/service/main.js?c=reshaka"></script>
             <!--/Redhelper -->
+
+
+            <script type="text/javascript">
+                <!--
+                if (screen.width <= 1000) {
+                    window.location = "#{request.contextPath}/mobile/index.xhtml";
+                }
+                //-->
+            </script>
 
         </h:head>
 

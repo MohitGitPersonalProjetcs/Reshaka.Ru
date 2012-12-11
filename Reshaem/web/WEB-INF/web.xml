@@ -33,15 +33,21 @@
         <servlet-name>VKAuthorisation</servlet-name>
         <servlet-class>ru.reshaka.vk.web.servlets.VKAuthorisation</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>ReplenismentRequestServlet</servlet-name>
         <servlet-class>ru.reshaka.web.servlets.ReplenismentRequestServlet</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>dummyLogin</servlet-name>
         <servlet-class>servlets.dummyLogin</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VkOpenId</servlet-name>
+        <servlet-class>ru.reshaka.vk.web.servlets.VkOpenId</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogOutServlet</servlet-name>
+        <servlet-class>ru.reshaka.web.servlets.LogOutServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
@@ -59,12 +65,10 @@
         <servlet-name>redirected</servlet-name>
         <url-pattern>/redirected</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>ReplenismentRequestServlet</servlet-name>
         <url-pattern>/replservl</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>VKAuthorisation</servlet-name>
         <url-pattern>/VKAuthorisation</url-pattern>
@@ -72,6 +76,14 @@
     <servlet-mapping>
         <servlet-name>dummyLogin</servlet-name>
         <url-pattern>/dummyLogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VkOpenId</servlet-name>
+        <url-pattern>/vk</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogOutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>1</session-timeout>
@@ -124,12 +136,10 @@
         <filter-name>MultipartRequestFilter</filter-name>
         <url-pattern>/orderentry</url-pattern>
     </filter-mapping>
-    
     <filter-mapping>
         <filter-name>MultipartRequestFilter</filter-name>
         <url-pattern>/replservl</url-pattern>
     </filter-mapping>
-    
     <error-page>
         <error-code>404</error-code>
         <location>/error404.xhtml</location>

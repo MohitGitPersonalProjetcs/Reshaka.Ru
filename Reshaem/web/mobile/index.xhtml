@@ -105,7 +105,11 @@
                     </div></div>
                 <div id="mfoot" class="mfoot"><ul class="main_menu">
                         <li><a href="#{request.contextPath}/index.xhtml">Полная версия</a></li>
-                        <li><a href="#">Выход</a></li>
+                        <!--                        <li><a href="#">Выход</a></li>-->
+
+                        <li>
+                            <a href="#{request.contextPath}/logout?redirect=#{request.contextPath}/mobile/login.xhtml" >Выход</a>
+                        </li>
                     </ul>
                 </div>
             </div>

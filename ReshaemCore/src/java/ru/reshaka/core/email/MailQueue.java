@@ -56,11 +56,16 @@ public class MailQueue {
     public synchronized void processQueue(Session session) {
         while (!this.queue.isEmpty()) {
             MyMail currentMail = this.queue.poll();
+            if (log.isTraceEnabled()) {
+                log.trace("processQueue(): curretnMail =  " + currentMail);
+            }
+            if (currentMail==null) continue;
             sendMail(session, currentMail);
         }
     }
 
     public synchronized void addSubscribersMail(Map<String, String> map, String subject, String text) {
+        if (map == null) return;
         for (String key : map.keySet()) {
             MyMail mail = new MyMail(subject, text, map.get(key), key);
             addMyMail(mail);
@@ -69,6 +74,9 @@ public class MailQueue {
 
     public synchronized void addSubscribersMail(Subject subj, String mailSubject, String text) {
         Map<String,String> map = MailUtils.getSubscribers(subj);
+        if (log.isTraceEnabled()) {
+            log.trace("addSubscribersMail(): prepare mailing: map =  " + map);
+        }
         addSubscribersMail(map, mailSubject, text);
     }
 

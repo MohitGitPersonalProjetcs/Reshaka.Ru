@@ -109,17 +109,25 @@
                                     <dd>
                                         <div class="near_box">
                                             <input type="hidden" name="redirect" value="#{request.contextPath}/mobile/login.xhtml" />
-                                            <input class="btn" onclick="logIn();" type="submit" value="Войти" />
-                                            <!--                                            <div class="near_btn"><a href="/login?act=restore" >Забыли пароль?</a></div>-->
+                                            <div style="display: block; height: 30px;">
+                                                <input style="display: block;" class="btn" onclick="logIn();" type="submit" value="Войти" />
+                                            </div>
+                                            <br/>
+                                            <hr/>
+                                            <div style="display: block; height: 30px;" >
+                                                <input style="display: block;" class="btn" onclick="window.location.href='http://openid.reshaka.ru/OpenIdProjectWeb/vk?id=1'" type="submit" value="Войти через Вконтакте" />
+                                            </div>
+                                            <hr/>
+                                            <p>* Регистрация скоро будет доступна</p>
                                         </div>
                                     </dd>
                                 </dl>
 
                             </form>
 
-                            <dl>
-                                <dd><a class="join_btn" href="/join">Зарегистрироваться</a></dd>
-                            </dl>
+                            <!--                            <dl>
+                                                            <dd><a class="join_btn" href="/join">Зарегистрироваться</a></dd>
+                                                        </dl>-->
                         </div>
                     </div></div>
 

@@ -33,8 +33,15 @@ public class MailQueueJob implements ReshakaJob {
 
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException {
-        Session session = (Session) EJBUtils.resolve(MailManager.MAIL_JNDI);
-        MailQueue.getInstance().processQueue(session);
+        try {
+            Session session = (Session) EJBUtils.resolve(MailManager.MAIL_JNDI);
+            MailQueue.getInstance().processQueue(session);
+        } catch (Exception e) {
+            if (log.isTraceEnabled()) {
+                log.trace("execute(): MailQueueJob exception ",e);
+            }
+        }
+
 
     }
 }
