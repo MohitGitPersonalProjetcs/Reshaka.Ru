@@ -31,6 +31,9 @@ public class MailQueue {
 
     public synchronized void sendMail(Session session, MyMail mail) {
         try {
+            if (log.isTraceEnabled()) {
+                log.trace("sendMail(): try to send email to " + mail.getRecipient());
+            }
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(NOREPLY_EMAIL));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail.getRecipient(), false));

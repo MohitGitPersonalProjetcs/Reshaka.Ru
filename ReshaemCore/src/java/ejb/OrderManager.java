@@ -1,6 +1,5 @@
 package ejb;
 
-//import com.sun.xml.ws.api.tx.at.Transactional;
 import ejb.util.FileUtils;
 import ejb.util.ReshakaSortOrder;
 import ejb.util.ReshakaUploadedFile;
@@ -237,16 +236,20 @@ public class OrderManager implements OrderManagerLocal {
         try {
             Subject sub = em.find(Subject.class, order.getSubject().getId());
             order.setSubject(sub);
-            em.merge(order);
-            
-            String mailText = "Заказ по предмету " + sub.getSubjectName() + " размещен в системе Reshaka.Ru .";
-            MailQueue.getInstance().addSubscribersMail(sub, "Новый заказ в системе Reshaka.Ru", mailText);
-            
-        } catch (Exception exc) { 
+            order = em.merge(order);
+
+            String mailText =  "Заказ (ID=" + order.getId() + ") по предмету " + sub.getSubjectName() + " размещен в системе Reshaka.Ru ."
+                    + "<br/><br/>" + ( (order.getType() == Order.OFFLINE_TYPE) ? "Дедлайн: " + order.getDeadlineString() : "Начало экзамена: " + order.getDeadlineString() + ""
+                        + "<br/>Продолжительность: " + order.getDuration()  + " мин.") +""
+                    + "<br/><br/><a href=\"http://reshaka.ru/download.xhtml?id="+order.getConditionId()+"\" >" + ( (order.getType() == Order.OFFLINE_TYPE) ? "Условие задачи" : "Примеры задач") + "</a> <br/>";
+
+            MailQueue.getInstance().addSubscribersMail(sub, ( (order.getType() == Order.OFFLINE_TYPE) ? "Новый заказ в системе Reshaka.Ru" : "Новый заказ на онлайн-помощь в системе Reshaka.Ru"), mailText);
+
+        } catch (Exception exc) {
         }
-        
-        
-        
+
+
+
         mailMan.newOrder(order.getId());
         messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), "Размещение заказа", "Ваш заказ (ID=" + order.getId() + ") успешно размещен в системе. Дождитесть пока он не будет оценен решающим", null);
         return order;

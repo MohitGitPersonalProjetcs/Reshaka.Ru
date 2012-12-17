@@ -84,8 +84,8 @@ public class DealManager implements DealManagerLocal {
             String mailText = "";
 
             if (order.getType() == Order.OFFLINE_TYPE) {
-                text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-                        + "\n\nВнесена предоплата за заказа ID=" + order.getId() + ""
+                text = "Здравствуйте, " + order.getEmployee().getLogin() + " !"
+                        + "\n\nВнесена предоплата за заказ ID=" + order.getId() + ""
                         + "\n\n Дедлайн: " + order.getDeadlineString() + ""
                         + "\n\n\nC уважением, администрация Reshaka.Ru";
                 mailText = "<br/> Внеcена предоплата за заказ ID=" + order.getId() + ""
@@ -96,8 +96,8 @@ public class DealManager implements DealManagerLocal {
 
             }
             if (order.getType() == Order.ONLINE_TYPE) {
-                text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
-                        + "\n\nВнесена предоплата за заказа ID=" + order.getId() + ""
+                text = "Здравствуйте, " + order.getEmployee().getLogin() + " !"
+                        + "\n\nВнесена предоплата за заказ ID=" + order.getId() + ""
                         + "\n\n Время начала онлайн-помощи: " + order.getDeadlineString() + ""
                         + "\n Продолжительность: " + order.getDuration() + " мин. "
                         + "\n\n\nC уважением, администрация Reshaka.Ru";
@@ -124,8 +124,8 @@ public class DealManager implements DealManagerLocal {
         if (order.getType() == Order.OFFLINE_TYPE) {
             Date today = new Date();
             long diff = today.getTime() - offer.getCreationDate().getTime();
-            Date deadline = order.getDeadline();
-            deadline.setTime(deadline.getTime() + diff);
+            Date deadline = new Date();
+            deadline.setTime(order.getDeadline().getTime() + diff);
             order.setDeadline(deadline);
         }
 
@@ -179,7 +179,7 @@ public class DealManager implements DealManagerLocal {
         }
 
         if (monMan.enoughMoney(order.getEmployer().getId(), order.getPrice() / 2.0) == false) {
-            System.out.println("can't make fin al payment");
+            System.out.println("can't make final payment");
             return;
         }
         System.out.println("transfering money");

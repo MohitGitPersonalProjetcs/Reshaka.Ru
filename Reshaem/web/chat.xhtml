@@ -227,7 +227,7 @@
                 $('#chatMessageText').keydown(chatMessageKeydown);
             });           
             
-        var myLogin = '#{webSession.login}';
+            var myLogin = '#{webSession.login}';
             var myRole = #{webSession.group};
         
             function deleteMessage(id) {
@@ -254,7 +254,7 @@
                         + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
 
                     var html = '<div class="chat-message">'
-                        + '<div class="'+c+'"><label title="Отправлено '+msgs[i].dateSent+' пользователю '+msgs[i].toUserLogin+'"><strong>'+msgs[i].fromUserLogin+'</strong></label>:</div>'
+                        + '<div class="'+c+'"><label title="Отправлено '+msgs[i].dateSent+' пользователю '+msgs[i].toUserLogin+'"><a style="font-weight:bold;" class="'+c+'" href="#{request.contextPath}/chat.xhtml?friend='+msgs[i].fromUserId+'">'+msgs[i].fromUserLogin+'</a></label>:</div>'
                         + '\t<div class="msg-text">'+msgs[i].text+' '+ att
                         + '</div>'+del+'</div>';    
                     $('#chatMessages').append(html);

@@ -1,0 +1,171 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+        <base href="."/>
+        <title>Reshaka.Ru</title>
+
+        <link type="text/css" rel="stylesheet" href="./css/s_mbw.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/s_r.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/status.css"/>
+        <script src="./js/jquery.min.js"></script>
+        <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
+
+        <style type="text/css">
+            .right {
+                color: red;
+            }
+
+            .left {
+                color: #4C6B8F;
+            }
+        </style>
+
+        <script type="text/javascript">
+                        
+            $(function(){
+                sustainSession();
+            })
+            var updateInterval = 10000;
+            function sustainSession() {
+                var p = $.get("/void",function(d){
+                });
+                setTimeout(sustainSession, updateInterval);
+            }
+        </script>
+
+        <script type="text/javascript">
+            
+            var myLogin = '#{webSession.login}';
+            var myRole = #{webSession.group};
+            
+            function updateMessages() {
+                //                alert('updating');
+                
+                $('#chatMessages').html('');
+
+                var messages = $("#allMessagesJsonArray").val();
+                var msgs = eval('('+ messages +')');
+                
+                for(i in msgs) {
+                    if(msgs[i].fromUserLogin == undefined) continue;
+                
+                    var c = 'right';
+                    if(msgs[i].fromUserLogin!=myLogin) { c = 'right'; }
+                    else { c = 'left'; }
+                
+                    var del = '';
+                    //                    if(myRole==1 || msgs[i].fromUserLogin==myLogin)
+                    //                        del = '<div style="text-align: right; font-size: smaller;"><a href="javascript:void()" onclick="deleteMessage('+msgs[i].messageId+');">Удалить</a></div>';
+                    //                
+                    var att = '';
+                    if(msgs[i].attachmentId!=null)
+                        att = '<br/><span style="font-size: smaller;">Сообщение содержит прикрепленный файл:<strong> <a href="/download.xhtml?id='
+                        + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
+
+                    var html =    '<div class="msg">'
+                        +'  <div class="i"></div>'
+                        +'  <div class="cont">'
+                        +'                <div class="ch">'
+                        +                    '<a class="date" href="javascript: void();">'+msgs[i].dateSent+'</a>'
+                        +                    '<a class="user '+c+'" href="javascript: void();" >'+msgs[i].fromUserLogin+'</a>'
+                        +                '</div>'
+                        +                '<div class="cc">'
+                        +                   '<div class="text">'+msgs[i].text+'</div>'
+                        +                '</div>'
+                        +   '</div>'
+                        + '</div>' ;
+                  
+                    $('#chatMessages').append(html);
+                    window.scrollTo(0, document.body.scrollHeight);
+                }
+            }
+        </script>
+        <script>
+            $(document).ready(function(){
+                updateMessages();
+            });
+            
+        </script>
+
+    </h:head>
+
+    <h:body id="vk" class="x_wide x_head nt hover volume_reg">
+        <div id="vk_wrap">
+
+            <div id="m">
+                <div id="mhead" class="mhead">
+                    <div class="btn home">
+                        <a href="/mobile/index.xhtml" class="b">
+                            <i> Назад  </i>
+                        </a>
+                    </div>
+
+                    <div class="btn back">
+                        <div class="b">
+                            <div class="title">
+                                <h1>Чат</h1>
+                            </div>
+                        </div>
+                        <div class="b" style="padding: 15px; cursor: pointer;" onclick="window.location.href = window.location.href">
+                            Refresh
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mcont" class="mcont">
+
+                    <div id="mcont" class="mcont">
+
+                        <div class="pcont mail bl_cont">
+                            <div class="post_add">
+                                <h:form id="write_form" rendered="#{chatBean.friendId != null}" >
+                                    <div class="iwrap">
+                                        <h:inputTextarea id="chatMessageText" style="margin-left: 0px; margin-right: -6.36364px; width: 585px; margin-top: 0px; margin-bottom: 0px; height: 87px; " rows="3" value="#{chatBean.text}"/>
+                                    </div>
+
+                                    <div class="near_box">
+<!--                                        <input class="btn" type="submit" value="Отправить" />-->
+                                        <h:commandButton actionListener="#{chatBean.sendMessage}" value="Отправить!" class="btn">
+                                            <f:ajax onevent="function(data){if (data.status == 'success') updateMessages();}" />
+                                        </h:commandButton>
+<!--                                        <a class="add_btn add_attach" href="" ><i></i></a>-->
+
+                                    </div>
+                                </h:form>
+                            </div>
+
+                            <div id="chatMessages" class="messages">
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div id="mfoot" class="mfoot"><ul class="main_menu">
+                        <li><a href="#{request.contextPath}/index.xhtml">Полная версия</a></li>
+                        <!--                        <li><a href="#">Выход</a></li>-->
+
+                        <li>
+                            <a href="#{request.contextPath}/logout?redirect=#{request.contextPath}/mobile/login.xhtml" >Выход</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="sbi_camera_button" class="sbi_search" style="left: 0px; top: 0px; position: absolute; width: 29px; height: 27px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; border-image: initial; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; z-index: 2147483647; display: none; ">
+
+        </div>
+
+        <h:panelGroup id="hiddenMessagesPanel"> 
+            <h:inputHidden id="allMessagesJsonArray" value="#{chatBean.requestNewMessagesJsonArrayString()}" />
+        </h:panelGroup>
+
+    </h:body>
+</html>

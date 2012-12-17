@@ -80,7 +80,7 @@
                                     <h:panelGroup rendered="#{selectedBean.order.type == 0}" >
 
                                         <h:outputText value="Не доступно" rendered="#{!(((selectedBean.order.employer.id == webSession.id ) and (selectedBean.order.status == 5)) or ((selectedBean.order.employee.id == webSession.id ) and (selectedBean.order.status == 5)) )}"/>
-                                        <h:link value="Скачать файл"  rendered="#{((selectedBean.order.employer.id == webSession.id ) and (selectedBean.order.status == 5)) or ((selectedBean.order.employee.id == webSession.id ) and (selectedBean.order.status == 5)) }" outcome="download" target="_blank">
+                                        <h:link value="Скачать файл"  rendered="#{((selectedBean.order.employer.id == webSession.id ) and (selectedBean.order.status == 5)) or ((selectedBean.order.employee.id == webSession.id ) and (selectedBean.order.status == 5)) or ((selectedBean.order.status == 5) and (webSession.group == 1)) }" outcome="download" target="_blank">
                                             <f:param name="id" value="#{selectedBean.order.solutionId}"/>
                                         </h:link>
                                     </h:panelGroup>

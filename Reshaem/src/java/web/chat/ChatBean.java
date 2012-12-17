@@ -85,6 +85,10 @@ public class ChatBean implements Serializable {
 
         Map<String, String> params = fctx.getExternalContext().getRequestParameterMap();
         friendStr = params.get("friend");
+        
+        if (log.isTraceEnabled()) {
+            log.trace("ChatBean(): friendStr = " + friendStr);
+        }
 
         String period = params.get("period");
         if (period != null) {
@@ -224,6 +228,19 @@ public class ChatBean implements Serializable {
         if (me == null) {
             return;
         }
+        RequestContext ctx = RequestContext.getCurrentInstance();
+        Set<ChatMessage> s = requestStreamMessagesSet();
+        ctx.addCallbackParam("ok", !s.isEmpty());
+        ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
+    }
+    
+    private Set<ChatMessage> requestStreamMessagesSet(){
+        if (log.isTraceEnabled()) {
+            log.trace("requestStreamMessagesSet(): me =  " + me);
+        }
+          if (me == null) {
+            return new TreeSet();
+        }
 
         RequestContext ctx = RequestContext.getCurrentInstance();
 
@@ -252,34 +269,38 @@ public class ChatBean implements Serializable {
             msgs.clear();
         }
 
-//        msgs = mm.getOutcomingMessages(me.getId(), friendId, lastUpdate, null);
-//        if (msgs != null) {
-//            for (Message m : msgs) {
-//                s.add(new ChatMessage(m));
-//            }
-//            msgs.clear();
-//        }
-
-
         for (ChatMessage m : s) {
             if (lastUpdate == null || lastUpdate.before(m.getDateSent())) {
                 lastUpdate = m.getDateSent();
             }
         }
-
-        ctx.addCallbackParam("ok", !s.isEmpty());
-
-        ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
+        return s;
+    }
+    
+    public String requestAllMessagesJsonArray(){
+        
+        Set<ChatMessage> s = requestStreamMessagesSet();
+        System.out.println("requestAllMessagesJsonArray(): s = " + s);
+        return (new JSONArray(s, true)).toString();
+    }
+    
+    public String requestNewMessagesJsonArrayString(){
+        if (log.isTraceEnabled()) {
+            log.trace("requestNewMessagesJsonArrayString(): invocation of this method occured ");
+        }
+        Set<ChatMessage> s = requestNewMessagesSet();
+        return (new JSONArray(s,true)).toString();
     }
 
-    public void requestNewMessages(ActionEvent evt) {
+    
+    private Set<ChatMessage> requestNewMessagesSet(){
         if (me == null) {
-            return;
+            return new TreeSet();
         }
 
         if (adminMode && "_stream".equalsIgnoreCase(friendStr)) {
             requestStreamMessages();
-            return;
+            return new TreeSet();
         }
 
         RequestContext ctx = RequestContext.getCurrentInstance();
@@ -324,8 +345,22 @@ public class ChatBean implements Serializable {
         if(lastUpdate == null || maxDate.after(lastUpdate))
             lastUpdate = maxDate;
         
-        ctx.addCallbackParam("ok", !s.isEmpty());
+        return s;
+    }
+    
+    public void requestNewMessages(ActionEvent evt) {
+        if (me == null) {
+            return;
+        }
 
+        if (adminMode && "_stream".equalsIgnoreCase(friendStr)) {
+            requestStreamMessages();
+            return;
+        }
+
+        RequestContext ctx = RequestContext.getCurrentInstance();
+        Set<ChatMessage> s = requestNewMessagesSet();
+        ctx.addCallbackParam("ok", !s.isEmpty());
         ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
     }
 

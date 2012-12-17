@@ -343,6 +343,10 @@
                             </p:panel>
 
                         </h:form>
+                        
+                        <h:form>
+                            <p:commandButton value="Зайти под пользователем" actionListener="#{userBean.adminFeatureLogin(selectedBean.user)}" />
+                        </h:form>
                     </p:tab>
 
                     <p:tab title="Рассылка" rendered="#{webSession.group == 3}">

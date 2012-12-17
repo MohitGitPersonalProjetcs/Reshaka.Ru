@@ -6,13 +6,10 @@ import ejb.SessionManagerLocal;
 import ejb.SubjectManagerLocal;
 import ejb.UserManagerLocal;
 import entity.Attachment;
-import entity.Comment;
 import entity.User;
 import entity.UserSettings;
 import java.io.Serializable;
-import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -341,6 +338,14 @@ public class UserBean implements Serializable {
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Авторизация", "Вы успешно авторизованы!"));
     }
 
+    public void adminFeatureLogin(User user){
+        System.out.println("userId = " + user.getId());
+        flushCookies();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        session = (HttpSession) facesContext.getExternalContext().getSession(true);
+        SessionListener.setSessionAttribute(session, "user", user);
+    }
+    
     public void logInByEmail(ActionEvent actionEvent) {
 //        User user = userMan.logIn(entity.getLogin(), entity.getPassword());
         User user = userMan.logInByEmail(entity.getEmail(), entity.getPassword());
