@@ -178,7 +178,7 @@ and open the template in the editor.
 
                             <br/><br/>
                             <span style="font-weight: bold;" >Cпособ 2. </span> 
-                            Перевести деньги на номер Билайн 9646228094. Далее необходимо оформить 
+                            Перевести деньги на номер Билайн <span style="font-weight: bold;">9646228094</span>. Далее необходимо оформить 
 
                             <span class="replenishmentTabLink" style=" color: #FF7113; text-decoration: underline; font-weight: bold; cursor: pointer;" >                  
                                 заявку на ввод средств
@@ -196,27 +196,42 @@ and open the template in the editor.
                             Выберите один из предложенных в выпадающем списке способов пополнения счета.
                             <br/>
                             <form style="margin-top: 20px;" action="#{request.contextPath}/replservl" method="post" enctype="multipart/form-data">
-                                <label class="pedit_label" style="width: 200px;" >Сумма (руб.):</label><input type="text" name="money" placeholder="money" class="text" /> <br/>
-                                <label class="pedit_label" style="width: 200px;" >Тип:</label>
+                                <label class="pedit_label" style="width: 90px;" >Сумма (руб.):</label>
+                                <input type="text" name="money" placeholder="Например: 300" class="text" /> <br/>
+
+                                <label class="pedit_label" style="width: 90px;" >Тип:</label>
                                 <select class="fwDefault" name="type" >
                                     <option value="mobile" >Оплата мобильного</option>
                                     <option value="bank" >Банковский перевод</option>
                                     <option value="yandex-money" >Яндекс Деньги (через терминал)</option>
                                     <option value="webmoney" >Webmoney (через терминал)</option>
+                                    <option value="qiwi" >QIWI (через терминал)</option>
                                     <option value="other" >Другое</option>
                                 </select>
                                 <br/>
-                                <label class="pedit_label" style="width: 200px;" >Квитанция:</label>
-                                <input type="file" class="text"   name="attachment" title="Загрузите фотографию квитанции об оплате" />
+                                <label class="pedit_label" style="width: 90px;" >Квитанция:</label>
+                                <input type="file" class="text" style="width: 160px;"   name="attachment" title="Загрузите фотографию квитанции об оплате" />
                                 <br/>
-                                <label class="pedit_label" style="width: 200px;" ></label>
-                                <textarea placeholder="описание (любой текст)" name="text" style=" width: 280px;
-                                          height: 80px;
-                                          line-height: 1.27em;" />
 
+                                <div style="display: block; font-size: 11px;">
+                                    <div style="color: #555;
+                                         width: 90px;
+                                         padding: 4px 10px 0 0;
+                                         text-align: right;
+                                         float: left;">
+                                        Дополнительно:
+                                    </div>
+                                    <span style="width: 205px; float: left;">
+                                        <textarea name="text" style=" width: 250px;
+                                                  height: 80px;
+                                                  line-height: 1.27em;"
+                                                  placeholder="какая-либо другая дополнительная информация"/> 
+                                    </span>
+                                </div>
+                                <br/><br/>
 
+                                <input type="submit" style="display: block; height: 40px; cursor: poiner; margin-top: 80px; margin-left: 380px;" value="Отправить!"/>
 
-                                <input type="submit" style="display: block; height: 40px; cursor: poiner; margin-top: 50px; margin-left: 500px;" value="Отправить!"/>
                             </form>
 
 

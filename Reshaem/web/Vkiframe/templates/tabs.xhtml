@@ -58,16 +58,29 @@ and open the template in the editor.
                         </li>
                     </h:panelGroup>
 
-<!--                    <h:panelGroup rendered="#{tab_no==3}"> 
-                        <li class="current_link">
-                            <span><span class="tl"><span class="tr">Мои сообщения</span></span></span>
+                    <h:panelGroup style="float: right;">
+                        <li>
+                            <a href="#{request.contextPath}/ichat.xhtml" target="_blank">
+                                <span class="tl">
+                                    <span class="tr">
+                                        Мои сообщения
+                                        <h:outputText style="font-size: smaller; font-weight: bolder;" rendered="#{chatBean.hasNewMessages()}" value="(#{chatBean.newMessagesNumber})"/>
+                                    </span>
+                                </span>
+                            </a>
                         </li>
                     </h:panelGroup>
-                    <h:panelGroup rendered="#{tab_no!=3}">
-                        <li>
-                            <a href="#{request.contextPath}/Vkiframe/MyMessages.xhtml"><span class="tl"><span class="tr">Мои сообщения</span></span></a>
-                        </li>
-                    </h:panelGroup>-->
+
+<!--                    <h:panelGroup rendered="#{tab_no==3}"> 
+    <li class="current_link">
+        <span><span class="tl"><span class="tr">Мои сообщения</span></span></span>
+    </li>
+</h:panelGroup>
+<h:panelGroup rendered="#{tab_no!=3}">
+    <li>
+        <a href="#{request.contextPath}/Vkiframe/MyMessages.xhtml"><span class="tl"><span class="tr">Мои сообщения</span></span></a>
+    </li>
+</h:panelGroup>-->
 
 <!--                    <h:panelGroup rendered="#{tab_no==4}"> 
                         <li class="current_link">

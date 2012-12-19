@@ -76,7 +76,7 @@ public class DealManager implements DealManagerLocal {
 //!!!
 
             order.setStatus(3);//half-paid
-            em.merge(order);
+            order =  em.merge(order);
             //sending message to employee from admin 
 //            messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), "Внесена предоплата за заказ " + order.getId().toString(), "Можете начинать решать", order.getConditionId());
             String theme = "Внесена предоплата за заказ ID=" + order.getId();

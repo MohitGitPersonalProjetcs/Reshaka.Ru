@@ -37,6 +37,10 @@ public class ReplenishmentBean implements Serializable {
         return monMan.getLinkForYandexPayment(userId, money);
     }
 
+    private String getMobileLinkForYandexPayment(Long userId, double money){
+        return monMan.getMobileLinkForYandexPayment(userId, money);
+    }
+    
     public String getLinkForWebmoneyPayment() {
         return "https://merchant.webmoney.ru/lmi/payment.asp";
     }
@@ -103,6 +107,11 @@ public class ReplenishmentBean implements Serializable {
     public String getYandexLink() {
         System.out.println("getYandexLink() occured");
         return getLinkForYandexPayment(getId(), getMoney());
+    }
+    
+    public String getMobileYandexLink(){
+        System.out.println("getMobileYandexLink() occured");
+        return getMobileLinkForYandexPayment(getId(), getMoney());
     }
 
     public void setYandexLink(String yandexLink) {

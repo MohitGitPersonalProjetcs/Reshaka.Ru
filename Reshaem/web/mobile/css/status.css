@@ -1,0 +1,51 @@
+.Agreed{
+    background-color: #FFFF99 !important;
+    background-image: none !important;
+    color: black !important;
+}
+
+.New{
+    background-color: #99FFCC !important;
+    background-image: none !important;
+    color: black !important;
+}
+
+.NewOnline{
+    background-color: #99FFCC !important;
+    background-image: none !important;
+    color: black !important;
+}
+
+.Rated{
+    background-color: #CCFF99 !important;
+    background-image: none !important;
+    color: black !important;
+}
+.RatedOnline{
+    background-color: #CCFF99 !important;
+    background-image: none !important;
+    color: black !important;
+}
+
+.Solved{
+    background-color: #CCCCFF !important;
+    background-image: none !important;
+    color: black !important;
+}
+
+.PrepayedOnline{
+    background-color: #CCCCFF !important;
+    background-image: none !important;
+    color: black !important;
+}
+
+.Payed{
+    background-color: #FFCC99 !important;
+    background-image: none !important;
+    color: black !important;
+}
+.DoneOnline{
+    background-color: #FFCC99 !important;
+    background-image: none !important;
+    color: black !important;
+}

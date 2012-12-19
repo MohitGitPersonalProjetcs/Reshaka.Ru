@@ -1,4 +1,8 @@
-package ru.reshaka.web.servlets;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ru.reshaka.mobile.servlets;
 
 import ejb.OrderManagerLocal;
 import ejb.UserManagerLocal;
@@ -9,6 +13,7 @@ import entity.User;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,17 +32,17 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import ru.reshaka.web.servlets.OrderEntryServlet;
 import web.utils.SessionListener;
 import web.utils.StringUtils;
 
 /**
- * A simple servlet for submitting orders.
- * <p/>
- * @author danon
+ *
+ * @author rogvold
  */
 @MultipartConfig(fileSizeThreshold = 40 * 1024 * 1024)
-@WebServlet("/orderentry")
-public class OrderEntryServlet extends HttpServlet {
+@WebServlet(name = "mobileorderentry", urlPatterns = {"/mobileorderentry"})
+public class MobileOrderEntryServlet extends HttpServlet {
 
     private static final Logger log = Logger.getLogger(OrderEntryServlet.class);
 
@@ -51,11 +56,8 @@ public class OrderEntryServlet extends HttpServlet {
 
     public static final String ERROR_REDIR_URL = "Vkiframe/orderIsNotUploaded.xhtml";
 
-    private static final String ORDER_MODE_PARAM = "mode";
-
     private static final String ORDER_TYPE_PARAM = "order_type";
-
-    private static final String ORDER_DEADLINE_PARAM = "order_deadline";
+//    private static final String ORDER_DEADLINE_PARAM = "order_deadline";
 
     private static final String ORDER_DEADLINE_DAY_PARAM = "order_deadline_day";
 
@@ -83,8 +85,6 @@ public class OrderEntryServlet extends HttpServlet {
 
     private static final String REDIR_URL_PARAM = "redir";
 
-    private static final String ERROR_REDIR_PARAM = "error_redir";
-
     public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy HH:mm";
 
     private String redir = DEFAULT_REDIR_URL;
@@ -94,8 +94,6 @@ public class OrderEntryServlet extends HttpServlet {
 
     @EJB
     private OrderManagerLocal om;
-
-    private String errorUrl = ERROR_REDIR_URL;
 
     /**
      * Processes requests for both HTTP
@@ -129,10 +127,10 @@ public class OrderEntryServlet extends HttpServlet {
                 redirect(response, redir, user + " Cannot submit order. Operation is not permitted.");
             }
 
-
+            Order o = createOrder(request, type, user, response);
             boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
-            if (!isMultipartContent && getValidParameter(request, ORDER_TYPE_PARAM).equals("offline")) {
-                redirect(response, errorUrl, "Multipart content is required for offline order type.");
+            if (!isMultipartContent && o.getType() == Order.OFFLINE_TYPE) {
+                redirect(response, ERROR_REDIR_URL, "Multipart content is required for offline order type.");
             }
             List<ReshakaUploadedFile> files = new LinkedList<>();
             FileItem f = getFileItem(request, ORDER_CONDITION_PARAM);
@@ -143,18 +141,12 @@ public class OrderEntryServlet extends HttpServlet {
                 files.add(convertUploadedFile(f));
             }
             if (log.isTraceEnabled()) {
-                log.trace("Submitting order from vk iframe ");
+                log.trace("Submitting order: " + o);
             }
-            if (files.isEmpty() && getValidParameter(request, ORDER_TYPE_PARAM).equals("offline")) {
-                redirect(response, errorUrl, "File is not specified.");
-                return;
-            }
-            
-            Order o = createOrder(request, type, user, response);
             om.submitOrder(o, files);
         } catch (ServletException ex) {
             System.out.println("exc = " + ex);
-            redirect(response, errorUrl, "Unexpected server error.");
+            redirect(response, ERROR_REDIR_URL, "Unexpected server error.");
         }
         redirect(response, redir, "Redirecting to " + redir);
     }
@@ -265,22 +257,21 @@ public class OrderEntryServlet extends HttpServlet {
             o.setHireDate(new Date());
             o.setEmployer(u);
 
-            String param = getValidParameter(request, ERROR_REDIR_PARAM, ERROR_REDIR_URL);
-            errorUrl = param;
-
-            param = getValidParameter(request, ORDER_TYPE_PARAM);
+            String param = getValidParameter(request, ORDER_TYPE_PARAM);
             if (param.equalsIgnoreCase("online")) {
                 o.setType(Order.ONLINE_TYPE);
             } else if (param.equalsIgnoreCase("offline")) {
                 o.setType(Order.OFFLINE_TYPE);
             } else {
-                redirect(response, errorUrl, "Incorrect order type specified: " + param);
+                redirect(response, ERROR_REDIR_URL, "Incorrect order type specified: " + param);
             }
 
             param = getValidParameter(request, ORDER_DESCRIPTION_PARAM);
+            System.out.println("description = " + param);
             o.setDescription(param);
 
             param = getValidParameter(request, ORDER_PRICE_PARAM, "0");
+            System.out.println("price = " + param);
             o.setPrice(Double.parseDouble(param));
 
             param = getValidParameter(request, ORDER_TAGS_PARAM);
@@ -288,48 +279,38 @@ public class OrderEntryServlet extends HttpServlet {
 
             param = getValidParameter(request, ORDER_SUBJECT_PARAM);
             if (param.isEmpty()) {
-                redirect(response, errorUrl, "Subject is not specified.");
+                redirect(response, ERROR_REDIR_URL, "Subject is not specified.");
             }
             o.setSubject(om.getFuckingSubjectById(Long.valueOf(param)));
 
             param = getValidParameter(request, DATE_FORMAT_PARAM, DEFAULT_DATE_FORMAT);
             DateFormat df = new SimpleDateFormat(param);
 
-            String deadline, year, month, day, time;
-            String mode = getValidParameter(request, ORDER_MODE_PARAM);
+            String year, month, day, time;
 
-            if (mode.equals("vk")) {
-                deadline = getValidParameter(request, ORDER_DEADLINE_PARAM);
-            } else {
-                year = getValidParameter(request, ORDER_DEADLINE_YEAR_PARAM);
-                if (year.isEmpty()) {
-                    redirect(response, errorUrl, "Year is not specified.");
-                }
-
-                month = getValidParameter(request, ORDER_DEADLINE_MONTH_PARAM);
-                if (month.isEmpty()) {
-                    redirect(response, errorUrl, "Month is not specified.");
-                }
-
-                day = getValidParameter(request, ORDER_DEADLINE_DAY_PARAM);
-                if (day.isEmpty()) {
-                    redirect(response, errorUrl, "Day is not specified.");
-                }
-
-                time = getValidParameter(request, ORDER_DEADLINE_TIME_PARAM);
-                if (time.isEmpty()) {
-                    redirect(response, errorUrl, "Time is not specified.");
-                }
-
-                deadline = month + "/" + day + "/" + year + " " + time;
+            year = getValidParameter(request, ORDER_DEADLINE_YEAR_PARAM);
+            if (year.isEmpty()) {
+                redirect(response, ERROR_REDIR_URL, "Year is not specified.");
             }
 
-
-
-            if (deadline.isEmpty()) {
-                redirect(response, errorUrl, "Deadline is not specified.");
+            month = getValidParameter(request, ORDER_DEADLINE_MONTH_PARAM);
+            if (month.isEmpty()) {
+                redirect(response, ERROR_REDIR_URL, "Month is not specified.");
             }
-            o.setDeadline(df.parse(deadline));
+
+            day = getValidParameter(request, ORDER_DEADLINE_DAY_PARAM);
+            if (day.isEmpty()) {
+                redirect(response, ERROR_REDIR_URL, "Day is not specified.");
+            }
+
+            time = getValidParameter(request, ORDER_DEADLINE_TIME_PARAM);
+            if (time.isEmpty()) {
+                redirect(response, ERROR_REDIR_URL, "Time is not specified.");
+            }
+
+            System.out.println("deadline = " + month + "/" + day + "/" + year + " " + time);
+            
+            o.setDeadline(df.parse(month + "/" + day + "/" + year + " " + time));
 
             if (o.getType() == Order.ONLINE_TYPE) {
                 param = getValidParameter(request, ORDER_FROM_EMAIL_PARAM);

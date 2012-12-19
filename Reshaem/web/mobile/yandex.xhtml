@@ -1,0 +1,109 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+        <title>Reshaka.Ru</title>
+
+        <link type="text/css" rel="stylesheet" href="./css/s_mbw.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/s_r.css"/>
+        <script src="./js/jquery.min.js"></script>
+        <!--        <script src="./js/m_lite.min.js"></script>-->
+        <!--        <script src="phonegap.js"></script>-->
+        <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
+        <script type="text/javascript">
+                        
+            $(function(){
+                sustainSession();
+            })
+            var updateInterval = 10000;
+            function sustainSession() {
+                var p = $.get("void",function(d){
+                });
+                setTimeout(sustainSession, updateInterval);
+            }
+        </script>
+
+    </h:head>
+
+    <body id="vk" class="x_wide x_head nt hover volume_reg">
+        <div id="vk_wrap">
+
+            <div id="m">
+                <div id="mhead" class="mhead">
+                    <div class="btn home">
+                        <a href="#{request.contextPath}/mobile/billing.xhtml" class="b">
+                            <i > Назад  </i>
+                        </a>
+                    </div>
+
+                    <div class="btn back">
+                        <div class="b">
+                            <div class="title">
+                                <h1>Пополнение счета через Яндекс Деньги</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mcont" class="cont">
+                    <div class="cc" style="padding:5px;">
+                        <div class="text">
+                            Вы можете пополнить счет через Яндекс Деньги двумя способами:
+                            <br/><br/>
+                            <span style="font-weight: bold;">
+                                Способ 1:
+                            </span> <br/><br/>
+                            Перевод с Вашего кошелька Яндекс Денег:
+                        </div>
+                    </div>
+
+                    <div class="pcont login">
+                        <div class="cont">
+
+                            <h:form >
+                                <dl>
+                                    <dt>Сумма (руб.):</dt>
+                                    <dd class="iwrap">
+                                        <h:inputText value="#{replenishmentBean.money}" class="text" id="yainput">
+                                            <p:ajax event="keyup" update="qwerty"  />
+                                        </h:inputText>
+                                        <h:outputLink target="blank_" id="qwerty" class="btn" value="#{replenishmentBean.yandexLink}" style="color: purple; margin-left: 20px;" >
+                                            <!--                                            <span class="replenish_button" style=" color: black; "></span>-->
+                                            <input type="submit" class="btn" value="Пополнить"  />
+                                        </h:outputLink>
+                                    </dd>
+                                </dl>
+                            </h:form>
+
+                        </div>
+                    </div>
+
+                    <div class="cc" style="padding:5px; margin-top: 20px;">
+                        <div class="text">
+                            <span style="font-weight: bold;">
+                                Способ 2:
+                            </span> <br/> <br/>
+                            <span style="font-weight: bold;">Шаг 1:</span> Положить деньги на наш кошелек Яндекс Денег <span style="font-weight: bold;">410011373789086</span> через терминал или банковским переводом (учитывая комиссию терминала/банка (0-5%) и комиссию Яндекс Денег за ввод (0-2%). Сохранить чек об оплате. 
+                            <br/><br/>
+                            <span style="font-weight: bold;">Шаг 2:</span>
+                            Оформить <a target="_blank" href="#{request.contextPath}/mobile/other.xhtml" style="color: #FF7113;" > заявку на ввод средств </a> . В заявке указать сумму перечисления и прикрепить файл - скан квитанции об оплате, указать тип - "Яндекс Деньги (через терминал)". Пополнение баланса этим способом может происходить с задержкой до <span style="font-weight: bold;">24</span> часов. 
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div id="mfoot" class="mfoot"><ul class="main_menu">
+                        <li><a href="#" >Настройки</a></li>
+                        <li><a href="#">Полная версия</a></li>
+                        <li><a href="#">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+</html>

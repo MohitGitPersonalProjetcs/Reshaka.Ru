@@ -530,4 +530,34 @@ public class MoneyManager implements MoneyManagerLocal {
         List<ExternalMoneyTransaction> l = getFreshWebmoneyOperations();
 
     }
+
+    @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    public String getMobileLinkForYandexPayment(Long userId, double money) {
+        money=   Math.ceil(100* money*1.005) / 100.0;
+        String DIRECT_PAYMENT_URI =
+                "https://m.money.yandex.ru/direct-payment.xml?"
+                + "isDirectPaymentFormSubmit=true&"
+                + "ErrorTemplate=ym2xmlerror&"
+                + "ShowCaseID=7&"
+                + "SuccessTemplate=ym2xmlsuccess&"
+                + "isViaWeb=true&js=0&"
+                + "p2payment=1&"
+                + "rnd=595587893&"
+                + "scid=767&"
+                + "secureparam5=5&"
+                + "shn=ShowcaseName&"
+                + "showcase_comm=0.5%25&"
+                + "suspendedPaymentsAllowed=true&"
+                + "targetcurrency=643&";
+        List<NameValuePair> params = new ArrayList<>();
+        String title = "Пополнение счета. ID = [" + Long.toString(userId) + "]";
+        String dest = confMan.getString("YandexPurse");
+        params.add(new BasicNameValuePair("FormComment", title));
+        params.add(new BasicNameValuePair("destination", title));
+        params.add(new BasicNameValuePair("short-dest", "пополнение счета в системе Reshaka.Ru"));
+        params.add(new BasicNameValuePair("receiver", dest));
+        params.add(new BasicNameValuePair("sum", Double.toString(money)));
+        return DIRECT_PAYMENT_URI + URLEncodedUtils.format(params, "UTF-8");
+    }
 }

@@ -1,0 +1,327 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+        <base href="."/>
+        <title>Reshaka.Ru</title>
+
+        <link type="text/css" rel="stylesheet" href="./css/s_mbw.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/s_r.css"/>
+        <script src="./js/jquery.min.js"></script>
+        <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
+
+        <script type="text/javascript">
+                        
+            function deleteRedirect(){
+                window.location = "#{request.contextPath}/mobile/orders.xhtml";
+            }
+                        
+            $(function(){
+                sustainSession();
+            })
+            var updateInterval = 10000;
+            function sustainSession() {
+                var p = $.get("void",function(d){
+                });
+                setTimeout(sustainSession, updateInterval);
+            }
+        </script>
+
+    </h:head>
+
+    <body id="vk" class="x_wide x_head nt hover volume_reg">
+        <div id="vk_wrap">
+
+            <div id="m">
+                <div id="mhead" class="mhead">
+                    <div class="btn home">
+                        <a href="#{request.contextPath}/mobile/orders.xhtml" class="b">
+                            <i > Назад  </i>
+                        </a>
+                    </div>
+
+                    <div class="btn back">
+                        <div class="b">
+                            <div class="title">
+                                <h1>Заказ №#{mobileOrderViewBean.orderId}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="mcont" class="mcont">
+                    <div class="pcont feed">
+                        <div class="upanel">
+
+
+                            <div id="wall-27315475_16976" class="post">
+                                <!--                                <a class="al_p27315475" href="/v_univere">
+                                                                    <img src="http://cs419425.userapi.com/g27315475/e_34a5ce4f.jpg" class="u _p27315475" align="left"/>
+                                                                </a>-->
+                                <div class="cont" style="margin-left: 2px;">
+                                    <div class="ch">
+                                        <div>
+                                            <h:panelGroup class="author" rendered="#{mobileOrderViewBean.order != null}" >
+                                                #{mobileOrderViewBean.order.subject.subjectName}
+                                            </h:panelGroup> 
+                                        </div>
+                                    </div>
+                                    <div class="cc">
+                                        <h:panelGroup rendered="#{mobileOrderViewBean.order != null}">
+                                            <div class="info">
+                                                <div class="myfirst">
+                                                    <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                        Тип:
+                                                    </a>
+                                                    <span class="like">
+                                                        <b>
+                                                            <c:if test="#{mobileOrderViewBean.order.type == 0}">
+                                                                Оффлайн заказ
+                                                            </c:if>
+                                                            <c:if test="#{mobileOrderViewBean.order.type == 1}">
+                                                                Онлайн-помощь
+                                                            </c:if>
+
+                                                        </b>
+                                                    </span>
+                                                </div>
+
+                                                <div class="myfirst">
+                                                    <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                        Статус: 
+                                                    </a>
+                                                    <span class="like">
+                                                        <b>
+                                                            #{orderUtilsBean.russianOrderStatus(param['id'])}
+                                                        </b>
+                                                    </span>
+                                                </div>
+
+                                                <div class="myfirst">
+                                                    <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                        Размещено: 
+                                                    </a>
+                                                    <span class="like">
+                                                        <b>
+                                                            #{mobileOrderViewBean.order.hireDateString}
+                                                        </b>
+                                                    </span>
+                                                </div>
+
+
+                                                <c:if test="#{mobileOrderViewBean.order.type == 0}">
+                                                    <div class="myfirst">
+                                                        <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                            Срок: 
+                                                        </a>
+                                                        <span class="like">
+                                                            <b>
+                                                                #{mobileOrderViewBean.order.deadlineString}
+                                                            </b>
+                                                        </span>
+                                                    </div>
+                                                </c:if>
+                                                <c:if test="#{mobileOrderViewBean.order.type == 1}">
+
+                                                    <div class="myfirst">
+                                                        <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                            Начало: 
+                                                        </a>
+                                                        <span class="like">
+                                                            <b>
+                                                                #{mobileOrderViewBean.order.deadlineString}
+                                                            </b>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="myfirst">
+                                                        <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                            Длительность: 
+                                                        </a>
+                                                        <span class="like">
+                                                            <b>
+                                                                #{mobileOrderViewBean.order.duration} мин.
+                                                            </b>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="myfirst">
+                                                        <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                            Email: 
+                                                        </a>
+                                                        <span class="like">
+                                                            <b>
+                                                                #{mobileOrderViewBean.order.fromEmail}
+                                                            </b>
+                                                        </span>
+                                                    </div>
+                                                </c:if>
+                                                <div class="myfirst">
+                                                    <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                        <c:if test="#{mobileOrderViewBean.order.type == 0}">
+                                                            Условие
+                                                        </c:if>
+                                                        <c:if test="#{mobileOrderViewBean.order.type == 1}">
+                                                            Примеры
+                                                        </c:if>
+                                                    </a>
+                                                    <span class="like">
+                                                        <b>
+                                                            <h:outputLink value="/download.xhtml" target="_blank" >
+                                                                <h:outputText value="Скачать" style="color: blue;" />
+                                                                <f:param name="id" value="#{mobileOrderViewBean.order.conditionId}" />
+                                                            </h:outputLink>
+                                                        </b>
+                                                    </span>
+                                                </div>
+
+
+                                                <c:if test="#{mobileOrderViewBean.order.type == 0}">
+                                                    <div class="myfirst">
+                                                        <a class="date al_post" style="width:100px; display: inline-block;" href="#">
+                                                            Решение: 
+                                                        </a>
+                                                        <span class="like">
+                                                            <b>
+
+                                                                <h:outputLabel rendered="#{(mobileOrderViewBean.order.solutionId != null) and (mobileOrderViewBean.order.status eq 5 or mobileOrderViewBean.order.status eq 7) and mobileOrderViewBean.order.type eq 0}">
+                                                                    <h:outputLink value="/download.xhtml" rendered="#{(mobileOrderViewBean.order.employer.id == webSession.id) or (mobileOrderViewBean.order.employee.id == webSession.id ) }" >
+                                                                        <h:outputText value="Скачать" style="color: blue;" />
+                                                                        <f:param name="id" value="#{mobileOrderViewBean.order.solutionId}" />
+                                                                    </h:outputLink>
+                                                                </h:outputLabel>
+                                                                <h:outputLabel class="grid_value" style="width: 150px;" rendered="#{!((mobileOrderViewBean.order.solutionId != null) and (mobileOrderViewBean.order.status eq 5 or mobileOrderViewBean.order.status eq 7) and mobileOrderViewBean.order.type eq 0)}">
+                                                                    Недоступно
+                                                                </h:outputLabel>
+
+
+                                                            </b>
+                                                        </span>
+                                                    </div>
+                                                </c:if>
+
+
+
+                                            </div>
+
+                                            <hr/>
+
+                                            <span class="author">Операции</span>
+                                            <div class="info">
+                                                <!-- for new -->
+                                                <h:panelGroup rendered="#{ ( mobileOrderViewBean.order.status == 0) or (mobileOrderViewBean.order.status==10)}">
+                                                    <h:form style="text-align:  right; margin-top: 15px;">
+
+                                                        <p:commandButton process="@this" value="Удалить заказ" style="color: red;" actionListener="#{orderUtilsBean.deleteOrder(mobileOrderViewBean.order.id)}" oncomplete="deleteRedirect()" />
+                                                    </h:form>
+                                                </h:panelGroup>
+                                                <!-- end for new -->
+
+                                                <!--  for rated -->
+                                                <h:panelGroup rendered="#{ ( mobileOrderViewBean.order.status == 1) or (mobileOrderViewBean.order.status==11)}" >
+                                                    Ваш заказ оценили. Вы можете выбрать решающего.
+                                                    <br/> <br/>
+                                                    <h:panelGroup id="rated_span1" style="">
+                                                        <div style="display: table-row; text-align: left;" >
+                                                            <table>
+                                                                <tr><td>
+                                                                        <span style="">
+                                                                            <table style=" margin-left: 5px;" class="wikiTable">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th scope="col">
+                                                                                            Решака
+                                                                                        </th>
+                                                                                        <th scope="col">
+                                                                                            Предложенная стоимость
+                                                                                        </th>
+                                                                                        <th scope="col">
+
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <c:forEach items="#{orderUtilsBean.offersByOrderId(mobileOrderViewBean.order.id)}" var="off">
+                                                                                    <tr >
+                                                                                        <td>
+                                                                                            <h:link outcome="#{request.contextPath}/profile.xhtml" target="_blank" value="#{orderUtilsBean.loginById(off.userId)}">
+                                                                                                <f:param name="id" value="#{off.userId}"/>
+                                                                                            </h:link>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            #{off.price}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <h:form>
+                                                                                                <h:panelGroup>
+                                                                                                    <p:commandLink  actionListener="#{dealBean.startDeal(param['id'], off.id)}" 
+                                                                                                                    id="plus_o" value="Выбрать"
+                                                                                                                    disabled="#{!dealBean.canStartDeal(webSession.id, off.id)}" 
+                                                                                                                    oncomplete="deleteRedirect()"
+                                                                                                                    rendered="#{mobileOrderViewBean.order.type == 0}"
+                                                                                                                    />
+
+                                                                                                    <p:commandLink actionListener="#{dealBean.startOnlineDeal(param['id'], off.id)}" 
+                                                                                                                   id="plus_o1" value="Выбрать"
+                                                                                                                   disabled="#{!dealBean.canStartOnlineDeal(webSession.id, off.id)}" 
+                                                                                                                   oncomplete="deleteRedirect()"
+                                                                                                                   rendered="#{mobileOrderViewBean.order.type == 1}"
+                                                                                                                   />
+                                                                                                </h:panelGroup>
+                                                                                            </h:form>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </c:forEach>
+                                                                            </table>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>    
+                                                    </h:panelGroup>
+                                                </h:panelGroup>
+
+
+                                                <!--end for rated-->
+                                            </div>
+
+                                        </h:panelGroup>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mfoot" class="mfoot"><ul class="main_menu">
+                        <li><a href="http://m.vk.com/settings" >Настройки</a></li>
+                        <li><a href="http://reshaka.ru">Полная версия</a></li>
+                        <li><a href="https://login.vk.com/?act=logout_mobile&amp;hash=8f79d6524916078bf7&amp;_origin=http%3A%2F%2Fm.vk.com">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="sbi_camera_button" class="sbi_search" style="left: 0px; top: 0px; position: absolute; width: 29px; height: 27px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; border-image: initial; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; z-index: 2147483647; display: none; ">
+
+        </div>
+    </body>
+</html>

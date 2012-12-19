@@ -233,6 +233,7 @@ input.text, input.search, textarea, input.big_text {
 }
 
 .pedit_label {
+    width: 100px;
     color: #555;
     /*    width: 160px;*/
     display: inline-block;
@@ -260,9 +261,11 @@ input.text, input.search, textarea, input.big_text {
     font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
     font-size: 11px;
     padding: 0 8px 0 0;
+    width:100px;
 }
 
 .grid_value {
+    width: 150px;
     color: black;
     /*    width: 160px;*/
     display: inline-block;

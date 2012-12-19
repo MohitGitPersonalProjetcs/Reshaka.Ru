@@ -33,6 +33,12 @@
         <servlet-name>VKAuthorisation</servlet-name>
         <servlet-class>ru.reshaka.vk.web.servlets.VKAuthorisation</servlet-class>
     </servlet>
+    
+    <servlet>
+        <servlet-name>ReplenismentRequestServlet</servlet-name>
+        <servlet-class>ru.reshaka.web.servlets.ReplenismentRequestServlet</servlet-class>
+    </servlet>
+    
     <servlet>
         <servlet-name>dummyLogin</servlet-name>
         <servlet-class>servlets.dummyLogin</servlet-class>
@@ -53,6 +59,12 @@
         <servlet-name>redirected</servlet-name>
         <url-pattern>/redirected</url-pattern>
     </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>ReplenismentRequestServlet</servlet-name>
+        <url-pattern>/replservl</url-pattern>
+    </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>VKAuthorisation</servlet-name>
         <url-pattern>/VKAuthorisation</url-pattern>
@@ -112,6 +124,12 @@
         <filter-name>MultipartRequestFilter</filter-name>
         <url-pattern>/orderentry</url-pattern>
     </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>MultipartRequestFilter</filter-name>
+        <url-pattern>/replservl</url-pattern>
+    </filter-mapping>
+    
     <error-page>
         <error-code>404</error-code>
         <location>/error404.xhtml</location>

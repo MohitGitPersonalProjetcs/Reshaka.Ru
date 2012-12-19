@@ -1,0 +1,140 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+        <title>Reshaka.Ru</title>
+
+        <link type="text/css" rel="stylesheet" href="./css/s_mbw.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/s_r.css"/>
+        <script src="./js/jquery.min.js"></script>
+        <!--        <script src="phonegap.js"></script>-->
+        <script type="text/javascript" >
+            function notification(flag){
+                if (flag == "loggedIn"){
+                    document.location = "#{request.contextPath}/mobile/index.xhtml";
+                }
+                if (flag == "incorrectPassword"){
+                    return "Неверный пароль. Попробуйте еще раз.";
+                }
+                    
+                if (flag == "userDoesNotExist"){
+                    return "Пользователь с данным email не существует.";
+                }
+                    
+                if (flag == "invalidData"){
+                    return "Вы ввели не корректные данные. Попробуйте еще раз.";
+                }
+                    
+                if (flag == "error"){
+                    return "Данные были переданы на сервер в некорректном формате.";
+                }
+                
+                return "";
+            }
+                
+            function check(flag){
+                var notif = notification(flag);
+            
+                if (notif != "") {
+                    $(".warn").css("display","block");
+                } else{
+                    return null;
+                }
+                    
+                $("#warn_header").html("Ошибка!");
+                $("#warn_body").html(notif);
+            }
+                
+                           
+            function logIn(){
+                //                check($("#email_input").attr("value"));
+                $.post("#{request.contextPath}/authorisation" ,{email : $("#email_input").attr("value"), password : $("#password_input").attr("value")} , function(data){
+                    check(data);
+                });
+            }
+            
+
+        </script>
+
+        <f:event listener="#{mobileLoginBean.loginRedirect(webSession.signedIn)}" type="preRenderView" />
+
+    </h:head>
+
+    <h:body id="vk" class="x_wide x_head nt hover volume_reg">
+        <div id="vk_wrap">
+
+            <div id="m">
+                <div id="mhead" class="mhead">
+
+                    <div class="btn back">
+                        <div class="b">
+                            <div class="title">
+                                <h1>Reshaka.Ru - помощь в решении задач<br/>  студентам и школьникам</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mcont" class="mcont">
+
+
+                    <div class="pcont login">
+                        <div class="panel prof_panel">
+                            <div>Вход в систему</div>
+                        </div>
+
+                        <div class="warn" style="display: none;">
+                            <b id="warn_header">Не удается войти.</b>
+                            <br/>
+                            <span id="warn_body">Пожалуйста, проверьте правильность введенных данных. </span>
+                        </div>
+
+                        <div class="cont">
+                            <form action="javascript: void();">
+
+                                <dl>
+                                    <dt>Email:</dt>
+                                    <dd class="iwrap">
+                                        <input type="text" id="email_input" name="email" class="text"/>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>Пароль:</dt>
+                                    <dd class="iwrap">
+                                        <input type="password" id="password_input" name="pass" class="text"/>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dd>
+                                        <div class="near_box">
+                                            <input type="hidden" name="redirect" value="#{request.contextPath}/mobile/login.xhtml" />
+                                            <input class="btn" onclick="logIn();" type="submit" value="Войти" />
+                                            <!--                                            <div class="near_btn"><a href="/login?act=restore" >Забыли пароль?</a></div>-->
+                                        </div>
+                                    </dd>
+                                </dl>
+
+                            </form>
+
+                            <dl>
+                                <dd><a class="join_btn" href="/join">Зарегистрироваться</a></dd>
+                            </dl>
+                        </div>
+                    </div></div>
+
+
+                <div id="mfoot" class="mfoot"><ul class="main_menu">
+                        <!--                        <li><a href="#" >Настройки</a></li>-->
+                        <li><a href="#">Полная версия</a></li>
+                        <!--                        <li><a href="#">Выход</a></li>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="sbi_camera_button" class="sbi_search" style="left: 0px; top: 0px; position: absolute; width: 29px; height: 27px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; border-image: initial; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; z-index: 2147483647; display: none; ">
+
+        </div>
+    </h:body>
+</html>

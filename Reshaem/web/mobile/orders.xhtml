@@ -1,0 +1,160 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+        <base href="."/>
+        <title>Reshaka.Ru</title>
+
+        <link type="text/css" rel="stylesheet" href="./css/s_mbw.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/s_r.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/status.css"/>
+        <script src="./js/jquery.min.js"></script>
+        <script type="text/javascript" >
+            
+            $(function(){
+                sustainSession();
+            })
+            var updateInterval = 10000;
+            function sustainSession() {
+                var p = $.get("void",function(d){
+                });
+                setTimeout(sustainSession, updateInterval);
+            }
+            
+            function myClick(id){
+                window.location = "#{request.contextPath}/mobile/order.xhtml?id=" + id;
+            }
+            
+        </script>
+
+        <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
+    </h:head>
+
+    <body id="vk" class="x_wide x_head nt hover volume_reg">
+        <div id="vk_wrap">
+
+            <div id="m">
+                <div id="mhead" class="mhead">
+                    <div class="btn home">
+                        <a href="#{request.contextPath}/mobile/index.xhtml" class="b">
+                            <i > Назад  </i>
+                        </a>
+                    </div>
+
+                    <div class="btn back">
+                        <div class="b">
+                            <div class="title">
+                                <h1>Мои заказы</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="mcont" class="mcont">
+                    <div class="pcont friends">
+                        <div class="upanel">
+                            <div class="items">
+
+                                <c:forEach items="#{showOrdersBeanVK.allOrders}" var="order">
+
+                                    <div class="friend #{orderUtilsBean.orderStatus(order.id)}" style="cursor: pointer;" onclick=" myClick(#{order.id});">
+                                        <div class="i">
+                                            <a class="" href="#">
+                                                <img src="http://cs307101.userapi.com/u29318770/e_3ff63ed9.jpg" class=" _u29318770" align="left"/>
+                                            </a>
+                                        </div>
+                                        <div class="cont">
+                                            <span class="user" >
+                                                #{order.subject.subjectName}
+                                            </span>
+                                            <b class="lvi">
+                                                статус: #{orderUtilsBean.russianOrderStatus(order.id)}
+                                            </b>
+                                            <dl class="first">
+                                                <dt>Тип: </dt>
+                                                <dd>
+                                                    <c:if test="#{order.type == 0}">
+                                                        Оффлайн заказ
+                                                    </c:if>
+                                                    <c:if test="#{order.type == 1}">
+                                                        Онлайн-помощь
+                                                    </c:if>
+                                                </dd>
+                                            </dl>
+
+
+                                            <dl class="first">
+                                                <dt>Размещено:</dt>
+                                                <dd>
+                                                    #{order.hireDateString}
+                                                </dd>
+                                            </dl>
+
+                                            <dl class="first">
+                                                <c:if test="#{order.type == 0}">
+                                                    <dt>Срок:</dt>
+                                                    <dd>
+                                                        #{order.deadlineString}
+                                                    </dd>
+                                                </c:if>
+                                                <c:if test="#{order.type == 1}">
+                                                    <dt>Начало:</dt>
+                                                    <dd>
+                                                        #{order.deadlineString}
+                                                    </dd>
+                                                </c:if>
+                                            </dl>
+
+                                            <c:if test="#{order.type == 1}" >
+                                                <dl class="first">
+                                                    <dt>Длительность: </dt>
+                                                    <dd>
+                                                        #{order.duration} мин.
+                                                    </dd>
+                                                </dl>
+                                            </c:if>
+
+
+                                            <!--                                            <div class="links">
+                                                                                            <h:link outcome="#{request.contextPath}/mobile/order.xhtml" value="Подробнее.." >
+                                                                                                <f:param name="id" value="#{order.id}"/>
+                                                                                            </h:link>
+                                                                                        </div>-->
+                                        </div>
+
+                                    </div>
+
+
+
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <h:panelGroup>
+                            <h:form style="margin-right: 20px;">
+                                <h:commandButton  value="← назад" rendered="#{showOrdersBeanVK.page > 0}" class="vkNextButton" actionListener="#{showOrdersBeanVK.prevPage()}" />
+                                <h:commandButton value="ещё →" rendered="#{showOrdersBeanVK.shouldShowNextButton()}" class="vkNextButton" actionListener="#{showOrdersBeanVK.nextPage()}" />
+                            </h:form>
+                        </h:panelGroup>
+                    </div>
+
+                </div>
+
+                <div id="mfoot" class="mfoot"><ul class="main_menu">
+                        <li><a href="http://m.vk.com/settings" >Настройки</a></li>
+                        <li><a href="http://reshaka.ru">Полная версия</a></li>
+                        <li><a href="https://login.vk.com/?act=logout_mobile&amp;hash=8f79d6524916078bf7&amp;_origin=http%3A%2F%2Fm.vk.com">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="sbi_camera_button" class="sbi_search" style="left: 0px; top: 0px; position: absolute; width: 29px; height: 27px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; border-image: initial; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; z-index: 2147483647; display: none; ">
+
+        </div>
+    </body>
+</html>

@@ -91,6 +91,7 @@ public class OrderUtilsBean {
     }
 
     public void deleteOrder(Long orderId) {
+        System.out.println("deleting order: orderId = " + orderId);
         orderMan.deleteOrder(orderId);
     }
 

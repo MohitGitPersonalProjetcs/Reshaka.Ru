@@ -1,0 +1,117 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+        <title>Reshaka.Ru</title>
+
+        <link type="text/css" rel="stylesheet" href="./css/s_mbw.css"/>
+        <link type="text/css" rel="stylesheet" media="only screen" href="./css/s_r.css"/>
+        <script src="./js/jquery.min.js"></script>
+        <!--        <script src="./js/m_lite.min.js"></script>-->
+        <!--        <script src="phonegap.js"></script>-->
+        <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
+        <script type="text/javascript">
+                        
+            $(function(){
+                sustainSession();
+            })
+            var updateInterval = 10000;
+            function sustainSession() {
+                var p = $.get("void",function(d){
+                });
+                setTimeout(sustainSession, updateInterval);
+            }
+        </script>
+
+    </h:head>
+
+    <body id="vk" class="x_wide x_head nt hover volume_reg">
+        <div id="vk_wrap">
+
+            <div id="m">
+                <div id="mhead" class="mhead">
+                    <div class="btn home">
+                        <a href="#{request.contextPath}/mobile/billing.xhtml" class="b">
+                            <i > Назад  </i>
+                        </a>
+                    </div>
+
+                    <div class="btn back">
+                        <div class="b">
+                            <div class="title">
+                                <h1>Пополнение счета (переводы)</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mcont" class="mcont">
+
+
+                    <div class="pcont login">
+
+                        <div class="cont">
+                            <form action="#{request.contextPath}/replservl" accept-charset="UTF-8" method="post" enctype="multipart/form-data">
+
+                                <dl>
+                                    <dt>Переведено (руб.):</dt>
+                                    <dd class="iwrap">
+                                        <input type="text" class="text" name="money" placeholder="Например: 300" />
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>Тип:</dt>
+                                    <dd class="iwrap">
+                                        <select name="type">
+                                            <option value="mobile" >Оплата мобильного</option>
+                                            <option value="bank" >Банковский перевод</option>
+                                            <option value="yandex-money" >Яндекс Деньги (через терминал)</option>
+                                            <option value="webmoney" >Webmoney (через терминал)</option>
+                                            <option value="other" >Другое</option>
+                                        </select>
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>Скан или фото квитанции: </dt>
+                                    <dd class="iwrap">
+                                        <input type="file" name ="attachment" title="Нужно отправить квитанцию с информацией об оплате" />
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>Дополнительно: </dt>
+                                    <dd class="iwrap">
+                                        <textarea name="text" rows="4"></textarea>
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dd>
+                                        <div class="near_box">
+                                            <input type="hidden" name="redir" value="#{request.contextPath}/mobile/index.xhtml" />
+                                            <input class="btn" type="submit" value="Отправить" />
+                                        </div>
+                                    </dd>
+                                </dl>
+
+                            </form>
+
+                        </div>
+                    </div></div>
+
+
+                <div id="mfoot" class="mfoot"><ul class="main_menu">
+                        <li><a href="#" >Настройки</a></li>
+                        <li><a href="#">Полная версия</a></li>
+                        <li><a href="#">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+</html>

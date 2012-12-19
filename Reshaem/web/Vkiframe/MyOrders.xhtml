@@ -56,7 +56,6 @@
                                 <td>
                                     <span class="#{orderUtilsBean.orderStatus(order.id)}">
                                         #{orderUtilsBean.russianOrderStatus(order.id)}
-
                                     </span>
                                 </td>
 
@@ -85,14 +84,14 @@
                                 <td colspan="5" style="padding: 0px;">
                                     <table class="order_info" style="width: 100%; text-align: left;">
                                         <tr>
-                                            <td style="width: 350px;">
+                                            <td style="width: 260px;">
                                                 <div class="grid_title" style="padding-bottom: 3px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #DEE4E8;">Информация</div>
                                                 <h:panelGrid columns="2" rowClasses="orderDescriptionTable" >
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Номер заказа:" />
-                                                    <h:outputLabel class="grid_value" value="#{order.id}" style="width: 200px;" />
+                                                    <h:outputLabel class="grid_label"  value="Номер заказа:" />
+                                                    <h:outputLabel class="grid_value" value="#{order.id}" />
 
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Тип заказа:" />
-                                                    <h:outputLabel class="grid_value" style="width: 200px;">
+                                                    <h:outputLabel class="grid_label"  value="Тип заказа:" />
+                                                    <h:outputLabel class="grid_value" >
                                                         <c:if test="#{order.type == 0}">
                                                             Оффлайн заказ
                                                         </c:if>
@@ -101,41 +100,51 @@
                                                         </c:if>
                                                     </h:outputLabel>
 
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Статус:" />
-                                                    <h:outputLabel class="grid_value" value="#{orderUtilsBean.russianOrderStatus(order.id)}" style="width: 200px;" />
+                                                    <h:outputLabel class="grid_label"  value="Статус:" />
+                                                    <h:outputLabel class="grid_value" value="#{orderUtilsBean.russianOrderStatus(order.id)}"  />
 
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Предмет:" />
-                                                    <h:outputLabel class="grid_value" value="#{order.subject.subjectName}" style="width: 200px;" />
+                                                    <h:outputLabel class="grid_label"  value="Предмет:" />
+                                                    <h:outputLabel class="grid_value" value="#{order.subject.subjectName}" />
 
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Дата размещения:" />
-                                                    <h:outputLabel class="grid_value" value="#{order.hireDateString}" style="width: 200px;" />
+                                                    <h:outputLabel class="grid_label"  value="Дата размещения:" />
+                                                    <h:outputLabel class="grid_value" value="#{order.hireDateString}"  />
 
                                                     <c:if test="#{order.type == 0}">
-                                                        <h:outputLabel class="grid_label" style="width: 120px;" value="Срок:" />
-                                                        <h:outputLabel class="grid_value" value="#{order.deadlineString}" style="width: 200px;" />
+                                                        <h:outputLabel class="grid_label"  value="Срок:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.deadlineString}"  />
                                                     </c:if>
                                                     <c:if test="#{order.type == 1}">
-                                                        <h:outputLabel class="grid_label" style="width: 120px;" value="Длительность:" />
-                                                        <h:outputLabel class="grid_value" value="#{order.duration}" style="width: 200px;" />
 
-                                                        <h:outputLabel class="grid_label" style="width: 120px;" value="Email:" />
-                                                        <h:outputLabel class="grid_value" value="#{order.fromEmail}" style="width: 200px;" />
+                                                        <h:outputLabel class="grid_label"  value="Начало:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.deadlineString}"  />
+
+                                                        <h:outputLabel class="grid_label" value="Длительность:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.duration}"  />
+
+                                                        <h:outputLabel class="grid_label" value="Email:" />
+                                                        <h:outputLabel class="grid_value" value="#{order.fromEmail}"  />
+                                                    </c:if>
+                                                    
+                                                    <c:if test="#{order.type == 0}">
+                                                        <h:outputLabel class="grid_label"  value="Условие:"/>
+                                                    </c:if>
+                                                    <c:if test="#{order.type == 1}">
+                                                        <h:outputLabel class="grid_label"  value="Примеры:"/>
                                                     </c:if>
 
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Условие:"/>
-                                                    <h:outputLink value="/download.xhtml" class="grid_value" style="width: 200px;" >
+                                                    <h:outputLink value="/download.xhtml" class="grid_value"  >
                                                         <h:outputText value="Скачать" style="color: blue;" />
                                                         <f:param name="id" value="#{order.conditionId}" />
                                                     </h:outputLink>
 
-                                                    <h:outputLabel class="grid_label" style="width: 120px;" value="Решение:"/>
-                                                    <h:outputLabel class="grid_value" style="width: 200px;" rendered="#{(order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0}">
+                                                    <h:outputLabel class="grid_label"  value="Решение:"/>
+                                                    <h:outputLabel class="grid_value"  rendered="#{(order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0}">
                                                         <h:outputLink value="/download.xhtml" rendered="#{(order.employer.id == webSession.id) or (order.employee.id == webSession.id ) }" >
                                                             <h:outputText value="Скачать" style="color: blue;" />
                                                             <f:param name="id" value="#{order.solutionId}" />
                                                         </h:outputLink>
                                                     </h:outputLabel>
-                                                    <h:outputLabel class="grid_value" style="width: 200px;" rendered="#{!((order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0)}">
+                                                    <h:outputLabel class="grid_value" style="width: 150px;" rendered="#{!((order.solutionId != null) and (order.status eq 5 or order.status eq 7) and order.type eq 0)}">
                                                         Недоступно
                                                     </h:outputLabel>
                                                 </h:panelGrid>
@@ -154,7 +163,7 @@
 
                                                     <!--  for rated -->
                                                     <h:panelGroup rendered="#{ ( order.status == 1) or (order.status==11)}" >
-                                                       Ваш заказ оценили. Вы можете выбрать решающего.
+                                                        Ваш заказ оценили. Вы можете выбрать решающего.
                                                         <div id="spanid#{order.id}" style="display: table-row; border-collapse: collapse; text-align: justify; vertical-align: inherit; height: 150px;">
                                                             <h:panelGrid columns="2" >
                                                                 <h:outputLabel value="Предложили помощь: " class="grid_label" style="width: 100px; vertical-align: top;" />

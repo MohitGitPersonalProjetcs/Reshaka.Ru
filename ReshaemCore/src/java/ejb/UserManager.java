@@ -855,4 +855,5 @@ public class UserManager implements UserManagerLocal {
         List<User> users = q.getResultList();
         return users.get(0);
     }
+
 }
