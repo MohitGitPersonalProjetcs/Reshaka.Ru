@@ -285,10 +285,9 @@ public class openId extends HttpServlet {
         if (confMan == null) {
             System.out.println("confMan is null!!!!");
         }
-        //String ID = confMan.getOpenIdWidgetId();
         String ID = confMan.getString("openIdWidgetId");
-//        String secret = confMan.getOpenIdSecretKey();
         String secret = confMan.getString("openIdSecretKey");
+        
         String sig = getMD5(token + secret);
         String link = "http://loginza.ru/api/authinfo?token=" + token + "&id=" + ID + "&sig=" + sig;
 
