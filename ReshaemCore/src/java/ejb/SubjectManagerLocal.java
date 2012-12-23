@@ -20,7 +20,7 @@ public interface SubjectManagerLocal {
 
     List<Subject> getSubjectListByStringList(List<String> stringList);
 
-    public List<Subject> getAllSubjects();
+    public List<Subject> getAllSubjects(boolean withNotSelectedSubject);
 
     public Subject getSubjectBySubjectMap();
 

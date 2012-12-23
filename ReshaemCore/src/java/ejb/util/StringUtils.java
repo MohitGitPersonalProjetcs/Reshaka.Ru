@@ -103,6 +103,15 @@ public class StringUtils {
         return false;
     }
 
+    public static boolean isValidEmail(String email) {
+        if (email == null) {
+            return false;
+        }
+        Pattern p = Pattern.compile("[\\w\\.-]*[a-zA-Z0-9_]@[\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]");
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
     public static int getValidInt(String s) {
         if (!isValidInteger(s)) {
             return 0;

@@ -49,7 +49,7 @@ public class ShowSubjectsBean {
     
     
     public List<Subject> getAllSubjects() {
-        return subjMan.getAllSubjects();
+        return subjMan.getAllSubjects(true);
     }
 
     public LazyDataModel<Subject> getLazyModel() {

@@ -60,12 +60,12 @@ public class RequestBean implements Serializable {
     @PostConstruct
     private void init(){
         SubjectConverter2.sm = sm;
-        this.allSubjects.addAll(sm.getAllSubjects());
+        this.allSubjects.addAll(sm.getAllSubjects(false));
     }
 
     public List<Subject> getAllSubjects() {
 //        return allSubjects;
-        return sm.getAllSubjects();
+        return sm.getAllSubjects(false);
     }
 
     public String getAge() {

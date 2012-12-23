@@ -81,7 +81,7 @@ public class OrderManager implements OrderManagerLocal {
         // 
         Offer offe = null;
         for (Offer o : offers) {
-            if (o.getUserId() == employeeId) {
+            if (o.getUserId().equals(employeeId)) {
                 offe = o;
                 break;
             }
@@ -107,14 +107,16 @@ public class OrderManager implements OrderManagerLocal {
                     + "\n\nРешающий " + getLoginById(offe.getUserId()) + " готов выполнить заказ (ID=" + order.getId() + ")"
                     + " за " + offe.getPrice() + " р."
                     + "\n\n Необходимо внести предоплату в размере 50% от стоимости заказа, либо вы можете подождать пока заказ просмотрят другие решающие."
-                    + "\n\n\n C уважением, администрация Reshaka.RU";
+                    + "\n\n\n C уважением, администрация Reshaka.RU"
+                    + "\n\nПожалуйста, не отвечайте на данное сообщение. По всем вопросам обращаться к пользователю admin.";
         }
         if (order.getType() == Order.ONLINE_TYPE) {
             text = "Здравствуйте, " + order.getEmployer().getLogin() + " !"
                     + "\n\nРешающий " + getLoginById(offe.getUserId()) + " готов выполнить заказ на онлайн-помощь (ID=" + order.getId() + ")"
                     + " за " + offe.getPrice() + " р."
                     + "\n\n Необходимо внести предоплату (100% стоимости заказа), либо вы можете подождать пока заказ просмотрят другие решающие."
-                    + "\n\n\n C уважением, администрация Reshaka.RU";
+                    + "\n\n\n C уважением, администрация Reshaka.RU"
+                    + "\n\nПожалуйста, не отвечайте на данное сообщение. По всем вопросам обращаться к пользователю admin.";
         }
         mailMan.sendMail(order.getEmployer().getEmail(), theme, text);
         messMan.sendMessage(confMan.getMainAdminId(), order.getEmployer().getId(), theme, text, null);
