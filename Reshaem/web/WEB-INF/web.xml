@@ -8,6 +8,10 @@
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
     </context-param>
+    <context-param>
+        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+        <param-value>false</param-value>
+    </context-param>
     <listener>
         <description>A simple session listener</description>
         <listener-class>web.utils.SessionListener</listener-class>
@@ -139,6 +143,10 @@
     <filter-mapping>
         <filter-name>MultipartRequestFilter</filter-name>
         <url-pattern>/replservl</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>MultipartRequestFilter</filter-name>
+        <url-pattern>/upload</url-pattern>
     </filter-mapping>
     <error-page>
         <error-code>404</error-code>

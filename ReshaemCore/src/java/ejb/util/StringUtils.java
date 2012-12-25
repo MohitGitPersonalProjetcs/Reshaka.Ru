@@ -110,4 +110,12 @@ public class StringUtils {
             return Integer.parseInt(s);
         }
     }
+    
+    public static long getValidLong(String s) {
+        if (!isValidInteger(s)) {
+            return 0;
+        } else {
+            return Long.parseLong(s);
+        }
+    }
 }

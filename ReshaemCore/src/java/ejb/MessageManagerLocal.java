@@ -26,6 +26,8 @@ public interface MessageManagerLocal {
     
     Set<SimpleUser> getRecentUsers(long owner);
     
+    Set<SimpleUser> getRecentUsers(long owner, int limit); 
+    
     List<SimpleUser> filterUsersByLogin(long owner, String login);
 
     /**
@@ -53,5 +55,7 @@ public interface MessageManagerLocal {
      * @return number of unread messages
      */
     public int getUnreadMessagesNumber(long id, Long fromUserId);
+
+    public Message getLastMessage(Long id, Long id0);
     
 }

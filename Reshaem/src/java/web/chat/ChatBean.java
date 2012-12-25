@@ -1,9 +1,12 @@
 package web.chat;
 
 import data.SimpleUser;
+import ejb.AttachmentManagerLocal;
 import ejb.ConfigurationManagerLocal;
 import ejb.MessageManagerLocal;
 import ejb.UserManagerLocal;
+import ejb.util.StringUtils;
+import entity.Attachment;
 import entity.Message;
 import entity.User;
 import java.io.Serializable;
@@ -14,6 +17,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -23,6 +28,7 @@ import web.utils.SessionListener;
 
 /**
  * Backing bean for chat
+ * <p/>
  * @author Danon <Anton Danshin>
  */
 @ManagedBean
@@ -30,15 +36,24 @@ import web.utils.SessionListener;
 public class ChatBean implements Serializable {
 
     private static final Logger log = Logger.getLogger(ChatBean.class);
-    
-    @EJB
-    MessageManagerLocal mm;
+
+    public static final String DIALOGS_MODE = "DIALOGS";
+
+    public static final String MESSAGES_MODE = "MESSAGES";
 
     @EJB
-    ConfigurationManagerLocal cm;
+    private MessageManagerLocal mm;
 
     @EJB
-    UserManagerLocal um;
+    private ConfigurationManagerLocal cm;
+
+    @EJB
+    private UserManagerLocal um;
+
+    @EJB
+    private AttachmentManagerLocal am;
+
+    private String mode = DIALOGS_MODE;
 
     private User me;
 
@@ -61,15 +76,19 @@ public class ChatBean implements Serializable {
     private boolean displayUploadControl;
 
     private Long period = 1L;
-    
+
     private int unreadMessagesNumber;
+
+    private List<ChatDialog> dialogs;
+
+    private List<SimpleUser> peers;
 
     /**
      * Creates a new instance of ChatBean
      */
     public ChatBean() {
         fileUploadController = new FileUploadController();
-      
+
         FacesContext fctx = FacesContext.getCurrentInstance();
         User u = (User) SessionListener.getSessionAttribute("user", true);
         if (u == null) {
@@ -79,39 +98,28 @@ public class ChatBean implements Serializable {
         }
         me = u;
 
-        if (me.getUserGroup() == User.ADMIN) {
-            adminMode = true;
-        }
-
         Map<String, String> params = fctx.getExternalContext().getRequestParameterMap();
-        friendStr = params.get("friend");
-        
+        friendStr = StringUtils.getValidString(params.get("friend"));
+
         if (log.isTraceEnabled()) {
             log.trace("ChatBean(): friendStr = " + friendStr);
         }
 
-        String period = params.get("period");
-        if (period != null) {
-            try {
-                this.period = Long.parseLong(period);
-            } catch (NumberFormatException ex) {
-            }
-            if(this.period < 0)
-                this.period = 1L; // One day
-        } else this.period = 1L;
-        
-        lastUpdate = new Date(System.currentTimeMillis() - 1000*60*60*24*this.period);
+        this.period = (long) StringUtils.getValidInt(params.get("period"));
+        if (period == 0) {
+            period = 30L; // default period - 1 month
+        }
+        lastUpdate = new Date(System.currentTimeMillis() - 1000 * 60 * 60 * 24 * this.period);
+        dialogs = new ArrayList<>();
     }
 
     @PostConstruct
     private void init() {
         SimpleUserConverter.mm = this.mm;
-        if (friendStr == null) {
-            friendId = null;
-        } else if (friendStr.equalsIgnoreCase("support")) {
+        if (friendStr.equalsIgnoreCase("support")) {
             friendId = cm.getAdminId();
         } else if (friendStr.equalsIgnoreCase("_stream")) {
-            if (me.getUserGroup() != 1) {
+            if (me.getUserGroup() != User.ADMIN) {
                 friendId = null;
                 friend = new SimpleUser();
             } else {
@@ -119,19 +127,160 @@ public class ChatBean implements Serializable {
             }
         } else {
             try {
-                friendId = Long.parseLong(friendStr);
+                friendId = StringUtils.getValidLong(friendStr);
+                if (friendId == 0) {
+                    friendId = null;
+                    friend = new SimpleUser();
+                }
+
             } catch (Exception ex) {
                 friendId = null;
-                friend = null;
+                friend = new SimpleUser();
             }
         }
         try {
-            friend = new SimpleUser(um.getUserById(friendId));
-            friend.setOnline(SessionListener.isOnline(friendId));
+            if (friendId != null) {
+                friend = new SimpleUser(um.getUserById(friendId));
+                friend.setOnline(SessionListener.isOnline(friendId));
+            }
         } catch (Exception ex) {
             friend = new SimpleUser();
             friendId = null;
         }
+        if (friendId != null && friendId != 0) {
+            mode = MESSAGES_MODE;
+        }
+        if (DIALOGS_MODE.equalsIgnoreCase(mode)) {
+            loadDialogs();
+        }
+        parsePeers();
+    }
+
+    private void parsePeers() {
+        peers = new ArrayList<>();
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        String peersParam = StringUtils.getValidString(request.getParameter("peers"), StringUtils.getValidString(SessionListener.getSessionAttribute(session,"chat_peers")));
+        String[] p = peersParam.split("\\_");
+        for (String peer : p) {
+            long peerId = StringUtils.getValidLong(peer);
+            if (peerId == 0) {
+                continue;
+            }
+            User u = um.getUserById(peerId);
+            if (u == null) {
+                continue;
+            }
+            SimpleUser su = new SimpleUser(u);
+            su.setOnline(SessionListener.isOnline(peerId));
+            su.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), peerId));
+            if (!peers.contains(su)) {
+                peers.add(su);
+            }
+        }
+        while(peers.size() > 10) {
+            peers.remove(peers.size()-1);
+        }
+        if (friendId != null && friendId != 0 && !peers.contains(friend)) {
+            peers.add(friend);
+            friend.setOnline(SessionListener.isOnline(friendId));
+            friend.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), friendId));
+        }
+        SessionListener.setSessionAttribute(session, "chat_peers", getValidPeersParam()+"_"+StringUtils.getValidString(SessionListener.getSessionAttribute(session, "chat_peers")));
+    }
+
+    public String getValidPeersParam() {
+        String result = "";
+        for (SimpleUser su : peers) {
+            result += su.getId() + "_";
+        }
+        if (result.isEmpty()) {
+            return "";
+        } else {
+            return result.substring(0, result.length() - 1);
+        }
+    }
+
+    public String getValidPeersParamAndRemove(String peer) {
+        String result = "";
+        Long toRemove = StringUtils.getValidLong(peer);
+        for (SimpleUser su : peers) {
+            if (!toRemove.equals(su.getId())) {
+                result += su.getId() + "_";
+            }
+        }
+        if (result.isEmpty()) {
+            return "";
+        } else {
+            return result.substring(0, result.length() - 1);
+        }
+    }
+
+    private void loadDialogs() {
+        dialogs.clear();
+        Set<SimpleUser> users = mm.getRecentUsers(me.getId());
+        SimpleUser me = new SimpleUser(this.me);
+        me.setOnline(true);
+        for (SimpleUser su : users) {
+            Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
+            ChatDialog cd = new ChatDialog();
+            cd.setLastMessage(new ChatMessage(lastMessage));
+            cd.setUser1(me);
+            cd.setUser2(su);
+            su.setOnline(SessionListener.isOnline(su.getId()));
+            cd.setLastMessageDate(lastMessage.getDateSent());
+            cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
+            dialogs.add(cd);
+        }
+
+        Collections.sort(dialogs, new Comparator<ChatDialog>() {
+            @Override
+            public int compare(ChatDialog o1, ChatDialog o2) {
+                return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
+            }
+        });
+    }
+    
+    public void refreshDialogs() {
+        loadDialogs();
+    }
+    
+    public void refreshPeers() {
+        parsePeers();
+    }
+
+    public String getActiveUserClass(SimpleUser su) {
+        String result = "";
+        if (su != null) {
+            if (su.isOnline()) {
+                result += "online";
+            } else {
+                result += "offline";
+            }
+            if (su.getUnreadMessages() > 0) {
+                result += " new";
+            }
+            if (friendId != null && friendId != 0 && friendId.equals(su.getId())) {
+                result += " selected";
+            }
+        }
+        return result;
+    }
+
+    public List<ChatDialog> getAllDialogs() {
+        return dialogs;
+    }
+
+    public List<SimpleUser> getPeers() {
+        return peers;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     public FileUploadController getFileUploadController() {
@@ -195,11 +344,14 @@ public class ChatBean implements Serializable {
     }
 
     public void setPeriod(Long period) {
-        if (period==null) period = 1L;
+        if (period == null) {
+            period = 1L;
+        }
         this.period = period;
     }
 
     public List<SimpleUser> getRecentUsers() {
+        //return Collections.EMPTY_LIST;
         if (me == null) {
             return null;
         }
@@ -220,8 +372,30 @@ public class ChatBean implements Serializable {
         if (me == null) {
             return;
         }
-        mm.sendMessageAndUpload(me.getId(), friendId, "chat", getText(), fileUploadController.getFiles());
-        text = null;
+        if((text != null && !text.isEmpty()) || !fileUploadController.getFiles().isEmpty()) {
+            mm.sendMessageAndUpload(me.getId(), friendId, "chat", getText(), fileUploadController.getFiles());
+            fileUploadController.clearFiles(evt);
+            text = null;
+        }
+
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String[] attachedFiles = request.getParameterValues("attached_files[]");
+        if (attachedFiles != null) {
+            for (String fileId : attachedFiles) {
+                long id = StringUtils.getValidLong(fileId);
+                if (id != 0) {
+                    sendFileMessage(id);
+                }
+            }
+        }
+    }
+
+    private void sendFileMessage(long fileId) {
+        Attachment a = am.getUploadedFile(me.getId(), fileId);
+        if (a != null && a.getUser().contains(me)) {
+            am.shareFile(fileId, me.getId(), friendId);
+            mm.sendMessage(me.getId(), friendId, "Attachment", "Файл: " + a.getName() + " [" + a.getMimeType() + ", " + a.getSize() / 1024 + "КБ]", fileId);
+        }
     }
 
     private void requestStreamMessages() {
@@ -233,19 +407,18 @@ public class ChatBean implements Serializable {
         ctx.addCallbackParam("ok", !s.isEmpty());
         ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
     }
-    
-    private Set<ChatMessage> requestStreamMessagesSet(){
+
+    private Set<ChatMessage> requestStreamMessagesSet() {
         if (log.isTraceEnabled()) {
             log.trace("requestStreamMessagesSet(): me =  " + me);
         }
-          if (me == null) {
+        if (me == null) {
             return new TreeSet();
         }
 
         RequestContext ctx = RequestContext.getCurrentInstance();
 
         Set<ChatMessage> s = new TreeSet<>(new Comparator<ChatMessage>() {
-
             @Override
             public int compare(ChatMessage t, ChatMessage t1) {
                 if (t.getDateSent().after(t1.getDateSent())) {
@@ -276,24 +449,23 @@ public class ChatBean implements Serializable {
         }
         return s;
     }
-    
-    public String requestAllMessagesJsonArray(){
-        
+
+    public String requestAllMessagesJsonArray() {
+
         Set<ChatMessage> s = requestStreamMessagesSet();
         System.out.println("requestAllMessagesJsonArray(): s = " + s);
         return (new JSONArray(s, true)).toString();
     }
-    
-    public String requestNewMessagesJsonArrayString(){
+
+    public String requestNewMessagesJsonArrayString() {
         if (log.isTraceEnabled()) {
             log.trace("requestNewMessagesJsonArrayString(): invocation of this method occured ");
         }
         Set<ChatMessage> s = requestNewMessagesSet();
-        return (new JSONArray(s,true)).toString();
+        return (new JSONArray(s, true)).toString();
     }
 
-    
-    private Set<ChatMessage> requestNewMessagesSet(){
+    private Set<ChatMessage> requestNewMessagesSet() {
         if (me == null) {
             return new TreeSet();
         }
@@ -306,7 +478,6 @@ public class ChatBean implements Serializable {
         RequestContext ctx = RequestContext.getCurrentInstance();
 
         Set<ChatMessage> s = new TreeSet<>(new Comparator<ChatMessage>() {
-
             @Override
             public int compare(ChatMessage t, ChatMessage t1) {
                 if (t.getDateSent().after(t1.getDateSent())) {
@@ -320,7 +491,7 @@ public class ChatBean implements Serializable {
             }
         });
 
-        log.debug("Requesting messages from "+lastUpdate+" till now");
+        log.debug("Requesting messages from " + lastUpdate + " till now");
         List<Message> msgs = mm.getIncomingMessages(me.getId(), friendId, lastUpdate, null);
         if (msgs != null) {
             for (Message m : msgs) {
@@ -336,18 +507,21 @@ public class ChatBean implements Serializable {
             }
             msgs.clear();
         }
-        
+
         Date maxDate = new Date(0);
 
-        for(ChatMessage m : s) 
-            if(maxDate.before(m.getDateSent()))
-                    maxDate = m.getDateSent();
-        if(lastUpdate == null || maxDate.after(lastUpdate))
+        for (ChatMessage m : s) {
+            if (maxDate.before(m.getDateSent())) {
+                maxDate = m.getDateSent();
+            }
+        }
+        if (lastUpdate == null || maxDate.after(lastUpdate)) {
             lastUpdate = maxDate;
-        
+        }
+
         return s;
     }
-    
+
     public void requestNewMessages(ActionEvent evt) {
         if (me == null) {
             return;
@@ -402,7 +576,7 @@ public class ChatBean implements Serializable {
 
     public int getNewMessagesNumber() {
         // The method should be called right after hasNewMessages()
-        if (me == null) { 
+        if (me == null) {
             return 0;
         } else {
             return unreadMessagesNumber; // updated in hasNewMessages()

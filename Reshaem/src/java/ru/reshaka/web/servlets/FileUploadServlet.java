@@ -2,6 +2,7 @@ package ru.reshaka.web.servlets;
 
 import ejb.AttachmentManagerLocal;
 import ejb.UserManagerLocal;
+import ejb.util.FileUtils;
 import ejb.util.ReshakaUploadedFile;
 import ejb.util.StringUtils;
 import entity.Attachment;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -62,7 +64,7 @@ public class FileUploadServlet extends HttpServlet {
             return;
         }
         Object o = request.getAttribute(FILES_PARAM);
-        if((o == null) || !(o instanceof FileItem) || !(o instanceof List)) {
+        if((o == null) || !(o instanceof FileItem) && !(o instanceof List)) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             log.debug("doPost(): failed to upload files or no files selected.");
             return;
@@ -122,9 +124,13 @@ public class FileUploadServlet extends HttpServlet {
         }
         List<ReshakaUploadedFile> uploadedFiles = new ArrayList<ReshakaUploadedFile>(fileItems.size());
         for(FileItem fi : fileItems) {
-            File tmpFile = File.createTempFile("upload_", ".tmp");
+            File tmpFile = File.createTempFile("upload_", ".tmp"+FileUtils.extractExtention(fi.getName()));
             fi.write(tmpFile);
-            uploadedFiles.add(new ReshakaUploadedFile(fi.getName(), fi.getContentType(), tmpFile));
+            String contentType = fi.getContentType();
+            if(StringUtils.isEmpty(contentType) || "application/octet-stream".equalsIgnoreCase(contentType))
+                contentType = new MimetypesFileTypeMap().getContentType(fi.getName().toLowerCase());
+            System.err.println("uploaded: "+contentType+" "+tmpFile.getName());
+            uploadedFiles.add(new ReshakaUploadedFile(fi.getName(), contentType, tmpFile));
         }
         List<Attachment> attachments = new ArrayList<Attachment>(uploadedFiles.size());
         if(compress) {
@@ -143,7 +149,9 @@ public class FileUploadServlet extends HttpServlet {
             }
         }
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        System.out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.println("<files size=\""+attachments.size()+"\">");
+        System.out.println("<files size=\""+attachments.size()+"\">");
         for(Attachment att: attachments) {
             out.println("  <file id=\""+att.getId()+"\">");
             out.println("    <id>"+att.getId()+"</id>");
@@ -151,7 +159,14 @@ public class FileUploadServlet extends HttpServlet {
             out.println("    <contentType>"+att.getMimeType()+"</contentType>");
             out.println("    <size>"+att.getSize()+"</size>");
             out.println("  </file>");
+            System.out.println("  <file id=\""+att.getId()+"\">");
+            System.out.println("    <id>"+att.getId()+"</id>");
+            System.out.println("    <name>"+att.getName()+"</name>");
+            System.out.println("    <contentType>"+att.getMimeType()+"</contentType>");
+            System.out.println("    <size>"+att.getSize()+"</size>");
+            System.out.println("  </file>");
         }
+        System.out.println("</files>");
         out.println("</files>");
     }
 }

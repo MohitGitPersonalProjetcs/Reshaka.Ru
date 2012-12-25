@@ -121,4 +121,6 @@ public class FileUtils {
             return name.substring(i);
         else return "";
     }
+    
+    public static final int DEFAULT_STREAM_BUFFER_SIZE = 1024*16;
 }

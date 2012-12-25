@@ -29,7 +29,7 @@
         </ui:define>
 
         <ui:define name="tablesblock">
-            <iframe src="chat.xhtml?friend=#{param['friend']}" width="762" height="600" style="border: none;" name="chatframe"/>
+            <iframe src="im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}" width="760" height="560" style="border: none;" name="chatframe"/>
         </ui:define>
 
         <ui:define name="javascript">

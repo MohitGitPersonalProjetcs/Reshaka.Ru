@@ -203,9 +203,8 @@ public class MessageManager implements MessageManagerLocal {
         try {
             User u = em.getReference(User.class, owner);
             Query q = em.createQuery("SELECT DISTINCT m.toUser "
-                    + "FROM Message m WHERE m.fromUser = :owner ", User.class);
+                    + "FROM Message m WHERE m.fromUser = :owner", User.class);
             q.setParameter("owner", u);
-            q.setMaxResults(10);
             
             List<User> users = q.getResultList();
             if (users == null) {
@@ -217,9 +216,53 @@ public class MessageManager implements MessageManagerLocal {
             }
             
             q = em.createQuery("SELECT DISTINCT m.fromUser "
-                    + "FROM Message m WHERE m.toUser = :owner ", User.class);
+                    + "FROM Message m WHERE m.toUser = :owner", User.class);
             q.setParameter("owner", u);
-            q.setMaxResults(10);
+            users = q.getResultList();
+            if (users == null) {
+                return lst;
+            }
+            
+            for (User user : users) {
+                lst.add(new SimpleUser(user));
+            }
+            
+            return lst;
+        } catch (Exception ex) {
+            if (log.isTraceEnabled()) {
+                log.trace("getRecentUsers(): no such user > ", ex);
+            }
+            return Collections.EMPTY_SET;
+        }
+    }
+    
+    @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
+    public Set<SimpleUser> getRecentUsers(long owner, int limit) {
+        if (log.isTraceEnabled()) {
+            log.trace(">> getRecentUsers(): id=" + owner);
+        }
+
+        try {
+            User u = em.getReference(User.class, owner);
+            Query q = em.createQuery("SELECT DISTINCT m.toUser "
+                    + "FROM Message m WHERE m.fromUser = :owner ORDER BY m.dateSent DESC", User.class);
+            q.setParameter("owner", u);
+            q.setMaxResults(limit);
+            
+            List<User> users = q.getResultList();
+            if (users == null) {
+                return Collections.EMPTY_SET;
+            }
+            Set<SimpleUser> lst = new HashSet<>(users.size()*2);
+            for (User user : users) {
+                lst.add(new SimpleUser(user));
+            }
+            
+            q = em.createQuery("SELECT DISTINCT m.fromUser "
+                    + "FROM Message m WHERE m.toUser = :owner ORDER BY m.dateSent DESC", User.class);
+            q.setParameter("owner", u);
+            q.setMaxResults(limit);
             users = q.getResultList();
             if (users == null) {
                 return lst;
@@ -407,5 +450,29 @@ public class MessageManager implements MessageManagerLocal {
 //            log.trace("<< getUnreadMessagesNumber(): "+n);
 //        }
         return n.intValue();
+    }
+
+    @Override
+    public Message getLastMessage(Long userId1, Long userId2) {
+        Query q = em.createQuery("select m from Message m where "
+                + "m.fromUser.id = :userId1 and m.toUser.id = :userId2 "
+                + "order by m.dateSent desc", Message.class);
+        List<Message> list = q.setParameter("userId1", userId1)
+                .setParameter("userId2", userId2)
+                .setMaxResults(1)
+                .getResultList();
+        Message result = null;
+        if(!list.isEmpty())
+            result = list.get(0);
+        
+        list = q.setParameter("userId1", userId2)
+                .setParameter("userId2", userId1)
+                .setMaxResults(1)
+                .getResultList();
+        if(list.isEmpty())
+            return result;
+        if(result == null)
+            return list.get(0);
+        return (result.getDateSent().after(list.get(0).getDateSent())) ? result : list.get(0);
     }
 }

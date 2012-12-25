@@ -26,7 +26,7 @@ import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
  *
  * @author danon
  */
-@WebFilter(filterName = "MultipartRequestFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "MultipartRequestFilter")
 public class MultipartRequestFilter implements Filter {
     
     // Init ---------------------------------------------------------------------------------------
@@ -187,10 +187,12 @@ public class MultipartRequestFilter implements Filter {
     }
     
     private static void addAttributeValue(HttpServletRequest request, String name, final Object value) {
+        System.out.println("Add attribute value: name="+name+", value = "+value);
         if(value == null) {
             return;
         }
         final Object attrValue = request.getAttribute(name);
+        System.out.println("oldValue = "+attrValue);
         if(attrValue == null) {
             request.setAttribute(name, value);
         } else if(attrValue instanceof List) {
