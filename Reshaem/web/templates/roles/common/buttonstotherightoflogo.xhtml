@@ -50,7 +50,7 @@ and open the template in the editor.
 
             <!--        Переделать для каждой роли    -->
             <h:panelGroup rendered="#{!webSession.signedIn}">           
-                <li><a onclick="guest_partner_dlg.show();" href="#">Партнёр</a></li>
+                <li><a href="#{request.contextPath}/partner.xhtml">Партнёр</a></li>
             </h:panelGroup>
 
         </ui:composition>

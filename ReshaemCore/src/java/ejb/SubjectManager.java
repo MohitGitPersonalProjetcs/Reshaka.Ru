@@ -21,8 +21,7 @@ public class SubjectManager implements SubjectManagerLocal {
     private static Logger log = Logger.getLogger(AttachmentManager.class.getName());
     @PersistenceContext(unitName = "ReshaemCorePU")
     EntityManager em;
-    
-    
+
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Map<Long, String> getAllSubjectsMap() {
@@ -63,7 +62,7 @@ public class SubjectManager implements SubjectManagerLocal {
 
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
-    public List<Subject> getAllSubjects() {
+    public List<Subject> getAllSubjects(boolean withNotSelectedSubject) {
         Query q = em.createNamedQuery("getAllSubjects");
         List<Subject> list = q.getResultList();
         Subject nss = null;
@@ -76,7 +75,9 @@ public class SubjectManager implements SubjectManagerLocal {
         }
         if (nss != null) {
             list.remove(a);
-            list.add(0, nss);
+            if (withNotSelectedSubject) {
+                list.add(0, nss);
+            }
         }
         return list;
     }

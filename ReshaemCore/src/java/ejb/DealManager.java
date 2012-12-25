@@ -87,12 +87,13 @@ public class DealManager implements DealManagerLocal {
                 text = "Здравствуйте, " + order.getEmployee().getLogin() + " !"
                         + "\n\nВнесена предоплата за заказ ID=" + order.getId() + ""
                         + "\n\n Дедлайн: " + order.getDeadlineString() + ""
-                        + "\n\n\nC уважением, администрация Reshaka.Ru";
+                        + "\n\n\nC уважением, администрация Reshaka.Ru"
+                        + "\n\nПожалуйста, не отвечайте на данное сообщение. По всем вопросам обращаться к пользователю admin.";
                 mailText = "<br/> Внеcена предоплата за заказ ID=" + order.getId() + ""
                         + "<br/><br/>"
                         + "Дедлайн: " + order.getDeadlineString() + ""
                         + "<br/>";
-                MailQueue.getInstance().addMyMail(new MyMail(theme, mailText, order.getEmployee().getEmail(), order.getEmployer().getLogin()));
+                MailQueue.getInstance().addMyMail(new MyMail(theme, mailText, order.getEmployee().getEmail(), order.getEmployee().getLogin()));
 
             }
             if (order.getType() == Order.ONLINE_TYPE) {
@@ -100,12 +101,13 @@ public class DealManager implements DealManagerLocal {
                         + "\n\nВнесена предоплата за заказ ID=" + order.getId() + ""
                         + "\n\n Время начала онлайн-помощи: " + order.getDeadlineString() + ""
                         + "\n Продолжительность: " + order.getDuration() + " мин. "
-                        + "\n\n\nC уважением, администрация Reshaka.Ru";
+                        + "\n\n\nC уважением, администрация Reshaka.Ru"
+                        + "\n\nПожалуйста, не отвечайте на данное сообщение. По всем вопросам обращаться к пользователю admin.";
                 mailText = "<br/> Внеcена предоплата за заказ ID=" + order.getId() + ""
                         + "<br/><br/>Время начала онлайн-помощи: " + order.getDeadlineString() + ""
                         + "<br/> Продолжительность: " + order.getDuration() + " мин. "
                         + "<br/>";
-                MailQueue.getInstance().addMyMail(new MyMail(theme, mailText, order.getEmployee().getEmail(), order.getEmployer().getLogin()));
+                MailQueue.getInstance().addMyMail(new MyMail(theme, mailText, order.getEmployee().getEmail(), order.getEmployee().getLogin()));
             }
 
 //            mailMan.sendMail(order.getEmployee().getEmail(), theme, text);
@@ -362,9 +364,17 @@ public class DealManager implements DealManagerLocal {
                     + "Номер заказа: " + URLUtils.createLink(URLUtils.getOrderURL(order.getId()), "_blank", order.getId() + "") + ".\n"
                     + "Дата: " + order.getDeadlineString() + " .\n"
                     + "Продолжительность: " + order.getDuration() + " минут.\n"
-                    + "Будьте на связи в указанное время. ";
+                    + "Будьте на связи в указанное время. \n\n Пожалуйста, не отвечайте на данное сообщение. По всем вопросам обращаться к пользователю admin.";
             messMan.sendMessage(confMan.getMainAdminId(), order.getEmployee().getId(), "notification", "Вас выбрали исполнителем на онлайн - помощь (ID заказа = " + order.getId() + "). Будьте вовремя в указанное время", order.getConditionId());
-            mailMan.sendMail(order.getEmployee().getEmail(), "Reshaka.Ru Online-помощь: вас выбрали исполнителем", text);
+           
+            String mailText = "<br/> Внеcена предоплата за \"Онлайн - помошь\" (ID=" + order.getId() + ")"
+                        + "<br/><br/>Дата: " + order.getDeadlineString() + ""
+                        + "<br/> Продолжительность: " + order.getDuration() + " мин. "
+                        + "<br/><br/>Будьте на связи в указанное время.";
+            MailQueue.getInstance().addMyMail(new MyMail("Онлайн-помощь была оплачена", mailText, order.getEmployee().getEmail(), order.getEmployee().getLogin()));
+            
+            
+//            mailMan.sendMail(order.getEmployee().getEmail(), "Reshaka.Ru Online-помощь: вас выбрали исполнителем", text);
         }
     }
 

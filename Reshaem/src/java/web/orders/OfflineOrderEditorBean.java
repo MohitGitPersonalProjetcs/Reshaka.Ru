@@ -108,7 +108,7 @@ public class OfflineOrderEditorBean implements Serializable {
             System.out.println("order = new Order();");
         }
         SubjectConverter.sm = subjMan;
-        subjects.addAll(subjMan.getAllSubjects());
+        subjects.addAll(subjMan.getAllSubjects(true));
     }
 
     public String getTagsText() {

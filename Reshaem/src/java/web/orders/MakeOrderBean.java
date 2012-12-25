@@ -89,7 +89,7 @@ public class MakeOrderBean implements Serializable {
     @PostConstruct
     private void init() {
         SubjectConverter.sm = subjMan;
-        subjects.addAll(subjMan.getAllSubjects());
+        subjects.addAll(subjMan.getAllSubjects(true));
         User u = (User)SessionListener.getSessionAttribute("user", false);
         
         if(u != null && u.getId() != null) {
