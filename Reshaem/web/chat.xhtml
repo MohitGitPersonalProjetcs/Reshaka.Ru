@@ -250,11 +250,11 @@
                 
                     var att = '';
                     if(msgs[i].attachmentId!=null)
-                        att = '<br/><span style="font-size: smaller;">Сообщение содержит прикрепленный файл:<strong> <a href="download.xhtml?id='
+                        att = '<br/><span style="font-size: smaller;">Сообщение содержит прикрепленный файл:<strong> <a href="download?id='
                         + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
 
                     var html = '<div class="chat-message">'
-                        + '<div class="'+c+'"><label title="Отправлено '+msgs[i].dateSent+' пользователю '+msgs[i].toUserLogin+'"><a style="font-weight:bold;" class="'+c+'" href="#{request.contextPath}/chat.xhtml?friend='+msgs[i].fromUserId+'">'+msgs[i].fromUserLogin+'</a></label>:</div>'
+                        + '<div class="'+c+'"><label title="Отправлено '+msgs[i].dateSent+' пользователю '+msgs[i].toUserLogin+'"><a style="font-weight:bold;" class="'+c+'" href="#{request.contextPath}/im.xhtml?friend='+msgs[i].fromUserId+'">'+msgs[i].fromUserLogin+'</a></label>:</div>'
                         + '\t<div class="msg-text">'+msgs[i].text+' '+ att
                         + '</div>'+del+'</div>';    
                     $('#chatMessages').append(html);

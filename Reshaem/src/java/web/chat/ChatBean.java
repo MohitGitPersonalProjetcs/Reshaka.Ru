@@ -124,6 +124,8 @@ public class ChatBean implements Serializable {
                 friend = new SimpleUser();
             } else {
                 adminMode = true;
+                friendId = null;
+                friend = new SimpleUser();
             }
         } else {
             try {

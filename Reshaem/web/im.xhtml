@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;"> 
+    ]>
+    <html xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:h="http://java.sun.com/jsf/html"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:p="http://primefaces.org/ui"
+          xmlns:ui="http://java.sun.com/jsf/facelets"
+          xmlns:f="http://java.sun.com/jsf/core">
+        <h:head>
+            <meta name="viewport" content="width=420" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <title>Сообщения - Reshaka.Ru</title>
+
+            <c:if test="#{webSession.signedIn}">
+                <link href="css/im.css" rel="stylesheet" />
+            </c:if>
+        </h:head>
+
+        <c:if test="#{webSession.signedIn}">
+            <c:if test="#{chatBean.mode == 'MESSAGES'}">
+                <script type="text/javascript">
+            
+        
+                    var chatMessageKeydown = function (e) {
+                        if (e.ctrlKey) {
+                            if(e.keyCode == 13) {
+                                $('#mainMessageSubmitButton').click();
+                            }
+                        }
+                    };
+        
+                    $(document).ready(function() {
+                        // Handler for .ready() called.
+                        setInterval("nextMessage()", 2000); //update the chart every 2000 ms    
+                        nextMessage();
+                        $('#msg-box-input').keydown(chatMessageKeydown);
+                        $('.chat-message textarea').val('').focus();
+                    });           
+            
+                    var myLogin = '#{webSession.login}';
+                    var myRole = #{webSession.group};
+        
+                    function deleteMessage(id) {
+                        alert('You cannot delete message with ID='+id+' at the moment. The operation is not supported.');
+                    }
+        
+                    function updateMessages(xhr, status, args) {
+                        if(!args.ok) return;
+                        var msgs = eval('('+ args.messages +')');
+                        var  inner = $('#chat-messages-inner');
+                        for(i in msgs) {
+                            if(msgs[i].fromUserLogin === undefined) continue;
+                
+                            var text = msgs[i].text;
+                            var from = msgs[i].fromUserLogin;
+                            var date = msgs[i].dateSent;
+                            var download = '';
+                            if(msgs[i].attachmentId) {
+                                download = ' <a style="font-size: smaller;" href="#{request.contextPath}/download?id='+msgs[i].attachmentId+'" target="_blank">Скачать</a>';
+                            }
+                            var msgClass = '';
+                            if(myLogin === msgs[i].fromUserLogin)
+                                msgClass = ' me';
+                            else msgClass = ' friend';
+                            var html = '<div id="msg-'+msgs[i].messageId+'" style="display: block;">'
+                                + '<span class="msg-block'+msgClass+'">'
+                                + '<strong><a href="#{request.contextPath}/profile.xhtml?id='+msgs[i].fromUserId+'" target="_parent">' + from + '</a></strong> '
+                                + '<span class="time">' + date + '</span>'
+                                + '<span class="msg">' + text + download + '</span>'
+                                + '</span>'
+                                + '</div>'
+                            inner.append(html);
+                            $('body').animate({ scrollTop: inner.height() },0);
+                        }
+                    } 
+                </script>
+            </c:if>
+
+            <script type="text/javascript">
+                function changeUser(w, u) {
+                    if(u != undefined) {
+                        if(w.parent.location.href.indexOf('ichat')>=0)
+                            w.parent.location = 'ichat.xhtml?friend='+u;
+                        else w.parent.location = 'im.xhtml?friend='+u+'&amp;peers=#{chatBean.validPeersParam}';
+                    }
+                }
+            
+                function handleChangeUser(xhr, status, args) {
+                    changeUser(window, args.friend);
+                } 
+                
+                function fileSelectListener(e) {
+                    var file = this.files[0];
+                    var size = file.size;
+                    if(size > 40*1024*1024) {
+                        $(this).val('');
+                        alert("Максимальный размер файла: 40 МБ.");
+                    }
+                }
+                
+            function addFile() {
+                $('#chat-files-form').append('<div> <span>X</span> <input type="file" name="files[]"/></div>');
+                $('#chat-files-form div span').each(function(t) {
+                    $(this).click(function() {
+                        $(this.parentNode).remove();
+                    });
+                });
+                updateFileSelectListeners();
+                return false;
+            }
+            
+            function clearForms() {
+                $('#chat-message-form input[name=\'attached_files[]\']').remove();
+                $('#msg-box-input').val('').focus();
+                $('#chat-attachment-panel').css('display', 'none');
+                $('#chat-files-form div input').val('');
+                updateFileSelectListeners();
+            }
+            
+            function needToBlock() {
+                var result = false;
+                $('#chat-files-form div :file').each(function() {
+                   var file = this.files[0];
+                   if(file !== undefined)
+                       if(file.size)
+                            result = true;
+                });
+                return result;
+            }
+            
+            function uploadFiles() {
+                if(needToBlock())
+                    blockUI();
+                var formData = new FormData($('#chat-files-form')[0]);
+                $.ajax({
+                    url: '#{request.contextPath}/upload',  //server script to process data
+                    type: 'POST',
+                    //Ajax events
+                    success: completeHandler = function(data) {
+                        var files = data.documentElement;
+                        var ids = data.getElementsByTagName('id');
+                        var form = $('#chat-message-form');
+                        for(i in ids) {
+                            if(ids[i].firstChild === undefined)
+                                continue;
+                                
+                            form.append('<input type="hidden" name="attached_files[]" value="'+ids[i].firstChild.nodeValue+'"/>');
+                        }
+                        $('#chat-files-form div input').val('');
+                        $('#chatMessageSubmitButton').click();
+                        unblockUI();
+                    },
+                    error: errorHandler = function() {
+                        //alert('Не удалось загрузить файл(ы).');
+                        $('#chat-files-form div input').val('');
+                        $('#chat-message-form input[name=\'attached_files[]\']').remove();
+                        $('#chatMessageSubmitButton').click();
+                        unblockUI();
+                    },
+                    // Form data
+                    data: formData,
+                    //Options to tell JQuery not to process data or worry about content-type
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }, 'xml');
+                return false;
+            }
+                
+            function blockUI() {
+                $.blockUI({ css: {
+                                border: 'none', 
+                                padding: '15px', 
+                                backgroundColor: '#000', 
+                                '-webkit-border-radius': '10px', 
+                                '-moz-border-radius': '10px', 
+                                opacity: .5, 
+                                color: '#fff' 
+                            },
+                            message: '<h2>Загрузка файлов...</h2><a style="font-size: larger;" href="im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}">Сброс</a>'
+                    }); 
+            }
+                
+            function unblockUI() {
+                $.unblockUI();
+            }
+                
+            function updateFileSelectListeners() {
+                $('#chat-files-form div :file').unbind('change');
+                $('#chat-files-form div :file').change(fileSelectListener);
+            }
+                
+            $(document).ready(function() {
+                updateFileSelectListeners();
+            });
+                
+            </script>
+
+        </c:if>
+
+        <h:body rendered="#{webSession.signedIn}">
+            <div class="widget-title">
+                <h5>Reshaka.Ru: <span><h:link value="Диалоги" outcome="im.xhtml" rendered="#{chatBean.mode == 'MESSAGES'}"><f:param name="peers" value="#{chatBean.validPeersParam}"/></h:link></span><h:outputText value="Диалоги" rendered="#{chatBean.mode == 'DIALOGS'}"/><h:outputText value="&nbsp;|&nbsp;Сообщения" rendered="#{chatBean.mode == 'MESSAGES'}"/></h5>
+                <span id="chat-search-user">
+                    <h:form id="chat-user-search-form" prependId="false">
+                        
+                        <img src="images/search_user_256.png" width="20" style="padding-right: 5px; vertical-align: middle;"/><p:autoComplete id="chat-user-search-input" completeMethod="#{chatBean.completeLogin}" value="#{chatBean.selectedUser}"
+                                        var="u" itemLabel="#{u.login}" itemValue="#{u}" converter="simpleUser" forceSelection="true"
+                                        title="Начните вводить имя пользователя">
+                            <p:ajax event="itemSelect" listener="#{chatBean.changeUser}" process="@this" oncomplete="handleChangeUser(xhr, status, args);"/>
+                        </p:autoComplete> 
+                    </h:form>
+                </span>
+                <span style="clear: right;"/>
+            </div>
+            <!-- Chat Messages Container -->           
+            <h:panelGroup class="chat-messages" id="chat-messages" rendered="#{chatBean.mode == 'MESSAGES'}">
+                <div id="chat-messages-stub-top" style="height: 40px;"></div>
+                <div id="chat-messages-inner">
+                    <!-- List of messages -->
+                </div>
+                <div id="chat-messages-stub-bottom" style="height: 130px;"></div>
+            </h:panelGroup>
+            <h:panelGroup  class="chat-dialogs" id="chat-dialogs" rendered="#{chatBean.mode == 'DIALOGS'}">
+                <div id="chat-dialogs-stub-top" style="height: 40px;"></div>
+                <div id="chat-dialogs-inner">
+                    <!-- List of dialogs -->
+                    <ui:repeat var="dialog" value="#{chatBean.allDialogs}">
+                        <p style="display: block; cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}">
+                            <span class="dlg-block">
+                                <strong>Диалог с  #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
+                                <span class="time">#{dialog.lastMessageDate}</span>
+                                <span class="msg">Последнее сообщение: <i>#{dialog.lastMessage.text}</i> <a style="text-decoration: none;" href="#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}">>></a></span>
+                            </span>
+                        </p>
+                    </ui:repeat>
+                </div>
+            </h:panelGroup>
+            <!-- END of Chat Messages Container -->	
+
+            <h:panelGroup class="chat-message" rendered="#{chatBean.mode == 'MESSAGES'}">
+                <h:form id="chat-message-form" prependId="false">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <p:inputTextarea style="width: 99%; font-size: smaller; height: 100px;" id="msg-box-input" value="#{chatBean.text}"/>
+                            </td>
+
+                            <td style="width: 40px;">
+                                <span style="display: inline-block;">
+                                    <table>
+                                        <tr>
+                                            <td style="width: 120px; vertical-align: center;" colspan="2">
+                                                <p:button id="mainMessageSubmitButton" value="Отправить" onclick="uploadFiles(); return false;" style="height: 60px; width: 100px; font-size: smaller;"/>
+                                                <p:commandButton id="chatMessageSubmitButton" actionListener="#{chatBean.sendMessage}" 
+                                                                 style="display: none;"
+                                                                 oncomplete="clearForms();"/> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0;"><img style="cursor: pointer;" src="images/attach-icon.png" width="40" height="40" onclick="$('#chat-attachment-panel').toggle();"/></td>
+                                            <td style="padding: 0;"><img style="cursor: pointer;" src="images/edit-clear.png" width="40" height="40" onclick="clearForms();"/></td>
+                                        </tr>
+                                    </table>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </h:form>
+                <div id="chat-attachment-panel" style="display: none; width: 400px;">
+                    <form id="chat-files-form" method="post" enctype="multipart/form-data" action="/upload">
+                        <input type="hidden" name="compress" value="no" />
+                        <div>
+                            <span>X</span>
+                            <input type="file" name="files[]"/>
+                        </div> 
+                    </form> 
+                    <button onclick="addFile();">Добавить файл</button>
+                </div>
+            </h:panelGroup>                   
+            <!-- User List -->								
+            <div class="chat-users panel-right" style="position: fixed;">
+                <div class="panel-title"><h5>Активные диалоги</h5></div>
+                <h:panelGroup class="panel-content nopadding" id="active-dialogs-list">
+                    <ul class="contact-list">
+                        <ui:repeat var="simpleUser" value="#{chatBean.peers}">
+                            <li id="user-#{simpleUser.id}" class="#{chatBean.getActiveUserClass(simpleUser)}"><img onclick="window.location.href = '#{request.contextPath}/im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.getValidPeersParamAndRemove(simpleUser.id)}';" src="images/remove.png" width="20"/><h:link outcome="im"><f:param name="peers" value="#{chatBean.validPeersParam}"/><f:param name="friend" value="#{simpleUser.id}"/><span>#{simpleUser.login}</span></h:link><h:panelGroup rendered="#{simpleUser.unreadMessages > 0}" class="msg-count badge badge-info">#{simpleUser.unreadMessages}</h:panelGroup></li>
+                        </ui:repeat>
+                    </ul>
+                </h:panelGroup>
+            </div>
+            <!-- END of User List -->	
+
+            <script type="text/javascript" src="js/jquery.blockUI.js"></script>
+
+            <h:form>
+                <p:remoteCommand name="nextMessage" actionListener="#{chatBean.requestNewMessages}" 
+                                 oncomplete="updateMessages(xhr, status, args);" async="false" rendered="#{chatBean.mode == 'MESSAGES'}"/>
+                <p:poll async="true" autoStart="true" interval="10" update=":active-dialogs-list" listener="#{chatBean.refreshPeers()}"/>
+                <p:poll async="true" autoStart="true" interval="10" update=":chat-dialogs" listener="#{chatBean.refreshDialogs()}" rendered="#{chatBean.mode == 'DIALOGS'}"/>
+            </h:form> 
+        </h:body>
+
+        <h:body rendered="#{!webSession.signedIn}">
+            <script type="text/javascript">
+            window.resizeTo(740, 100);
+            </script>
+            <div>
+                Вы не вошли в систему. Пожалуйста, 
+                <a href="javascript:void(0);" onclick="window.parent.location = '#{request.contextPath}/ichat.xhtml?#operation=login';">авторизуйтесь</a>.
+            </div>
+        </h:body>
+    </html>

@@ -30,6 +30,8 @@
 
         <ui:define name="tablesblock">
             <iframe src="im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}" width="760" height="560" style="border: none;" name="chatframe"/>
+            <div style="text-align: right;"><a href="im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}" target="_blank">Открыть чат в отдельном окне</a></div>
+            <div><br/></div>
         </ui:define>
 
         <ui:define name="javascript">
