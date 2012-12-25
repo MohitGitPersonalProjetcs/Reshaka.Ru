@@ -13,8 +13,8 @@
         <ui:composition>
             <div style="display: inline-block; width: 750px;" >
                 <p:tabView >
-                    <p:tab title="Мой профиль" rendered="#{(param['id'] == null) or (webSession.thisId(param['id'])) or (webSession.group == 1)}" >
-                        <h:form>
+                    <p:tab title="Мой профиль" rendered="#{(param['id'] == null) or (webSession.thisId(param['id'])) or (webSession.group == 1) or ('admin'.equals(profileBean.login))}" >
+                        <h:form rendered="#{!('admin'.equals(profileBean.login) and !'admin'.equals(editProfileBean.login))}">
                             <h:panelGrid columns="2" id="basic_data" width="430">
                                 <h:outputText value="Псевдоним:" title="Это имя будут видеть другие пользователи. Вы можете сменить его только один раз! "/>  
                                 <h:panelGroup>
@@ -74,6 +74,24 @@
                             </div>
                             <h:outputText value="Не забудьте нажать на кнопку Применить!" style="font-size: smaller; color: red;"/>
                         </h:form>
+                        
+                        <h:panelGrid columns="2" id="basic_data" width="430" rendered="#{'admin'.equals(profileBean.login) and !'admin'.equals(editProfileBean.login)}">
+                                <h:outputText value="Псевдоним:" title="Это имя будут видеть другие пользователи. Вы можете сменить его только один раз! "/>  
+                                <h:outputText value="#{profileBean.login}"/>
+                                
+                                <h:outputText value="Логин:" title="Используется для входа на сайт (не виден другим пользователям)"/>  
+                                <h:outputText value="#{profileBean.email}"/>
+
+                                <h:outputText value="Телефон:" title="(виден администратору)"/>  
+                                <h:outputText value="#{profileBean.phone}"/>
+
+                                <h:outputText value="ICQ:" title="(виден администратору)"/>  
+                                <h:outputText value="#{profileBean.icq}"/>
+
+                                <h:outputText value="Skype:" title="(виден администратору)"/>  
+                                <h:outputText value="#{profileBean.skype}"/>
+
+                            </h:panelGrid>
                     </p:tab>
 
                     <p:tab id="tab3" title="Аватар" rendered="false">
@@ -343,7 +361,7 @@
                             </p:panel>
 
                         </h:form>
-                        
+
                         <h:form>
                             <p:commandButton value="Зайти под пользователем" actionListener="#{userBean.adminFeatureLogin(selectedBean.user)}" />
                         </h:form>
