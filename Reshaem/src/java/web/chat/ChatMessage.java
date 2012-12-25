@@ -1,5 +1,6 @@
 package web.chat;
 
+import ejb.util.StringUtils;
 import entity.Message;
 import java.io.Serializable;
 import java.util.Date;
@@ -50,8 +51,11 @@ public class ChatMessage implements Serializable {
             toUserId = msg.getToUser().getId();
             toUserLogin = msg.getToUser().getLogin();
         }
-        text = msg.getText();
-        subject = msg.getSubject();
+        text = StringUtils.getValidString(msg.getText());
+        text = text.replace("&", "&amp;");
+        text = text.replace(">", "&gt;");
+        text = text.replace("<", "&lt;");
+        subject =  StringUtils.getValidString(msg.getSubject());
         attachmentId = msg.getAttachmentId();
         dateSent = msg.getDateSent();
         read = msg.isRead();

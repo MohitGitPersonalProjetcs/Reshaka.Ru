@@ -375,7 +375,7 @@ public class ChatBean implements Serializable {
             return;
         }
         if((text != null && !text.isEmpty()) || !fileUploadController.getFiles().isEmpty()) {
-            mm.sendMessageAndUpload(me.getId(), friendId, "chat", getText(), fileUploadController.getFiles());
+            mm.sendMessageAndUpload(me.getId(), friendId, "chat", StringUtils.getValidString(getText()).replace("\"", "&quot;"), fileUploadController.getFiles());
             fileUploadController.clearFiles(evt);
             text = null;
         }
@@ -474,7 +474,7 @@ public class ChatBean implements Serializable {
 
         if (adminMode && "_stream".equalsIgnoreCase(friendStr)) {
             requestStreamMessages();
-            return new TreeSet();
+            return Collections.EMPTY_SET;
         }
 
         RequestContext ctx = RequestContext.getCurrentInstance();
