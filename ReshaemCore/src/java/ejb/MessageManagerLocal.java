@@ -3,6 +3,7 @@ package ejb;
 import data.SimpleUser;
 import ejb.util.ReshakaUploadedFile;
 import entity.Message;
+import entity.User;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +57,15 @@ public interface MessageManagerLocal {
      */
     public int getUnreadMessagesNumber(long id, Long fromUserId);
 
-    public Message getLastMessage(Long id, Long id0);
+    /**
+     * Obtains the last messages between two users
+     */
+    public Message getLastMessage(Long iuserId1, Long userId2);
+
+    /**
+     * Obtains the list of users whose messages to the user with specified userId are not read.
+     * @return 
+     */
+    public List<User> getUnreadMessagesUsers(Long userId);
     
 }

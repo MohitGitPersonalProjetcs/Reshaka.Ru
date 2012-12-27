@@ -216,11 +216,11 @@
 
         <h:body rendered="#{webSession.signedIn}">
             <div class="widget-title">
-                <h5>Reshaka.Ru: <span><h:link value="Диалоги" outcome="im.xhtml" rendered="#{chatBean.mode == 'MESSAGES'}"><f:param name="peers" value="#{chatBean.validPeersParam}"/></h:link></span><h:outputText value="Диалоги" rendered="#{chatBean.mode == 'DIALOGS'}"/><h:outputText value="&nbsp;|&nbsp;Сообщения" rendered="#{chatBean.mode == 'MESSAGES'}"/></h5>
+                <h5><span><a title="Распахнуть чат на всё окно" href="#{request.contextPath}/im.xhtml" target="_parent"><img src="images/open_in_new_window.png"/></a></span>Reshaka.Ru: <span><h:link title="Вернуться к диалогам" value="Диалоги" outcome="im.xhtml" rendered="#{chatBean.mode == 'MESSAGES'}"><f:param name="peers" value="#{chatBean.validPeersParam}"/></h:link></span><h:outputText value="Диалоги" rendered="#{chatBean.mode == 'DIALOGS'}"/><h:outputText value="&nbsp;|&nbsp;Сообщения" rendered="#{chatBean.mode == 'MESSAGES'}"/></h5>
                 <span id="chat-search-user">
                     <h:form id="chat-user-search-form" prependId="false">
 
-                        <img src="images/search_user_256.png" width="20" style="padding-right: 5px; vertical-align: middle;"/><p:autoComplete id="chat-user-search-input" completeMethod="#{chatBean.completeLogin}" value="#{chatBean.selectedUser}"
+                        <img src="images/search_user_256.png" style="height: 20px;"/><p:autoComplete id="chat-user-search-input" completeMethod="#{chatBean.completeLogin}" value="#{chatBean.selectedUser}"
                                                                                                                                               var="u" itemLabel="#{u.login}" itemValue="#{u}" converter="simpleUser" forceSelection="true"
                                                                                                                                               title="Начните вводить имя пользователя">
                             <p:ajax event="itemSelect" listener="#{chatBean.changeUser}" process="@this" oncomplete="handleChangeUser(xhr, status, args);"/>

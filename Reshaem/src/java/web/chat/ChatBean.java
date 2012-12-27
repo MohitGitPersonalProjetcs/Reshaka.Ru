@@ -160,9 +160,14 @@ public class ChatBean implements Serializable {
 
     private void parsePeers() {
         peers = new ArrayList<>();
+        
+        // get peers liest from request parameter
+        // if there is no such parameter, load it from session
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-        String peersParam = StringUtils.getValidString(request.getParameter("peers"), StringUtils.getValidString(SessionListener.getSessionAttribute(session,"chat_peers")));
+        String peersParam = StringUtils.getValidString(request.getParameter("peers"), StringUtils.getValidString(SessionListener.getSessionAttribute(session, "chat_peers")));
+
+        // parse peers parameter
         String[] p = peersParam.split("\\_");
         for (String peer : p) {
             long peerId = StringUtils.getValidLong(peer);
@@ -173,22 +178,47 @@ public class ChatBean implements Serializable {
             if (u == null) {
                 continue;
             }
-            SimpleUser su = new SimpleUser(u);
-            su.setOnline(SessionListener.isOnline(peerId));
-            su.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), peerId));
-            if (!peers.contains(su)) {
-                peers.add(su);
-            }
+            addUserToPeers(u);
         }
-        while(peers.size() > 10) {
-            peers.remove(peers.size()-1);
+        // truncate peers list
+        while (peers.size() > 10) {
+            peers.remove(peers.size() - 1);
         }
+
+        // current "friend" should be in peers list too
+        // it could have been deleted in the previous "while"
         if (friendId != null && friendId != 0 && !peers.contains(friend)) {
             peers.add(friend);
             friend.setOnline(SessionListener.isOnline(friendId));
             friend.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), friendId));
         }
-        SessionListener.setSessionAttribute(session, "chat_peers", getValidPeersParam()+"_"+StringUtils.getValidString(SessionListener.getSessionAttribute(session, "chat_peers")));
+        
+        // if there are any unread messages from users who are not on the peers list
+        // add them to the top of the list
+        List<User> unreadMessagesUsers = mm.getUnreadMessagesUsers(me.getId());
+        for (User u : unreadMessagesUsers) {
+            addUserToPeers(u, 0);
+        }
+
+        SessionListener.setSessionAttribute(session, "chat_peers", getValidPeersParam() + "_" + StringUtils.getValidString(SessionListener.getSessionAttribute(session, "chat_peers")));
+    }
+
+    private void addUserToPeers(User u) {
+        SimpleUser su = new SimpleUser(u);
+        su.setOnline(SessionListener.isOnline(u.getId()));
+        su.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), u.getId()));
+        if (!peers.contains(su)) {
+            peers.add(su);
+        }
+    }
+    
+    private void addUserToPeers(User u, int index) {
+        SimpleUser su = new SimpleUser(u);
+        su.setOnline(SessionListener.isOnline(u.getId()));
+        su.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), u.getId()));
+        if (!peers.contains(su)) {
+            peers.add(index, su);
+        }
     }
 
     public String getValidPeersParam() {
@@ -242,11 +272,11 @@ public class ChatBean implements Serializable {
             }
         });
     }
-    
+
     public void refreshDialogs() {
         loadDialogs();
     }
-    
+
     public void refreshPeers() {
         parsePeers();
     }
@@ -374,7 +404,7 @@ public class ChatBean implements Serializable {
         if (me == null) {
             return;
         }
-        if((text != null && !text.isEmpty()) || !fileUploadController.getFiles().isEmpty()) {
+        if ((text != null && !text.isEmpty()) || !fileUploadController.getFiles().isEmpty()) {
             mm.sendMessageAndUpload(me.getId(), friendId, "chat", StringUtils.getValidString(getText()).replace("\"", "&quot;"), fileUploadController.getFiles());
             fileUploadController.clearFiles(evt);
             text = null;

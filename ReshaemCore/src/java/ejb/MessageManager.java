@@ -475,4 +475,17 @@ public class MessageManager implements MessageManagerLocal {
             return list.get(0);
         return (result.getDateSent().after(list.get(0).getDateSent())) ? result : list.get(0);
     }
+
+    @Override
+    public List<User> getUnreadMessagesUsers(Long userId) {
+        User u = em.find(User.class, userId);
+        if(u == null)
+            return Collections.EMPTY_LIST;
+        List<User> results = em.createQuery("select distinct m.fromUser from Message m where m.toUser = :toUser and m.read = false order by m.dateSent desc", User.class)
+                .setParameter("toUser", u)
+                .getResultList();
+        if(results == null)
+            return Collections.EMPTY_LIST;
+        return results;
+    }
 }

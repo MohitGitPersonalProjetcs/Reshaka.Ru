@@ -2,7 +2,16 @@
     outline:none !important;
     -moz-outline: none !important;
     font-family: Arial, helvetica, sans-serif;
+    font-size: 12px;
 }
+
+@media only screen and (max-device-width: 768px) {
+    /* tablets in portrait mode */
+    * {
+        font-size: 13px;
+    }
+}
+
 /* Main */
 body {
     overflow-x: hidden;
@@ -43,6 +52,12 @@ a:hover {
     top: 0px; 
     width: 100%; 
     z-index: 50;
+}
+
+.widget-title span img {
+    padding-right: 5px;
+    vertical-align: middle;
+    height: 16px;
 }
 
 .widget-title, .modal-header, .table th, div.dataTables_wrapper .ui-widget-header {
@@ -213,6 +228,14 @@ a:hover {
     background-color: #EEEEFF;
 }
 
+#chat-messages-inner .msg-block.friend a {
+    color: blue;
+}
+
+#chat-messages-inner .msg-block.me a {
+    color: red;
+}
+
 #chat-dialogs-inner .dlg-block {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #cccccc;
@@ -237,7 +260,7 @@ a:hover {
 }
 #chat-messages-inner .msg, #chat-dialogs-inner .msg {
     display: block;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 #chat-messages-inner .msg-block:before, #chat-dialogs-inner .dlg-block:before {
     border-right: 7px solid rgba(0,0,0,0.1);
@@ -432,6 +455,10 @@ a:hover {
         width: 100%; 
         z-index: 0;
         height: auto;
+    }
+
+    * {
+        font-size: 12px;
     }
 }
 
