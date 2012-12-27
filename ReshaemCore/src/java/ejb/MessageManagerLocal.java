@@ -25,6 +25,8 @@ public interface MessageManagerLocal {
     
     List<Message> getOutcomingMessages(long owner, Long toUser, Date afterDate, Date beforeDate);
     
+    List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate, boolean markRead);
+    
     Set<SimpleUser> getRecentUsers(long owner);
     
     Set<SimpleUser> getRecentUsers(long owner, int limit); 

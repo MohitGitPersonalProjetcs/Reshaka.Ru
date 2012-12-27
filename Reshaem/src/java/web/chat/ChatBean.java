@@ -90,6 +90,10 @@ public class ChatBean implements Serializable {
 
     private List<SimpleUser> peers;
 
+    private boolean godMode;
+
+    private String dialogStr;
+
     /**
      * Creates a new instance of ChatBean
      */
@@ -107,6 +111,8 @@ public class ChatBean implements Serializable {
 
         Map<String, String> params = fctx.getExternalContext().getRequestParameterMap();
         friendStr = StringUtils.getValidString(params.get("friend"));
+        godMode = (params.get("godmode") != null) && me.getUserGroup() == User.ADMIN;
+        dialogStr = params.get("dialog");
 
         if (log.isTraceEnabled()) {
             log.trace("ChatBean(): friendStr = " + friendStr);
@@ -156,7 +162,7 @@ public class ChatBean implements Serializable {
             friend = new SimpleUser();
             friendId = null;
         }
-        if (friendId != null && friendId != 0) {
+        if ((friendId != null && friendId != 0) || (godMode && dialogStr != null)) {
             mode = MESSAGES_MODE;
         }
         if (DIALOGS_MODE.equalsIgnoreCase(mode)) {
@@ -167,6 +173,11 @@ public class ChatBean implements Serializable {
 
     private void parsePeers() {
         peers = new ArrayList<>();
+
+        // add admin to the top!
+        if (me.getUserGroup() != User.ADMIN) {
+            addUserToPeers(um.getUserById(cm.getAdminId()));
+        }
 
         // get peers liest from request parameter
         // if there is no such parameter, load it from session
@@ -257,27 +268,56 @@ public class ChatBean implements Serializable {
 
     private void loadDialogs() {
         dialogs.clear();
-        Set<SimpleUser> users = mm.getRecentUsers(me.getId());
-        SimpleUser me = new SimpleUser(this.me);
-        me.setOnline(true);
-        for (SimpleUser su : users) {
-            Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
-            ChatDialog cd = new ChatDialog();
-            cd.setLastMessage(new ChatMessage(lastMessage));
-            cd.setUser1(me);
-            cd.setUser2(su);
-            su.setOnline(SessionListener.isOnline(su.getId()));
-            cd.setLastMessageDate(lastMessage.getDateSent());
-            cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
-            dialogs.add(cd);
-        }
-
-        Collections.sort(dialogs, new Comparator<ChatDialog>() {
-            @Override
-            public int compare(ChatDialog o1, ChatDialog o2) {
-                return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
+        if (!godMode) {
+            Set<SimpleUser> users = mm.getRecentUsers(me.getId());
+            SimpleUser me = new SimpleUser(this.me);
+            me.setOnline(true);
+            for (SimpleUser su : users) {
+                Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
+                ChatDialog cd = new ChatDialog();
+                cd.setLastMessage(new ChatMessage(lastMessage));
+                cd.setUser1(me);
+                cd.setUser2(su);
+                su.setOnline(SessionListener.isOnline(su.getId()));
+                cd.setLastMessageDate(lastMessage.getDateSent());
+                cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
+                dialogs.add(cd);
             }
-        });
+
+            Collections.sort(dialogs, new Comparator<ChatDialog>() {
+                @Override
+                public int compare(ChatDialog o1, ChatDialog o2) {
+                    return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
+                }
+            });
+        } else {
+            List<User> allUsers = um.getAllRegisteredUsers();
+            for (User u : allUsers) {
+                Set<SimpleUser> users = mm.getRecentUsers(u.getId());
+                SimpleUser me = new SimpleUser(u);
+                me.setOnline(true);
+                for (SimpleUser su : users) {
+                    Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
+                    ChatDialog cd = new ChatDialog();
+                    cd.setLastMessage(new ChatMessage(lastMessage));
+                    cd.setUser1(me);
+                    cd.setUser2(su);
+                    su.setOnline(SessionListener.isOnline(su.getId()));
+                    cd.setLastMessageDate(lastMessage.getDateSent());
+                    cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
+                    if (!dialogs.contains(cd)) {
+                        dialogs.add(cd);
+                    }
+                }
+
+                Collections.sort(dialogs, new Comparator<ChatDialog>() {
+                    @Override
+                    public int compare(ChatDialog o1, ChatDialog o2) {
+                        return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
+                    }
+                });
+            }
+        }
     }
 
     public void refreshDialogs() {
@@ -320,6 +360,10 @@ public class ChatBean implements Serializable {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public boolean isGodMode() {
+        return godMode;
     }
 
     public FileUploadController getFileUploadController() {
@@ -433,8 +477,8 @@ public class ChatBean implements Serializable {
                 }
             }
         }
-        
-        if(messageSent && needToSendEmail) {
+
+        if (messageSent && needToSendEmail) {
             sendEmailNotification();
         }
     }
@@ -442,13 +486,11 @@ public class ChatBean implements Serializable {
     private void sendEmailNotification() {
         MailQueue.getInstance().addMyMail(
                 new MyMail(
-                        "Reshaka.Ru: Вам пришло новое сообщение",
-                        MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
-                                + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), me.getId()),
-                        friend.getEmail(), 
-                        friend.getLogin()
-                    )
-                );
+                "Reshaka.Ru: Вам пришло новое сообщение",
+                MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
+                + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), me.getId()),
+                friend.getEmail(),
+                friend.getLogin()));
     }
 
     private void sendFileMessage(long fileId) {
@@ -552,22 +594,11 @@ public class ChatBean implements Serializable {
             }
         });
 
-        log.debug("Requesting messages from " + lastUpdate + " till now");
-        List<Message> msgs = mm.getIncomingMessages(me.getId(), friendId, lastUpdate, null);
-        if (msgs != null) {
-            for (Message m : msgs) {
-                s.add(new ChatMessage(m));
-            }
-            msgs.clear();
+        List<Message> msgs = getNewMessages(me.getId(), friendId, true);
+        for (Message m : msgs) {
+            s.add(new ChatMessage(m));
         }
-
-        msgs = mm.getOutcomingMessages(me.getId(), friendId, lastUpdate, null);
-        if (msgs != null) {
-            for (Message m : msgs) {
-                s.add(new ChatMessage(m));
-            }
-            msgs.clear();
-        }
+        msgs.clear();
 
         Date maxDate = new Date(0);
 
@@ -583,6 +614,75 @@ public class ChatBean implements Serializable {
         return s;
     }
 
+    private List<Message> getNewMessages(long userA, Long userB, boolean markRead) {
+        List<Message> result = mm.getIncomingMessages(userA, userB, lastUpdate, null, markRead);
+        if (result == null) {
+            result = new ArrayList<>();
+        }
+
+        List<Message> msgs = mm.getOutcomingMessages(userA, userB, lastUpdate, null);
+        if (msgs != null) {
+            result.addAll(msgs);
+        }
+
+        return result;
+    }
+
+    private void requestDialogMessages(String dialogStr) {
+        RequestContext ctx = RequestContext.getCurrentInstance();
+        Set<ChatMessage> s = new TreeSet<>(new Comparator<ChatMessage>() {
+            @Override
+            public int compare(ChatMessage t, ChatMessage t1) {
+                if (t.getDateSent().after(t1.getDateSent())) {
+                    return 1;
+                }
+                if (t.getDateSent().before(t1.getDateSent())) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        dialogStr = StringUtils.getValidString(dialogStr);
+        String[] ids = dialogStr.split("\\_");
+        if (ids.length == 2) {
+            long userId1 = StringUtils.getValidLong(ids[0]);
+            long userId2 = StringUtils.getValidLong(ids[1]);
+            if (userId1 != 0 || userId2 != 0) {
+                Long userA, userB;
+                if (userId1 == 0) {
+                    userA = userId2;
+                    userB = userId1;
+                } else if (userId2 == 0) {
+                    userA = userId1;
+                    userB = userId2;
+                } else {
+                    userA = userId1;
+                    userB = userId2;
+                }
+                List<Message> msgs = getNewMessages(userA, userB, false);
+                for (Message m : msgs) {
+                    s.add(new ChatMessage(m));
+                }
+                msgs.clear();
+                Date maxDate = new Date(0);
+
+                for (ChatMessage m : s) {
+                    if (maxDate.before(m.getDateSent())) {
+                        maxDate = m.getDateSent();
+                    }
+                }
+                if (lastUpdate == null || maxDate.after(lastUpdate)) {
+                    lastUpdate = maxDate;
+                }
+            }
+        }
+
+        ctx.addCallbackParam("ok", !s.isEmpty());
+        ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
+    }
+
     public void requestNewMessages(ActionEvent evt) {
         if (me == null) {
             return;
@@ -590,6 +690,11 @@ public class ChatBean implements Serializable {
 
         if (adminMode && "_stream".equalsIgnoreCase(friendStr)) {
             requestStreamMessages();
+            return;
+        }
+
+        if (godMode && dialogStr != null) {
+            requestDialogMessages(dialogStr);
             return;
         }
 

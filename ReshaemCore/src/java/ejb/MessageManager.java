@@ -488,4 +488,53 @@ public class MessageManager implements MessageManagerLocal {
             return Collections.EMPTY_LIST;
         return results;
     }
+    
+    @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.REQUIRED)
+    public List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate, boolean markRead) {
+        if(markRead)
+            return getIncomingMessages(owner, fromUser, afterDate, beforeDate);
+        
+        List<Message> messages = null;
+
+        Query q = null;
+        if (fromUser == null) {
+            q = em.createNamedQuery("Message.findIncomingBetween");
+        } else {
+            q = em.createNamedQuery("Message.findIncomingFromUserBetween");
+        }
+
+        User u = em.find(User.class, owner);
+        if (u == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("<< getIncomingMessages(): no user with ID=" + owner);
+            }
+            return Collections.EMPTY_LIST;
+        }
+        q.setParameter("owner", u);
+
+        if (fromUser != null) {
+            u = em.find(User.class, fromUser);
+            if (u == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("<< getIncomingMessages(): no user with ID=" + fromUser);
+                }
+                return Collections.EMPTY_LIST;
+            }
+            q.setParameter("fromUser", u);
+        }
+
+        if (afterDate == null) {
+            afterDate = new Date(0);
+        }
+        q.setParameter("afterDate", afterDate);
+        if (beforeDate == null) {
+            beforeDate = new Date();
+        }
+        q.setParameter("beforeDate", beforeDate);
+        
+        messages = (List<Message>) q.getResultList();
+        
+        return messages;
+    }
 }

@@ -3,6 +3,7 @@ package web.chat;
 import data.SimpleUser;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 
@@ -63,5 +64,29 @@ public class ChatDialog implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ChatDialog other = (ChatDialog) obj;
+        if (!Objects.equals(this.user1, other.user1) && !Objects.equals(this.user1, other.user2)) {
+            return false;
+        }
+        if (!Objects.equals(this.user2, other.user1) && !Objects.equals(this.user2, other.user1)) {
+            return false;
+        }
+        return true;
     }
 }

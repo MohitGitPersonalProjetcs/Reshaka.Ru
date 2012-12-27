@@ -246,6 +246,10 @@ a:hover {
     position: relative;
 }
 
+#chat-dialogs-inner .dlg-block.new {
+    background-color: #CCFFBB;
+}
+
 #chat-dialogs-inner .dlg-block:hover {
     background-color: #F0FFF0;
 }

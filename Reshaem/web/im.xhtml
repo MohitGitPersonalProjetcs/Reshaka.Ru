@@ -216,13 +216,12 @@
 
         <h:body rendered="#{webSession.signedIn}">
             <div class="widget-title">
-                <h5><span><a title="Распахнуть чат на всё окно" href="#{request.contextPath}/im.xhtml" target="_parent"><img src="images/open_in_new_window.png"/></a></span>Reshaka.Ru: <span><h:link title="Вернуться к диалогам" value="Диалоги" outcome="im.xhtml" rendered="#{chatBean.mode == 'MESSAGES'}"><f:param name="peers" value="#{chatBean.validPeersParam}"/></h:link></span><h:outputText value="Диалоги" rendered="#{chatBean.mode == 'DIALOGS'}"/><h:outputText value="&nbsp;|&nbsp;Сообщения" rendered="#{chatBean.mode == 'MESSAGES'}"/></h5>
+                <h5><span><a title="Распахнуть чат на всё окно" href="#{request.contextPath}/im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}" target="_parent"><img src="images/open_in_new_window.png"/></a></span>Reshaka.Ru: <span><h:link title="Вернуться к диалогам" value="Диалоги" outcome="im.xhtml" rendered="#{chatBean.mode == 'MESSAGES'}"><f:param name="peers" value="#{chatBean.validPeersParam}"/></h:link></span><h:outputText value="Диалоги" rendered="#{chatBean.mode == 'DIALOGS'}"/><h:outputText value="&nbsp;|&nbsp;Сообщения" rendered="#{chatBean.mode == 'MESSAGES'}"/></h5>
                 <span id="chat-search-user">
                     <h:form id="chat-user-search-form" prependId="false">
-
                         <img src="images/search_user_256.png" style="height: 20px;"/><p:autoComplete id="chat-user-search-input" completeMethod="#{chatBean.completeLogin}" value="#{chatBean.selectedUser}"
-                                                                                                                                              var="u" itemLabel="#{u.login}" itemValue="#{u}" converter="simpleUser" forceSelection="true"
-                                                                                                                                              title="Начните вводить имя пользователя">
+                                                                                                     var="u" itemLabel="#{u.login}" itemValue="#{u}" converter="simpleUser" forceSelection="true"
+                                                                                                     title="Начните вводить имя пользователя">
                             <p:ajax event="itemSelect" listener="#{chatBean.changeUser}" process="@this" oncomplete="handleChangeUser(xhr, status, args);"/>
                         </p:autoComplete> 
                     </h:form>
@@ -237,14 +236,39 @@
                 </div>
                 <div id="chat-messages-stub-bottom" style="height: 130px;"></div>
             </h:panelGroup>
-            <h:panelGroup  class="chat-dialogs" id="chat-dialogs" rendered="#{chatBean.mode == 'DIALOGS'}">
+            <h:panelGroup  class="chat-dialogs" id="chat-dialogs" rendered="#{chatBean.mode == 'DIALOGS' and !chatBean.godMode}">
+                <div id="chat-dialogs-stub-top" style="height: 40px;"></div>
+                <div id="chat-dialogs-inner">
+                    <!-- List of dialogs -->
+                    <c:forEach var="dialog" items="#{chatBean.allDialogs}">
+                        <p style="display: block;">
+                            <c:if test="#{dialog.newMessages >= 1}">
+                                <span style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}" class="dlg-block new">
+                                    <strong>Диалог с #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
+                                    <span class="time">#{dialog.lastMessageDate}</span>
+                                    <span class="msg">Последнее сообщение: <i>#{dialog.lastMessage.text}</i> <a style="text-decoration: none;" href="#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}">>></a></span>
+                                </span>
+                            </c:if>
+                            <c:if test="#{!(dialog.newMessages >= 1)}">
+                                <span style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}" class="dlg-block">
+                                    <strong>Диалог с #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
+                                    <span class="time">#{dialog.lastMessageDate}</span>
+                                    <span class="msg">Последнее сообщение: <i>#{dialog.lastMessage.text}</i> <a style="text-decoration: none;" href="#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}">>></a></span>
+                                </span>
+                            </c:if>
+                        </p>
+                    </c:forEach>
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup  class="chat-dialogs" id="chat-dialogs-godmode" rendered="#{chatBean.mode == 'DIALOGS' and chatBean.godMode}">
                 <div id="chat-dialogs-stub-top" style="height: 40px;"></div>
                 <div id="chat-dialogs-inner">
                     <!-- List of dialogs -->
                     <ui:repeat var="dialog" value="#{chatBean.allDialogs}">
-                        <p style="display: block; cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}">
-                            <span class="dlg-block">
-                                <strong>Диалог с  #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
+                        <p style="display: block;">
+                            <span style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?dialog=#{dialog.user1.id}_#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}&amp;godmode';" title="Открыть чат с #{dialog.user2.login}" class="dlg-block">
+                                <strong>Диалог #{dialog.user1.login} и #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
                                 <span class="time">#{dialog.lastMessageDate}</span>
                                 <span class="msg">Последнее сообщение: <i>#{dialog.lastMessage.text}</i> <a style="text-decoration: none;" href="#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}">>></a></span>
                             </span>
@@ -254,12 +278,12 @@
             </h:panelGroup>
             <!-- END of Chat Messages Container -->	
 
-            <h:panelGroup class="chat-message" rendered="#{chatBean.mode == 'MESSAGES'}">
+            <h:panelGroup class="chat-message" rendered="#{chatBean.mode == 'MESSAGES' and !chatBean.godMode}">
                 <h:form id="chat-message-form" prependId="false">
                     <table style="width: 100%;">
                         <tr>
                             <td>
-                                <p:inputTextarea style="width: 99%; font-size: smaller; height: 100px;" id="msg-box-input" value="#{chatBean.text}"/>
+                                <p:inputTextarea style="width: 99%; height: 100px;" id="msg-box-input" value="#{chatBean.text}"/>
                             </td>
 
                             <td style="width: 40px;">
@@ -293,7 +317,14 @@
                     </form> 
                     <button onclick="addFile();">Добавить файл</button>
                 </div>
-            </h:panelGroup>                   
+            </h:panelGroup> 
+            
+            <h:panelGroup class="chat-message" rendered="#{chatBean.mode == 'MESSAGES' and chatBean.godMode}" style="height: 100px;">
+                <p style="font-size: larger">Здесь будут доступны кнопочки, позволяющие покарать нехорошего юзера. :)</p>
+                <br/>
+                <br/>
+                <br/>
+            </h:panelGroup>  
             <!-- User List -->								
             <div class="chat-users panel-right" style="position: fixed;">
                 <div class="panel-title"><h5>Активные диалоги</h5></div>
