@@ -3,6 +3,7 @@ package web.chat;
 import data.SimpleUser;
 import ejb.AttachmentManagerLocal;
 import ejb.ConfigurationManagerLocal;
+import ejb.MailManagerLocal;
 import ejb.MessageManagerLocal;
 import ejb.UserManagerLocal;
 import ejb.util.StringUtils;
@@ -10,6 +11,7 @@ import entity.Attachment;
 import entity.Message;
 import entity.User;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -23,6 +25,8 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.json.JSONArray;
+import ru.reshaka.core.email.MailQueue;
+import ru.reshaka.core.email.MyMail;
 import web.FileUploadController;
 import web.utils.SessionListener;
 
@@ -49,6 +53,9 @@ public class ChatBean implements Serializable {
 
     @EJB
     private UserManagerLocal um;
+
+    @EJB
+    private MailManagerLocal mailMan;
 
     @EJB
     private AttachmentManagerLocal am;
@@ -160,7 +167,7 @@ public class ChatBean implements Serializable {
 
     private void parsePeers() {
         peers = new ArrayList<>();
-        
+
         // get peers liest from request parameter
         // if there is no such parameter, load it from session
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -192,7 +199,7 @@ public class ChatBean implements Serializable {
             friend.setOnline(SessionListener.isOnline(friendId));
             friend.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), friendId));
         }
-        
+
         // if there are any unread messages from users who are not on the peers list
         // add them to the top of the list
         List<User> unreadMessagesUsers = mm.getUnreadMessagesUsers(me.getId());
@@ -211,7 +218,7 @@ public class ChatBean implements Serializable {
             peers.add(su);
         }
     }
-    
+
     private void addUserToPeers(User u, int index) {
         SimpleUser su = new SimpleUser(u);
         su.setOnline(SessionListener.isOnline(u.getId()));
@@ -404,10 +411,15 @@ public class ChatBean implements Serializable {
         if (me == null) {
             return;
         }
+
+        boolean needToSendEmail = (friendId == null) ? false : !SessionListener.isOnline(friendId);
+        boolean messageSent = false;
+
         if ((text != null && !text.isEmpty()) || !fileUploadController.getFiles().isEmpty()) {
             mm.sendMessageAndUpload(me.getId(), friendId, "chat", StringUtils.getValidString(getText()).replace("\"", "&quot;"), fileUploadController.getFiles());
             fileUploadController.clearFiles(evt);
             text = null;
+            messageSent = true;
         }
 
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -417,9 +429,26 @@ public class ChatBean implements Serializable {
                 long id = StringUtils.getValidLong(fileId);
                 if (id != 0) {
                     sendFileMessage(id);
+                    messageSent = true;
                 }
             }
         }
+        
+        if(messageSent && needToSendEmail) {
+            sendEmailNotification();
+        }
+    }
+
+    private void sendEmailNotification() {
+        MailQueue.getInstance().addMyMail(
+                new MyMail(
+                        "Reshaka.Ru: Вам пришло новое сообщение",
+                        MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
+                                + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), me.getId()),
+                        friend.getEmail(), 
+                        friend.getLogin()
+                    )
+                );
     }
 
     private void sendFileMessage(long fileId) {
