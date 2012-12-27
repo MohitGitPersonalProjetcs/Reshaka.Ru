@@ -65,7 +65,7 @@
                             var date = msgs[i].dateSent;
                             var download = '';
                             if(msgs[i].attachmentId) {
-                                download = ' <a style="font-size: smaller;" href="#{request.contextPath}/download?id='+msgs[i].attachmentId+'" target="_blank">Скачать</a>';
+                                download = ' <a style="font-weight: bold; color: blue;" href="#{request.contextPath}/download?id='+msgs[i].attachmentId+'" target="_blank">Скачать</a>';
                             }
                             var msgClass = '';
                             if(myLogin === msgs[i].fromUserLogin)
@@ -232,6 +232,15 @@
             <h:panelGroup class="chat-messages" id="chat-messages" rendered="#{chatBean.mode == 'MESSAGES'}">
                 <div id="chat-messages-stub-top" style="height: 40px;"></div>
                 <div id="chat-messages-inner">
+                    <p style="display: block; margin-top: 0; margin-bottom: 0;">
+                        <strong>Даилог <h:link target="_blank" title="Это Вы" outcome="profile.xhtml" value="#{chatBean.me.login}">
+                                    <f:param name="id" value="#{chatBean.me.id}"/>
+                                </h:link> 
+                            и <h:link target="_blank" title="Это Ваш собеседник" outcome="profile.xhtml" value="#{chatBean.friend.login}">
+                                    <f:param name="id" value="#{chatBean.friend.id}"/>
+                                </h:link>
+                            </strong>
+                    </p>
                     <!-- List of messages -->
                 </div>
                 <div id="chat-messages-stub-bottom" style="height: 130px;"></div>
@@ -318,7 +327,7 @@
                     <button onclick="addFile();">Добавить файл</button>
                 </div>
             </h:panelGroup> 
-            
+
             <h:panelGroup class="chat-message" rendered="#{chatBean.mode == 'MESSAGES' and chatBean.godMode}" style="height: 100px;">
                 <p style="font-size: larger">Здесь будут доступны кнопочки, позволяющие покарать нехорошего юзера. :)</p>
                 <br/>
