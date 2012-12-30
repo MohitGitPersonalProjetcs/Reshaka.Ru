@@ -307,14 +307,14 @@
                             <c:if test="#{dialog.newMessages >= 1}">
                                 <span style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}" class="dlg-block new">
                                     <strong>Диалог с #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
-                                    <span class="time">#{dialog.lastMessageDate}</span>
+                                    <span class="time">#{dialog.lastMessage.dateSentString}</span>
                                     <span class="msg">Последнее сообщение: <i>#{dialog.lastMessage.text}</i> <a style="text-decoration: none;" href="#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}">>></a></span>
                                 </span>
                             </c:if>
                             <c:if test="#{!(dialog.newMessages >= 1)}">
                                 <span style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}" class="dlg-block">
                                     <strong>Диалог с #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
-                                    <span class="time">#{dialog.lastMessageDate}</span>
+                                    <span class="time">#{dialog.lastMessage.dateSentString}</span>
                                     <span class="msg">Последнее сообщение: <i>#{dialog.lastMessage.text}</i> <a style="text-decoration: none;" href="#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}">>></a></span>
                                 </span>
                             </c:if>
@@ -331,7 +331,7 @@
                         <p style="display: block;">
                             <span style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/im.xhtml?dialog=#{dialog.user1.id}_#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}&amp;godmode';" title="Открыть чат с #{dialog.user2.login}" class="dlg-block">
                                 <strong>Диалог #{dialog.user1.login} и #{dialog.user2.login}</strong>&nbsp;<h:panelGroup rendered="#{dialog.newMessages > 0}">(#{dialog.newMessages})</h:panelGroup>
-                                <span class="time">#{dialog.lastMessageDate}</span>
+                                <span class="time">#{dialog.lastMessage.dateSentString}</span>
                                 <span class="msg">Последнее сообщение: <i>#{dialog.lastMessage.text}</i> <a style="text-decoration: none;" href="#{request.contextPath}/im.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}">>></a></span>
                             </span>
                         </p>
