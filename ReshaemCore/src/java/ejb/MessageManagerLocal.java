@@ -69,5 +69,7 @@ public interface MessageManagerLocal {
      * @return 
      */
     public List<User> getUnreadMessagesUsers(Long userId);
+
+    public void markRemoved(long userId, Long id, String removedBy);
     
 }

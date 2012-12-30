@@ -2,6 +2,7 @@ package ejb;
 
 import data.SimpleUser;
 import ejb.util.ReshakaUploadedFile;
+import ejb.util.StringUtils;
 import entity.Attachment;
 import entity.Message;
 import entity.User;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,15 +28,13 @@ import org.apache.log4j.Logger;
  */
 @Stateless
 public class MessageManager implements MessageManagerLocal {
-
-    private static Logger log = Logger.getLogger(MessageManager.class);
     
+    private static Logger log = Logger.getLogger(MessageManager.class);
     @PersistenceContext(unitName = "ReshaemCorePU")
     private EntityManager em;
-    
     @EJB
     AttachmentManagerLocal am;
-
+    
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.REQUIRED)
     public List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate) {
@@ -42,7 +42,7 @@ public class MessageManager implements MessageManagerLocal {
 //            log.trace(">> getIncomingMessages(): owner=" + owner);
 //        }
         List<Message> messages = null;
-
+        
         Query q = null;
         Query setReadQuery = null;
         if (fromUser == null) {
@@ -58,7 +58,7 @@ public class MessageManager implements MessageManagerLocal {
 //                log.trace("getIncomingMessages(): using query Message.findIncomingFromUserBetween");
 //            }
         }
-
+        
         User u = em.find(User.class, owner);
         if (u == null) {
             if (log.isDebugEnabled()) {
@@ -68,7 +68,7 @@ public class MessageManager implements MessageManagerLocal {
         }
         q.setParameter("owner", u);
         setReadQuery.setParameter("owner", u);
-
+        
         if (fromUser != null) {
             u = em.find(User.class, fromUser);
             if (u == null) {
@@ -80,7 +80,7 @@ public class MessageManager implements MessageManagerLocal {
             q.setParameter("fromUser", u);
             setReadQuery.setParameter("fromUser", u);
         }
-
+        
         if (afterDate == null) {
             afterDate = new Date(0);
         }
@@ -95,19 +95,19 @@ public class MessageManager implements MessageManagerLocal {
         
         messages = (List<Message>) q.getResultList();
         setReadQuery.executeUpdate();
-        
+
 //        if (log.isTraceEnabled()) {
 //            log.trace("<< getIncomingMessages(): " + messages);
 //        }
         return messages;
     }
-
+    
     @Override
     public Message sendMessage(long userFrom, Long userTo, String subject, String text, Long attachment) {
         if (log.isTraceEnabled()) {
             log.trace(">> sendMessage()");
         }
-
+        
         Message msg = new Message();
         try {
             msg.setDateSent(new Date());
@@ -121,28 +121,28 @@ public class MessageManager implements MessageManagerLocal {
             msg.setSubject(subject);
             msg.setText(text);
             msg.setAttachmentId(attachment);
-
+            
             em.persist(msg);
         } catch (Exception ex) {
             log.warn("Failed to send message.", ex);
             return null;
         }
-
+        
         if (log.isTraceEnabled()) {
             log.trace("sendMessage(): message sent > " + msg);
         }
         return msg;
     }
-
+    
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Message> getOutcomingMessages(long owner, Long toUser, Date afterDate, Date beforeDate) {
         if (log.isTraceEnabled()) {
             log.trace(">> getOutcomingMessages(): owner=" + owner);
         }
-
+        
         List<Message> messages = null;
-
+        
         Query q = null;
         if (toUser == null) {
             if (log.isTraceEnabled()) {
@@ -155,7 +155,7 @@ public class MessageManager implements MessageManagerLocal {
             }
             q = em.createNamedQuery("Message.findOutcomingToUserBetween");
         }
-
+        
         User u = em.find(User.class, owner);
         if (u == null) {
             if (log.isTraceEnabled()) {
@@ -164,7 +164,7 @@ public class MessageManager implements MessageManagerLocal {
             return Collections.EMPTY_LIST;
         }
         q.setParameter("owner", u);
-
+        
         if (toUser != null) {
             u = em.find(User.class, toUser);
             if (u == null) {
@@ -175,7 +175,7 @@ public class MessageManager implements MessageManagerLocal {
             }
             q.setParameter("toUser", u);
         }
-
+        
         if (afterDate == null) {
             afterDate = new Date(0);
         }
@@ -184,22 +184,22 @@ public class MessageManager implements MessageManagerLocal {
             beforeDate = new Date();
         }
         q.setParameter("beforeDate", beforeDate);
-
+        
         messages = (List<Message>) q.getResultList();
-
+        
         if (log.isTraceEnabled()) {
             log.trace("<< getOutcomingMessages(): " + messages);
         }
         return messages;
     }
-
+    
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Set<SimpleUser> getRecentUsers(long owner) {
         if (log.isTraceEnabled()) {
             log.trace(">> getRecentUsers(): id=" + owner);
         }
-
+        
         try {
             User u = em.getReference(User.class, owner);
             Query q = em.createQuery("SELECT DISTINCT m.toUser "
@@ -210,7 +210,7 @@ public class MessageManager implements MessageManagerLocal {
             if (users == null) {
                 return Collections.EMPTY_SET;
             }
-            Set<SimpleUser> lst = new HashSet<>(users.size()*2);
+            Set<SimpleUser> lst = new HashSet<>(users.size() * 2);
             for (User user : users) {
                 lst.add(new SimpleUser(user));
             }
@@ -242,7 +242,7 @@ public class MessageManager implements MessageManagerLocal {
         if (log.isTraceEnabled()) {
             log.trace(">> getRecentUsers(): id=" + owner);
         }
-
+        
         try {
             User u = em.getReference(User.class, owner);
             Query q = em.createQuery("SELECT DISTINCT m.toUser "
@@ -254,7 +254,7 @@ public class MessageManager implements MessageManagerLocal {
             if (users == null) {
                 return Collections.EMPTY_SET;
             }
-            Set<SimpleUser> lst = new HashSet<>(users.size()*2);
+            Set<SimpleUser> lst = new HashSet<>(users.size() * 2);
             for (User user : users) {
                 lst.add(new SimpleUser(user));
             }
@@ -280,7 +280,7 @@ public class MessageManager implements MessageManagerLocal {
             return Collections.EMPTY_SET;
         }
     }
-
+    
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<SimpleUser> filterUsersByLogin(long owner, String login) {
@@ -303,13 +303,13 @@ public class MessageManager implements MessageManagerLocal {
         }
         return lst;
     }
-
+    
     @Override
     public Message sendMessageAndUpload(long userFrom, Long userTo, String subject, String text, List<ReshakaUploadedFile> files) {
         if (log.isTraceEnabled()) {
             log.trace(">> sendMessageAndUpload()");
         }
-
+        
         Message msg = new Message();
         try {
             msg.setDateSent(new Date());
@@ -319,7 +319,7 @@ public class MessageManager implements MessageManagerLocal {
             if (att != null) {
                 am.shareFile(att.getId(), userFrom, userTo);
                 msg.setAttachmentId(att.getId());
-            } else if(files!=null&&!files.isEmpty()) {
+            } else if (files != null && !files.isEmpty()) {
                 text += " (ошибка прикрепления файла)";
                 sendMessage(userFrom, userTo, "chat-error", "Невозможно отправить файл. Возможно слишком большой размер.", null);
             }
@@ -328,19 +328,19 @@ public class MessageManager implements MessageManagerLocal {
             msg.setRead(false);
             msg.setSubject(subject);
             msg.setText(text);
-
+            
             em.persist(msg);
         } catch (Exception ex) {
             log.warn("Failed to send message.", ex);
             return null;
         }
-
+        
         if (log.isTraceEnabled()) {
             log.trace("sendMessageAndUpload(): message sent > " + msg);
         }
         return msg;
     }
-
+    
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public List<Message> getAnyMessages(long id, Long mailBoxOwner, Date afterDate, Date beforeDate) {
@@ -363,7 +363,7 @@ public class MessageManager implements MessageManagerLocal {
             return null;
         }
         List<Message> messages = Collections.EMPTY_LIST;
-
+        
         Query q = null;
         if (mailBoxOwner == null) {
 //            if (log.isTraceEnabled()) {
@@ -376,7 +376,7 @@ public class MessageManager implements MessageManagerLocal {
 //            }
             q = em.createNamedQuery("Message.findAllOfUserBetween");
         }
-
+        
         if (mailBoxOwner != null) {
             User u = em.find(User.class, mailBoxOwner);
             if (u == null) {
@@ -387,8 +387,8 @@ public class MessageManager implements MessageManagerLocal {
             }
             q.setParameter("owner", u);
         }
-
-
+        
+        
         if (afterDate == null) {
             afterDate = new Date(0);
         }
@@ -397,7 +397,7 @@ public class MessageManager implements MessageManagerLocal {
             beforeDate = new Date();
         }
         q.setParameter("beforeDate", beforeDate);
-
+        
         messages = (List<Message>) q.getResultList();
 
 //        if (log.isTraceEnabled()) {
@@ -405,7 +405,7 @@ public class MessageManager implements MessageManagerLocal {
 //        }
         return messages;
     }
-
+    
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public boolean hasUnreadMessages(Long id) {
@@ -413,15 +413,15 @@ public class MessageManager implements MessageManagerLocal {
             log.trace(">> hasUnreadMessages(): id = " + id);
         }
         int r = getUnreadMessagesNumber(id, null);
-        if(r==0) {
+        if (r == 0) {
             return false;
-        }   
+        }        
         if (log.isTraceEnabled()) {
             log.trace("<< hasUnreadMessages()");
         }
         return true;
     }
-
+    
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public int getUnreadMessagesNumber(long id, Long fromUserId) {
@@ -451,7 +451,7 @@ public class MessageManager implements MessageManagerLocal {
 //        }
         return n.intValue();
     }
-
+    
     @Override
     public Message getLastMessage(Long userId1, Long userId2) {
         Query q = em.createQuery("select m from Message m where "
@@ -462,48 +462,54 @@ public class MessageManager implements MessageManagerLocal {
                 .setMaxResults(1)
                 .getResultList();
         Message result = null;
-        if(!list.isEmpty())
+        if (!list.isEmpty()) {
             result = list.get(0);
+        }
         
         list = q.setParameter("userId1", userId2)
                 .setParameter("userId2", userId1)
                 .setMaxResults(1)
                 .getResultList();
-        if(list.isEmpty())
+        if (list.isEmpty()) {
             return result;
-        if(result == null)
+        }
+        if (result == null) {
             return list.get(0);
+        }
         return (result.getDateSent().after(list.get(0).getDateSent())) ? result : list.get(0);
     }
-
+    
     @Override
     public List<User> getUnreadMessagesUsers(Long userId) {
         User u = em.find(User.class, userId);
-        if(u == null)
+        if (u == null) {
             return Collections.EMPTY_LIST;
+        }
         List<User> results = em.createQuery("select distinct m.fromUser from Message m where m.toUser = :toUser and m.read = false order by m.dateSent desc", User.class)
                 .setParameter("toUser", u)
                 .getResultList();
-        if(results == null)
+        if (results == null) {
             return Collections.EMPTY_LIST;
+        }
         return results;
     }
     
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.REQUIRED)
     public List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate, boolean markRead) {
-        if(markRead)
+        if (markRead) {
             return getIncomingMessages(owner, fromUser, afterDate, beforeDate);
+        }
         
         List<Message> messages = null;
-
+        
         Query q = null;
         if (fromUser == null) {
             q = em.createNamedQuery("Message.findIncomingBetween");
         } else {
             q = em.createNamedQuery("Message.findIncomingFromUserBetween");
         }
-
+        
         User u = em.find(User.class, owner);
         if (u == null) {
             if (log.isDebugEnabled()) {
@@ -512,7 +518,7 @@ public class MessageManager implements MessageManagerLocal {
             return Collections.EMPTY_LIST;
         }
         q.setParameter("owner", u);
-
+        
         if (fromUser != null) {
             u = em.find(User.class, fromUser);
             if (u == null) {
@@ -523,7 +529,7 @@ public class MessageManager implements MessageManagerLocal {
             }
             q.setParameter("fromUser", u);
         }
-
+        
         if (afterDate == null) {
             afterDate = new Date(0);
         }
@@ -536,5 +542,49 @@ public class MessageManager implements MessageManagerLocal {
         messages = (List<Message>) q.getResultList();
         
         return messages;
+    }
+    
+    @Override
+    public void markRemoved(long userId, Long id, String removedBy) {
+        User u = em.find(User.class, userId);
+        if (u == null) {
+            log.debug("markRemoved(): not authorized!");
+            throw new EJBException("You are not authorized for this operation.");
+        }
+        if (Message.REMOVED_BY_ADMIN.equalsIgnoreCase(removedBy)
+                && u.getUserGroup() != User.ADMIN) {
+            log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+            throw new EJBException("You are not authorized for this operation.");
+        }
+        
+        Message msg = em.find(Message.class, id);
+        if (msg == null) {
+            log.debug("markRemoved(): no message with such id: " + id);
+            throw new EJBException("You are not authorized for this operation.");
+        }
+        
+        if (Message.REMOVED_BY_BOTH.equalsIgnoreCase(removedBy) || Message.REMOVED_BY_SENDER.equalsIgnoreCase(removedBy)) {
+            // user must be sender of the message or admin
+            if (u.getUserGroup() != User.ADMIN && !u.equals(msg.getFromUser())) {
+                log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+                throw new EJBException("You are not authorized for this operation.");
+            }
+        }
+        
+        if(Message.REMOVED_BY_RECEIVER.equalsIgnoreCase(removedBy)) {
+            if (u.getUserGroup() != User.ADMIN && !u.equals(msg.getToUser())) {
+                log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+                throw new EJBException("You are not authorized for this operation.");
+            }
+        }
+        
+        if(StringUtils.isEmpty(removedBy)) {
+            if(u.getUserGroup() != User.ADMIN) {
+                log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+                throw new EJBException("You are not authorized for this operation.");
+            }
+        }
+        
+        msg.setRemovedBy(removedBy);
     }
 }

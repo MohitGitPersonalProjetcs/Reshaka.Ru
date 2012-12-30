@@ -22,8 +22,6 @@
             <c:if test="#{chatBean.mode == 'MESSAGES'}">
                 <script type="text/javascript" src="js/urlize.js"></script>
                 <script type="text/javascript">
-            
-        
                     var chatMessageKeydown = function (e) {
                         if (e.ctrlKey) {
                             if(e.keyCode == 13) {
@@ -42,10 +40,6 @@
             
                     var myLogin = '#{webSession.login}';
                     var myRole = #{webSession.group};
-        
-                    function deleteMessage(id) {
-                        alert('You cannot delete message with ID='+id+' at the moment. The operation is not supported.');
-                    }
                     
                     function stripTags(s) {
                         var result = (s || '').replace(/(&lt;([^>]+)>)/ig,'');
@@ -80,13 +74,173 @@
                                 + '</div>'
                             
                             inner.append(html);
+                            
+                            if(myLogin === msgs[i].fromUserLogin || myRole == 1) {
+                                $('#msg-'+msgs[i].messageId).hover(
+                                    function () {
+                                        var id = $(this).attr('id').substring(4);
+                                        $(this).prepend($(
+                                            '<span class="chat-msg-control-buttons">'
+                                            + '<img src="#{request.contextPath}/images/remove.png" title="Удалить сообщение" onclick="requestRemoveMessage('+id+')"/>'    
+                                            + '</span>'));
+                                    }, 
+                                    function () {
+                                        $(this).find('span.chat-msg-control-buttons:first').remove();
+                                    }
+                                );
+                            }
+                            
                             $('body').animate({ scrollTop: inner.height() },0);
                         }
                     } 
+                    
+                    function fileSelectListener(e) {
+                        var file = this.files[0];
+                        var size = file.size;
+//                        if(size > 40*1024*1024) {
+//                            $(this).val('');
+//                            alert('Максимальный размер файла: 40 МБ.');
+//                        }
+                    }
+                
+                    function addFile() {
+                        $('#chat-files-form').append('<div> <span>X</span> <input type="file" name="files[]"/></div>');
+                        $('#chat-files-form div span').each(function(t) {
+                            $(this).click(function() {
+                                $(this.parentNode).remove();
+                            });
+                        });
+                        updateFileSelectListeners();
+                        return false;
+                    }
+            
+                    function clearForms() {
+                        $('#chat-message-form input[name=\'attached_files[]\']').remove();
+                        $('#msg-box-input').val('').focus();
+                        $('#chat-attachment-panel').css('display', 'none');
+                        $('#chat-files-form div input').val('');
+                        updateFileSelectListeners();
+                    }
+            
+                    function needToBlock() {
+                        var result = false;
+                        $('#chat-files-form div :file').each(function() {
+                            var file = this.files[0];
+                            if(file !== undefined)
+                                if(file.size)
+                                    result = true;
+                        });
+                        return result;
+                    }
+            
+                    function uploadFiles() {
+                        $('#msg-box-input').val(stripTags($('#msg-box-input').val()));
+                        if(needToBlock()) {
+                            blockUI();
+                            var formData = new FormData($('#chat-files-form')[0]);
+                            $.ajax({
+                                url: '#{request.contextPath}/upload',  //server script to process data
+                                type: 'POST',
+                                //Ajax events
+                                success: completeHandler = function(data) {
+                                    var files = data.documentElement;
+                                    var ids = data.getElementsByTagName('id');
+                                    var form = $('#chat-message-form');
+                                    for(i in ids) {
+                                        if(ids[i].firstChild === undefined)
+                                            continue;
+
+                                        form.append('<input type="hidden" name="attached_files[]" value="'+ids[i].firstChild.nodeValue+'"/>');
+                                    }
+                                    $('#chat-files-form div input').val('');
+                                    $('#chatMessageSubmitButton').click();
+                                    unblockUI();
+                                },
+                                error: errorHandler = function() {
+                                    //alert('Не удалось загрузить файл(ы).');
+                                    $('#chat-files-form div input').val('');
+                                    $('#chat-message-form input[name=\'attached_files[]\']').remove();
+                                    $('#chatMessageSubmitButton').click();
+                                    unblockUI();
+                                },
+                                // Form data
+                                data: formData,
+                                //Options to tell JQuery not to process data or worry about content-type
+                                cache: false,
+                                contentType: false,
+                                processData: false
+                            }, 'xml');
+                        } else {
+                            $('#chat-files-form div input').val('');
+                            $('#chatMessageSubmitButton').click();
+                            unblockUI();
+                        }
+                        return false;
+                    }
+                
+                    function blockUI() {
+                        $.blockUI({ css: {
+                                border: 'none', 
+                                padding: '15px', 
+                                backgroundColor: '#000', 
+                                '-webkit-border-radius': '10px', 
+                                '-moz-border-radius': '10px', 
+                                opacity: .5, 
+                                color: '#fff' 
+                            },
+                            message: '<h2>Загрузка файлов...</h2><a style="font-size: larger;" href="im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}">Сброс</a>'
+                        }); 
+                    }
+                
+                    function unblockUI() {
+                        $.unblockUI();
+                    }
+                
+                    function updateFileSelectListeners() {
+                        $('#chat-files-form div :file').unbind('change');
+                        $('#chat-files-form div :file').change(fileSelectListener);
+                    }
+                    
+                    function removeMessageSuccess(data) {
+                        if(data === undefined) {
+                            alert('Internal server error.');
+                            return;
+                        }
+                        
+                        var ids = data.getElementsByTagName('messageId');
+                        for(i in ids) {
+                            if(ids[i].firstChild === undefined)
+                                continue;
+                            $('#msg-'+ids[i].firstChild.nodeValue).remove();
+                        }
+                    }
+                    
+                    function requestRemoveMessage(id) {
+                        xmlRpcExecute(
+                        'ejb.util.rpc.RemoveMassgeXmlRpcHandler', 
+                        '<RemoveMessage><MessageId>'+id+'</MessageId></RemoveMessage>',
+                        false,
+                        removeMessageSuccess
+                    );
+                    }
+                
+                    $(document).ready(function() {
+                        updateFileSelectListeners();
+                    });
                 </script>
             </c:if>
 
             <script type="text/javascript">
+                
+                function xmlRpcExecute(className, xml, async, success) {
+                    return $.post("#{request.contextPath}/server/xmlrpc", 
+                    {
+                        'class_name' : className,
+                        'xml' : xml,
+                        'async' : async
+                    }, success, 'xml');
+                }
+                
                 function changeUser(w, u) {
                     if(u != undefined) {
                         if(w.parent.location.href.indexOf('ichat')>=0)
@@ -97,118 +251,7 @@
             
                 function handleChangeUser(xhr, status, args) {
                     changeUser(window, args.friend);
-                } 
-                
-                function fileSelectListener(e) {
-                    var file = this.files[0];
-                    var size = file.size;
-                    if(size > 40*1024*1024) {
-                        $(this).val('');
-                        alert("Максимальный размер файла: 40 МБ.");
-                    }
                 }
-                
-                function addFile() {
-                    $('#chat-files-form').append('<div> <span>X</span> <input type="file" name="files[]"/></div>');
-                    $('#chat-files-form div span').each(function(t) {
-                        $(this).click(function() {
-                            $(this.parentNode).remove();
-                        });
-                    });
-                    updateFileSelectListeners();
-                    return false;
-                }
-            
-                function clearForms() {
-                    $('#chat-message-form input[name=\'attached_files[]\']').remove();
-                    $('#msg-box-input').val('').focus();
-                    $('#chat-attachment-panel').css('display', 'none');
-                    $('#chat-files-form div input').val('');
-                    updateFileSelectListeners();
-                }
-            
-                function needToBlock() {
-                    var result = false;
-                    $('#chat-files-form div :file').each(function() {
-                        var file = this.files[0];
-                        if(file !== undefined)
-                            if(file.size)
-                                result = true;
-                    });
-                    return result;
-                }
-            
-                function uploadFiles() {
-                    $('#msg-box-input').val(stripTags($('#msg-box-input').val()));
-                    if(needToBlock()) {
-                        blockUI();
-                        var formData = new FormData($('#chat-files-form')[0]);
-                        $.ajax({
-                            url: '#{request.contextPath}/upload',  //server script to process data
-                            type: 'POST',
-                            //Ajax events
-                            success: completeHandler = function(data) {
-                                var files = data.documentElement;
-                                var ids = data.getElementsByTagName('id');
-                                var form = $('#chat-message-form');
-                                for(i in ids) {
-                                    if(ids[i].firstChild === undefined)
-                                        continue;
-
-                                    form.append('<input type="hidden" name="attached_files[]" value="'+ids[i].firstChild.nodeValue+'"/>');
-                                }
-                                $('#chat-files-form div input').val('');
-                                $('#chatMessageSubmitButton').click();
-                                unblockUI();
-                            },
-                            error: errorHandler = function() {
-                                //alert('Не удалось загрузить файл(ы).');
-                                $('#chat-files-form div input').val('');
-                                $('#chat-message-form input[name=\'attached_files[]\']').remove();
-                                $('#chatMessageSubmitButton').click();
-                                unblockUI();
-                            },
-                            // Form data
-                            data: formData,
-                            //Options to tell JQuery not to process data or worry about content-type
-                            cache: false,
-                            contentType: false,
-                            processData: false
-                        }, 'xml');
-                    } else {
-                        $('#chat-files-form div input').val('');
-                        $('#chatMessageSubmitButton').click();
-                        unblockUI();
-                    }
-                    return false;
-                }
-                
-                function blockUI() {
-                    $.blockUI({ css: {
-                            border: 'none', 
-                            padding: '15px', 
-                            backgroundColor: '#000', 
-                            '-webkit-border-radius': '10px', 
-                            '-moz-border-radius': '10px', 
-                            opacity: .5, 
-                            color: '#fff' 
-                        },
-                        message: '<h2>Загрузка файлов...</h2><a style="font-size: larger;" href="im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}">Сброс</a>'
-                    }); 
-                }
-                
-                function unblockUI() {
-                    $.unblockUI();
-                }
-                
-                function updateFileSelectListeners() {
-                    $('#chat-files-form div :file').unbind('change');
-                    $('#chat-files-form div :file').change(fileSelectListener);
-                }
-                
-                $(document).ready(function() {
-                    updateFileSelectListeners();
-                });
                 
             </script>
 
@@ -229,22 +272,31 @@
                 <span style="clear: right;"/>
             </div>
             <!-- Chat Messages Container -->           
-            <h:panelGroup class="chat-messages" id="chat-messages" rendered="#{chatBean.mode == 'MESSAGES'}">
+            <h:panelGroup class="chat-messages" id="chat-messages" rendered="#{chatBean.mode == 'MESSAGES' and !chatBean.godMode}">
                 <div id="chat-messages-stub-top" style="height: 40px;"></div>
                 <div id="chat-messages-inner">
                     <p style="display: block; margin-top: 0; margin-bottom: 0;">
                         <strong>Даилог <h:link target="_blank" title="Это Вы" outcome="profile.xhtml" value="#{chatBean.me.login}">
-                                    <f:param name="id" value="#{chatBean.me.id}"/>
-                                </h:link> 
+                                <f:param name="id" value="#{chatBean.me.id}"/>
+                            </h:link> 
                             и <h:link target="_blank" title="Это Ваш собеседник" outcome="profile.xhtml" value="#{chatBean.friend.login}">
-                                    <f:param name="id" value="#{chatBean.friend.id}"/>
-                                </h:link>
-                            </strong>
+                                <f:param name="id" value="#{chatBean.friend.id}"/>
+                            </h:link>
+                        </strong>
                     </p>
                     <!-- List of messages -->
                 </div>
                 <div id="chat-messages-stub-bottom" style="height: 130px;"></div>
             </h:panelGroup>
+            
+            <h:panelGroup class="chat-messages" id="chat-messages-godmode" rendered="#{chatBean.mode == 'MESSAGES' and chatBean.godMode}">
+                <div id="chat-messages-stub-top" style="height: 40px;"></div>
+                <div id="chat-messages-inner">
+                    <!-- List of messages -->
+                </div>
+                <div id="chat-messages-stub-bottom" style="height: 130px;"></div>
+            </h:panelGroup>
+            
             <h:panelGroup  class="chat-dialogs" id="chat-dialogs" rendered="#{chatBean.mode == 'DIALOGS' and !chatBean.godMode}">
                 <div id="chat-dialogs-stub-top" style="height: 40px;"></div>
                 <div id="chat-dialogs-inner">

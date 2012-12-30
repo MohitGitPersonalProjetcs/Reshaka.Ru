@@ -276,6 +276,13 @@ public class ChatBean implements Serializable {
                 Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
                 ChatDialog cd = new ChatDialog();
                 cd.setLastMessage(new ChatMessage(lastMessage));
+                if (Arrays.asList(
+                        Message.REMOVED_BY_ADMIN,
+                        Message.REMOVED_BY_BOTH,
+                        Message.REMOVED_BY_RECEIVER,
+                        Message.REMOVED_BY_SENDER).contains(lastMessage.getRemovedBy())) {
+                    cd.getLastMessage().setText("// Сообщение удалено //");
+                }
                 cd.setUser1(me);
                 cd.setUser2(su);
                 su.setOnline(SessionListener.isOnline(su.getId()));
@@ -596,6 +603,16 @@ public class ChatBean implements Serializable {
 
         List<Message> msgs = getNewMessages(me.getId(), friendId, true);
         for (Message m : msgs) {
+            String r = m.getRemovedBy();
+            if (Message.REMOVED_BY_ADMIN.equalsIgnoreCase(r) || Message.REMOVED_BY_BOTH.equalsIgnoreCase(r)) {
+                continue;
+            }
+            if (me.equals(m.getFromUser()) && Message.REMOVED_BY_SENDER.equalsIgnoreCase(r)) {
+                continue;
+            }
+            if (me.equals(m.getToUser()) && Message.REMOVED_BY_SENDER.equalsIgnoreCase(r)) {
+                continue;
+            }
             s.add(new ChatMessage(m));
         }
         msgs.clear();
@@ -663,7 +680,15 @@ public class ChatBean implements Serializable {
                 }
                 List<Message> msgs = getNewMessages(userA, userB, false);
                 for (Message m : msgs) {
-                    s.add(new ChatMessage(m));
+                    ChatMessage cm = new ChatMessage(m);
+                    if (Arrays.asList(
+                            Message.REMOVED_BY_ADMIN,
+                            Message.REMOVED_BY_BOTH,
+                            Message.REMOVED_BY_RECEIVER,
+                            Message.REMOVED_BY_SENDER).contains(m.getRemovedBy())) {
+                        cm.setText("//DELETED//: " + cm.getText());
+                    }
+                    s.add(cm);
                 }
                 msgs.clear();
                 Date maxDate = new Date(0);

@@ -236,6 +236,22 @@ a:hover {
     color: red;
 }
 
+#chat-messages-inner .chat-msg-control-buttons {
+    z-index: 500;
+    position: absolute;
+    display: block;
+    text-align: right;
+    width: auto;
+    height: 20px;
+    padding-top: 5px;
+    right: 10px;
+}
+
+#chat-messages-inner .chat-msg-control-buttons img {
+    height: 16px;
+    cursor: pointer;
+}
+
 #chat-dialogs-inner .dlg-block {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #cccccc;
@@ -266,6 +282,7 @@ a:hover {
     display: block;
     margin-top: 5px;
 }
+
 #chat-messages-inner .msg-block:before, #chat-dialogs-inner .dlg-block:before {
     border-right: 7px solid rgba(0,0,0,0.1);
     border-top: 7px solid transparent;
