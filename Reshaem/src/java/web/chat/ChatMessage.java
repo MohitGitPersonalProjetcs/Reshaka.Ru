@@ -3,7 +3,9 @@ package web.chat;
 import ejb.util.StringUtils;
 import entity.Message;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -14,6 +16,9 @@ import java.util.Objects;
 public class ChatMessage implements Serializable {
     
     private static final long serialVersionUID = 1L;
+    
+    public static final SimpleDateFormat DATE_FROMAT = new SimpleDateFormat("dd.MM.yyyy 'в' HH:mm:ss", new Locale("ru", "RU"));
+    public static final long TIMEZONE_OFFSET = 60*3;
     
     private Long messageId;
 
@@ -139,6 +144,13 @@ public class ChatMessage implements Serializable {
 
     public void setToUserLogin(String toUserLogin) {
         this.toUserLogin = toUserLogin;
+    }
+    
+    public String getDateSentString() {
+        if(dateSent == null)
+            return null;
+        Date d = new Date(dateSent.getTime() + 60*1000*TIMEZONE_OFFSET);
+        return DATE_FROMAT.format(d).toString();
     }
 
     @Override

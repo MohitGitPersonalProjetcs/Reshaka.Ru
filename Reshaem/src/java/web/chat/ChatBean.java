@@ -491,13 +491,17 @@ public class ChatBean implements Serializable {
     }
 
     private void sendEmailNotification() {
-        MailQueue.getInstance().addMyMail(
+        try {
+            MailQueue.getInstance().addMyMail(
                 new MyMail(
                 "Reshaka.Ru: Вам пришло новое сообщение",
                 MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
                 + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), me.getId()),
                 friend.getEmail(),
                 friend.getLogin()));
+        } catch (Exception ex) {
+            log.error("sendEmilNotification(): failed to send email.");
+        }
     }
 
     private void sendFileMessage(long fileId) {

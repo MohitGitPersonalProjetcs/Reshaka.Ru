@@ -56,7 +56,7 @@
                 
                             var text = urlize(stripTags(msgs[i].text));
                             var from = msgs[i].fromUserLogin;
-                            var date = msgs[i].dateSent;
+                            var date = msgs[i].dateSentString;
                             var download = '';
                             if(msgs[i].attachmentId) {
                                 download = ' <a style="font-weight: bold; color: blue;" href="#{request.contextPath}/download?id='+msgs[i].attachmentId+'" target="_blank">Скачать</a>';
