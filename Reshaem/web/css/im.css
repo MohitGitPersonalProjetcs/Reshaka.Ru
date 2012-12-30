@@ -332,6 +332,7 @@ a:hover {
 #chat-search-user {
     display: inline-block; 
     float: right;
+    padding-right: 10px;
 }
 
 #overlay {
