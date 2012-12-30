@@ -9,6 +9,7 @@
           xmlns:ui="http://java.sun.com/jsf/facelets"
           xmlns:f="http://java.sun.com/jsf/core">
         <h:head>
+            <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
             <meta name="viewport" content="width=420" />
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
             <title>Сообщения - Reshaka.Ru</title>
@@ -43,7 +44,7 @@
                     
                     function stripTags(s) {
                         var result = (s || '').replace(/(&lt;([^>]+)>)/ig,'');
-                        return result.replace(/\r/, '<br/>');
+                        return result.replace(/\r/, ' <br/> ');
                     }
         
                     function updateMessages(xhr, status, args) {

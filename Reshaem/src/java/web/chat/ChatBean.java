@@ -496,7 +496,7 @@ public class ChatBean implements Serializable {
                 new MyMail(
                 "Reshaka.Ru: Вам пришло новое сообщение",
                 MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
-                + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), me.getId()),
+                + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), String.valueOf(me.getId().longValue())),
                 friend.getEmail(),
                 friend.getLogin()));
         } catch (Exception ex) {

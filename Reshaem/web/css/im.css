@@ -237,7 +237,7 @@ a:hover {
 }
 
 #chat-messages-inner .chat-msg-control-buttons {
-    z-index: 500;
+    z-index: 40;
     position: absolute;
     display: block;
     text-align: right;
