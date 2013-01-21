@@ -13,7 +13,9 @@
         <script src="./js/jquery.min.js"></script>
         <script type="text/javascript" src="#{request.contextPath}/js/urlize.js"></script>
         <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
+        <c:if test="#{chatBean.mode == 'DIALOGS'}">
         <f:event type="postAddToView" listener="#{chatBean.refreshDialogs()}" />
+        </c:if>
         <style type="text/css">
             .right {
                 color: red;

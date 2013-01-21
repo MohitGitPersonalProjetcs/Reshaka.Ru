@@ -17,7 +17,9 @@
             <c:if test="#{webSession.signedIn}">
                 <link href="css/im.css" rel="stylesheet" />
             </c:if>
-            <f:event type="postAddToView" listener="#{chatBean.refreshDialogs()}" />
+            <c:if test="#{chatBean.mode == 'DIALOGS'}">
+                <f:event type="postAddToView" listener="#{chatBean.refreshDialogs()}" />
+            </c:if>
         </h:head>
 
         <c:if test="#{webSession.signedIn}">
@@ -80,17 +82,17 @@
                             
                             if(myLogin === msgs[i].fromUserLogin || myRole == 1) {
                                 $('#msg-'+msgs[i].messageId).hover(
-                                    function () {
-                                        var id = $(this).attr('id').substring(4);
-                                        $(this).prepend($(
-                                            '<span class="chat-msg-control-buttons">'
-                                            + '<img src="#{request.contextPath}/images/remove.png" title="Удалить сообщение" onclick="requestRemoveMessage('+id+')"/>'    
-                                            + '</span>'));
-                                    }, 
-                                    function () {
-                                        $(this).find('span.chat-msg-control-buttons:first').remove();
-                                    }
-                                );
+                                function () {
+                                    var id = $(this).attr('id').substring(4);
+                                    $(this).prepend($(
+                                    '<span class="chat-msg-control-buttons">'
+                                        + '<img src="#{request.contextPath}/images/remove.png" title="Удалить сообщение" onclick="requestRemoveMessage('+id+')"/>'    
+                                        + '</span>'));
+                                }, 
+                                function () {
+                                    $(this).find('span.chat-msg-control-buttons:first').remove();
+                                }
+                            );
                             }
                             
                             $('body').animate({ scrollTop: inner.height() },0);
@@ -100,10 +102,10 @@
                     function fileSelectListener(e) {
                         var file = this.files[0];
                         var size = file.size;
-//                        if(size > 40*1024*1024) {
-//                            $(this).val('');
-//                            alert('Максимальный размер файла: 40 МБ.');
-//                        }
+                        //                        if(size > 40*1024*1024) {
+                        //                            $(this).val('');
+                        //                            alert('Максимальный размер файла: 40 МБ.');
+                        //                        }
                     }
                 
                     function addFile() {
@@ -291,7 +293,7 @@
                 </div>
                 <div id="chat-messages-stub-bottom" style="height: 130px;"></div>
             </h:panelGroup>
-            
+
             <h:panelGroup class="chat-messages" id="chat-messages-godmode" rendered="#{chatBean.mode == 'MESSAGES' and chatBean.godMode}">
                 <div id="chat-messages-stub-top" style="height: 40px;"></div>
                 <div id="chat-messages-inner">
@@ -299,7 +301,7 @@
                 </div>
                 <div id="chat-messages-stub-bottom" style="height: 130px;"></div>
             </h:panelGroup>
-            
+
             <h:panelGroup  class="chat-dialogs" id="chat-dialogs" rendered="#{chatBean.mode == 'DIALOGS' and !chatBean.godMode}">
                 <div id="chat-dialogs-stub-top" style="height: 40px;"></div>
                 <div id="chat-dialogs-inner">
