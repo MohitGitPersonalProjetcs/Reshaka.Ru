@@ -17,6 +17,7 @@
             <c:if test="#{webSession.signedIn}">
                 <link href="css/im.css" rel="stylesheet" />
             </c:if>
+            <f:event type="postAddToView" listener="#{chatBean.refreshDialogs()}" />
         </h:head>
 
         <c:if test="#{webSession.signedIn}">
@@ -44,6 +45,7 @@
                     
                     function stripTags(s) {
                         var result = (s || '').replace(/(&lt;([^>]+)>)/ig,'');
+                        result = result.replace(/->/ig, '=>');
                         return result.replace(/\r/, ' <br/> ');
                     }
         

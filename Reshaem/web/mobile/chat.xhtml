@@ -1,5 +1,6 @@
 
-<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
@@ -10,8 +11,9 @@
         <link type="text/css" rel="stylesheet" media="only screen" href="./css/s_r.css"/>
         <link type="text/css" rel="stylesheet" media="only screen" href="./css/status.css"/>
         <script src="./js/jquery.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/js/urlize.js"></script>
         <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
-
+        <f:event type="postAddToView" listener="#{chatBean.refreshDialogs()}" />
         <style type="text/css">
             .right {
                 color: red;
@@ -20,75 +22,245 @@
             .left {
                 color: #4C6B8F;
             }
+
+            .x_wide .msg .cont {
+                margin-left: 0px;
+            }
+            
+            form .near_box .add_btn i {
+                background: url('#{request.contextPath}/mobile/images/attach_icons.png') no-repeat 0 center !important;
+            }
+
+            #chat-files-form div span {
+                display: inline;
+                width: 20px;
+                cursor: pointer;
+                font-weight: bold;
+                color: darkred;
+                padding-right: 8px;
+            }
+
+            #chat-files-form div input {
+                max-width: 80%;
+            }   
         </style>
 
         <script type="text/javascript">
                         
             $(function(){
                 sustainSession();
-            })
+            });
+            
             var updateInterval = 10000;
             function sustainSession() {
-                var p = $.get("/void",function(d){
-                });
+                var p = $.get("/void",function(d){});
                 setTimeout(sustainSession, updateInterval);
             }
         </script>
 
-        <script type="text/javascript">
+        <c:if test="#{chatBean.mode=='MESSAGES'}">
+            <script type="text/javascript">
             
-            var myLogin = '#{webSession.login}';
-            var myRole = #{webSession.group};
+                var chatMessageKeydown = function (e) {
+                    if (e.ctrlKey) {
+                        if(e.keyCode == 13) {
+                            $('#mainMessageSubmitButton').click();
+                        }
+                    }
+                };
             
-            function updateMessages() {
-                //                alert('updating');
+                var myLogin = '#{webSession.login}';
+                var myRole = #{webSession.group};
+            
+                function updateMessages() {
+                    var messages = $("#allMessagesJsonArray").val();
+                    if(messages === '') {
+                        messages = '[]';
+                    }
+                    $("#allMessagesJsonArray").val('');
+                   
+                    var msgs = eval('('+ messages +')');
+                    $("#allMessagesJsonArray").html('');
                 
-                $('#chatMessages').html('');
+                    for(i in msgs) {
+                        if(msgs[i].fromUserLogin == undefined) continue;
+                
+                        var c = 'right';
+                        if(msgs[i].fromUserLogin!=myLogin) { c = 'right'; }
+                        else { c = 'left'; }
+                
+                        var del = '';
+                        //                    if(myRole==1 || msgs[i].fromUserLogin==myLogin)
+                        //                        del = '<div style="text-align: right; font-size: smaller;"><a href="javascript:void()" onclick="deleteMessage('+msgs[i].messageId+');">Удалить</a></div>';
+                        //                
+                        var att = '';
+                        if(msgs[i].attachmentId!=null)
+                            att = '<br/><span style="font-size: smaller;">Прикрепленный файл:<strong> <a href="/download?inline=true&amp;id='
+                            + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
 
-                var messages = $("#allMessagesJsonArray").val();
-                var msgs = eval('('+ messages +')');
-                
-                for(i in msgs) {
-                    if(msgs[i].fromUserLogin == undefined) continue;
-                
-                    var c = 'right';
-                    if(msgs[i].fromUserLogin!=myLogin) { c = 'right'; }
-                    else { c = 'left'; }
-                
-                    var del = '';
-                    //                    if(myRole==1 || msgs[i].fromUserLogin==myLogin)
-                    //                        del = '<div style="text-align: right; font-size: smaller;"><a href="javascript:void()" onclick="deleteMessage('+msgs[i].messageId+');">Удалить</a></div>';
-                    //                
-                    var att = '';
-                    if(msgs[i].attachmentId!=null)
-                        att = '<br/><span style="font-size: smaller;">Сообщение содержит прикрепленный файл:<strong> <a href="/download.xhtml?id='
-                        + msgs[i].attachmentId + '" target="_blank">Скачать</a></strong></span>';
-
-                    var html =    '<div class="msg">'
-                        +'  <div class="i"></div>'
-                        +'  <div class="cont">'
-                        +'                <div class="ch">'
-                        +                    '<a class="date" href="javascript: void();">'+msgs[i].dateSent+'</a>'
-                        +                    '<a class="user '+c+'" href="javascript: void();" >'+msgs[i].fromUserLogin+'</a>'
-                        +                '</div>'
-                        +                '<div class="cc">'
-                        +                   '<div class="text">'+msgs[i].text+'</div>'
-                        +                '</div>'
-                        +   '</div>'
-                        + '</div>' ;
+                        var html =    '<div class="msg" id="msg-'+msgs[i].messageId+'">'
+                        //+'  <div class="i"></div>'
+                            +'  <div class="cont">'
+                            +'                <div class="ch">'
+                            +                    '<a class="date" href="javascript: void();">'+msgs[i].dateSentString+'</a>'
+                            +                    '<a class="user '+c+'" href="javascript: void();" >'+msgs[i].fromUserLogin+'</a>'
+                            +                '</div>'
+                            +                '<div class="cc">'
+                            +                   '<div class="text">'+urlize(stripTags(msgs[i].text), {target: '_blank', trim_url_limit: 48})+att+'</div>'
+                            +                '</div>'
+                            +   '</div>'
+                            + '</div>' ;
                   
-                    $('#chatMessages').append(html);
-                    window.scrollTo(0, document.body.scrollHeight);
+                        $('#chatMessages').prepend(html);
+                        window.scrollTo(0, 0);
+                    }
                 }
-            }
-        </script>
-        <script>
-            $(document).ready(function(){
-                updateMessages();
-            });
             
-        </script>
+                function stripTags(s) {
+                    var result = (s || '').replace(/(&lt;([^>]+)>)/ig,'');
+                    return result.replace(/[\n\r]/, ' <br/> ');
+                }
+            
+                function messageSent() {
+                    updateMessages();
+                    $('#write_form textarea').val('');
+                    //$('#write_form textarea')[0].focus();
+                }
+            
+                function toggleAttachmentPanel() {
+                    $('#chatMessages').toggle();
+                    $('#attachmentPanel').toggle();
+                }
+            
+                function requestNewMessages() {
+                    $('#updateMessagesButton').click();
+                    updateMessages();
+                }
+            
+                function addFile() {
+                    $('#chat-files-form').append('<div class="row"> <span>X</span> <input type="file" name="files[]"/></div>');
+                    $('#chat-files-form div span').each(function(t) {
+                        $(this).click(function() {
+                            $(this.parentNode).remove();
+                        });
+                    });
+                    updateFileSelectListeners();
+                    return false;
+                }
+            
+                function updateFileSelectListeners() {
+                    $('#chat-files-form div :file').unbind('change');
+                    $('#chat-files-form div :file').change(fileSelectListener);
+                }
+            
+                function fileSelectListener(e) {
+                    var file = this.files[0];
+                    var size = file.size;
+                    //                        if(size > 40*1024*1024) {
+                    //                            $(this).val('');
+                    //                            alert('Максимальный размер файла: 40 МБ.');
+                    //                        }
+                }
+            
+                function clearForms() {
+                    $('#write_form input[name=\'attached_files[]\']').remove();
+                    $('#write_form textarea').val('');
+                    //$('#write_form textarea')[0].focus();
+                    $('#attachmentPanel').css('display', 'none');
+                    $('#chatMessages').css('display', 'block');
+                    $('#chat-files-form div input').val('');
+                    updateFileSelectListeners();
+                }
+            
+                function needToBlock() {
+                    var result = false;
+                    $('#chat-files-form div :file').each(function() {
+                        var file = this.files[0];
+                        if(file !== undefined)
+                            if(file.size)
+                                result = true;
+                    });
+                    return result;
+                }
+            
+                function uploadFiles() {
+                    //$('#write_form textarea').val(stripTags($('#write_form textarea').val()));
+                    if(needToBlock()) {
+                        blockUI();
+                        var formData = new FormData($('#chat-files-form')[0]);
+                        $.ajax({
+                            url: '#{request.contextPath}/upload',  //server script to process data
+                            type: 'POST',
+                            //Ajax events
+                            success: completeHandler = function(data) {
+                                var files = data.documentElement;
+                                var ids = data.getElementsByTagName('id');
+                                var form = $('#write_form');
+                                for(i in ids) {
+                                    if(ids[i].firstChild === undefined)
+                                        continue;
 
+                                    form.append('<input type="hidden" name="attached_files[]" value="'+ids[i].firstChild.nodeValue+'"/>');
+                                }
+                                $('#chat-files-form div input').val('');
+                                $('#chatMessageSubmitButton').click();
+                                unblockUI();
+                            },
+                            error: errorHandler = function() {
+                                //alert('Не удалось загрузить файл(ы).');
+                                $('#chat-files-form div input').val('');
+                                $('#write_form input[name=\'attached_files[]\']').remove();
+                                $('#chatMessageSubmitButton').click();
+                                unblockUI();
+                            },
+                            // Form data
+                            data: formData,
+                            //Options to tell JQuery not to process data or worry about content-type
+                            cache: false,
+                            contentType: false,
+                            processData: false
+                        }, 'xml');
+                    } else {
+                        $('#chat-files-form div input').val('');
+                        $('#chatMessageSubmitButton').click();
+                        unblockUI();
+                    }
+                    return false;
+                }
+                
+                function blockUI() {
+                    $.blockUI({ css: {
+                            border: 'none', 
+                            padding: '15px', 
+                            backgroundColor: '#000', 
+                            '-webkit-border-radius': '10px', 
+                            '-moz-border-radius': '10px', 
+                            opacity: .5, 
+                            color: '#fff' 
+                        },
+                        message: '<h2>Загрузка файлов...</h2><a style="font-size: larger;" href="im.xhtml?friend=#{param['friend']}&amp;peers=#{chatBean.validPeersParam}">Сброс</a>'
+                    }); 
+                }
+                
+                function unblockUI() {
+                    $.unblockUI();
+                    clearForms();
+                }
+            
+                $(document).ready(function() {
+                    updateFileSelectListeners();
+                });
+            </script>
+            <script>
+                $(document).ready(function(){
+                    updateMessages();
+                    $('#write_form textarea').keydown(chatMessageKeydown);
+                    $('#write_form textarea')[0].focus();
+                    setInterval(requestNewMessages, 30000);
+                });
+            
+            </script>
+        </c:if>
     </h:head>
 
     <h:body id="vk" class="x_wide x_head nt hover volume_reg">
@@ -97,9 +269,16 @@
             <div id="m">
                 <div id="mhead" class="mhead">
                     <div class="btn home">
-                        <a href="/mobile/index.xhtml" class="b">
-                            <i> Назад  </i>
-                        </a>
+                        <c:if test="#{chatBean.mode == 'DIALOGS'}">
+                            <a href="#{request.contextPath}/mobile/index.xhtml" class="b" title="На главную страницу">
+                                <i> Назад  </i>
+                            </a>
+                        </c:if>
+                        <c:if test="#{chatBean.mode == 'MESSAGES'}">
+                            <a href="#{request.contextPath}/mobile/chat.xhtml" class="b" title="К диалогам">
+                                <i> Назад  </i>
+                            </a>
+                        </c:if>
                     </div>
 
                     <div class="btn back">
@@ -108,40 +287,88 @@
                                 <h1>Чат</h1>
                             </div>
                         </div>
-                        <div class="b" style="padding: 15px; cursor: pointer;" onclick="window.location.href = window.location.href">
-                            Refresh
-                        </div>
+                        <c:if test="#{chatBean.mode == 'DIALOGS'}">
+                            <div class="b" style="padding: 15px; cursor: pointer;" onclick="window.location.reload();">
+                                Refresh
+                            </div>
+                        </c:if>
+                        <c:if test="#{chatBean.mode == 'MESSAGES'}">
+                            <div class="b" style="padding: 15px; cursor: pointer;" onclick="requestNewMessages();">
+                                Refresh
+                            </div>
+                        </c:if>
                     </div>
                 </div>
 
                 <div id="mcont" class="mcont">
 
-                    <div id="mcont" class="mcont">
+                    <div class="pcont mail bl_cont">
+                        <h:panelGroup class="post_add" style="display: block;" rendered="#{chatBean.mode == 'MESSAGES'}">
+                            <h:form prependId="false" id="write_form" rendered="#{chatBean.friendId != null}" >
+                                <div class="iwrap">
+                                    <h:inputTextarea id="chatMessageText" style="margin-left: 0px; margin-right: -6px; width: 99%; margin-top: 0px; margin-bottom: 0px; height: 87px; " rows="3" value="#{chatBean.text}"/>
+                                </div>
 
-                        <div class="pcont mail bl_cont">
-                            <div class="post_add">
-                                <h:form id="write_form" rendered="#{chatBean.friendId != null}" >
-                                    <div class="iwrap">
-                                        <h:inputTextarea id="chatMessageText" style="margin-left: 0px; margin-right: -6.36364px; width: 585px; margin-top: 0px; margin-bottom: 0px; height: 87px; " rows="3" value="#{chatBean.text}"/>
-                                    </div>
-
-                                    <div class="near_box">
-<!--                                        <input class="btn" type="submit" value="Отправить" />-->
-                                        <h:commandButton actionListener="#{chatBean.sendMessage}" value="Отправить!" class="btn">
-                                            <f:ajax onevent="function(data){if (data.status == 'success') updateMessages();}" />
-                                        </h:commandButton>
-<!--                                        <a class="add_btn add_attach" href="" ><i></i></a>-->
-
-                                    </div>
-                                </h:form>
+                                <div class="near_box">
+                                    <h:button id="mainMessageSubmitButton" value="Отправить!" class="btn" onclick="uploadFiles(); return false;" title="Отправить сообщение"/>
+                                    <h:commandButton style="display: none;" id="chatMessageSubmitButton" actionListener="#{chatBean.sendMessage}" value="Отправить!">
+                                        <f:ajax onevent="function(data){if (data.status == 'success') messageSent();}" execute="@form" render=":hiddenMessagesPanel" />
+                                    </h:commandButton>
+                                    <a class="add_btn add_attach" href="javascript:void(0);" onclick="toggleAttachmentPanel();"><i></i></a>
+                                    <div class="near_btn" id="dialog_near#{chatBean.friend.login}"><span class="write_to" title="Посмотреть информацию о пользователе"><a class="user" href="#{request.contextPath}/mobile/profile.xhtml?id=#{chatBean.friend.id}" data-name="#{chatBean.friend.login}" target="_blank">#{chatBean.friend.login}</a></span></div>
+                                </div>
+                            </h:form>
+                            <div id="attachmentPanel" style="display: none;" class="upload">
+                                <br/>
+                                <h4>Прикрепление фотографий</h4>
+                                <form id="chat-files-form" method="post" enctype="multipart/form-data" action="/upload">
+                                    <input type="hidden" name="compress" value="no" />
+                                    <div class="row">
+                                        <span>X</span><input type="file" name="files[]"/>
+                                    </div> 
+                                </form> 
+                                <button onclick="addFile();">Добавить еще файл</button>
+                                <div class="near_btn"><a class="btn" href="javascript:void(0);" onclick="clearForms();">Отмена</a></div>
                             </div>
+                            <h:form prependId="false" style="display:none;">
+                                <h:commandButton style="display: none;" id="updateMessagesButton">
+                                    <f:ajax execute="@form" render=":hiddenMessagesPanel"/>
+                                </h:commandButton>
+                            </h:form>
+                        </h:panelGroup>
 
-                            <div id="chatMessages" class="messages">
-                            </div>
-
-
-                        </div>
+                        <h:panelGroup id="chatMessages" class="messages" rendered="#{chatBean.mode == 'MESSAGES'}" style="display: block;"/>
                     </div>
+
+                    <h:panelGroup id="chatDialogs" class="messages" rendered="#{chatBean.mode == 'DIALOGS'}" style="display: block;">
+                        <c:forEach var="dialog" items="#{chatBean.allDialogs}">
+                            <div class="msg" id="dlg-dialog.user2.id" style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/mobile/chat.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}">
+                                <c:if test="#{dialog.newMessages >= 1}">
+                                    <div class="cont">
+                                        <div class="ch">
+                                            <a class="date" href="javascript: void();">#{dialog.lastMessage.dateSentString}</a>
+                                            <a class="user" href="javascript: void();" >#{dialog.user2.login} (#{dialog.newMessages})</a>
+                                        </div>
+                                        <div class="cc">
+                                            <div class="text">Последнее сообщение: <i>#{dialog.lastMessage.text}</i></div>
+                                        </div>
+                                    </div>
+                                </c:if>
+                                <c:if test="#{!(dialog.newMessages >= 1)}">
+                                    <div class="cont">
+                                        <div class="ch">
+                                            <a class="date" href="javascript: void();">#{dialog.lastMessage.dateSentString}</a>
+                                            <a class="user" href="javascript: void();" >#{dialog.user2.login}</a>
+                                        </div>
+                                        <div class="cc">
+                                            <div class="text">Последнее сообщение: <i>#{dialog.lastMessage.text}</i></div>
+                                        </div>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </c:forEach>
+                    </h:panelGroup>
+
 
 
                 </div>
@@ -149,7 +376,6 @@
 
                 <div id="mfoot" class="mfoot"><ul class="main_menu">
                         <li><a href="#{request.contextPath}/index.xhtml">Полная версия</a></li>
-                        <!--                        <li><a href="#">Выход</a></li>-->
 
                         <li>
                             <a href="#{request.contextPath}/logout?redirect=#{request.contextPath}/mobile/login.xhtml" >Выход</a>
@@ -166,6 +392,6 @@
         <h:panelGroup id="hiddenMessagesPanel"> 
             <h:inputHidden id="allMessagesJsonArray" value="#{chatBean.requestNewMessagesJsonArrayString()}" />
         </h:panelGroup>
-
+        <script type="text/javascript" src="#{request.contextPath}/js/jquery.blockUI.js"></script>
     </h:body>
 </html>

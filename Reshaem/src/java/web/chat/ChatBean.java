@@ -86,7 +86,7 @@ public class ChatBean implements Serializable {
 
     private int unreadMessagesNumber;
 
-    private List<ChatDialog> dialogs;
+    private final List<ChatDialog> dialogs;
 
     private List<SimpleUser> peers;
 
@@ -113,6 +113,7 @@ public class ChatBean implements Serializable {
         friendStr = StringUtils.getValidString(params.get("friend"));
         godMode = (params.get("godmode") != null) && me.getUserGroup() == User.ADMIN;
         dialogStr = params.get("dialog");
+        peers = new ArrayList<>();
 
         if (log.isTraceEnabled()) {
             log.trace("ChatBean(): friendStr = " + friendStr);
@@ -128,47 +129,51 @@ public class ChatBean implements Serializable {
 
     @PostConstruct
     private void init() {
-        SimpleUserConverter.mm = this.mm;
-        if (friendStr.equalsIgnoreCase("support")) {
-            friendId = cm.getAdminId();
-        } else if (friendStr.equalsIgnoreCase("_stream")) {
-            if (me.getUserGroup() != User.ADMIN) {
-                friendId = null;
-                friend = new SimpleUser();
-            } else {
-                adminMode = true;
-                friendId = null;
-                friend = new SimpleUser();
-            }
-        } else {
-            try {
-                friendId = StringUtils.getValidLong(friendStr);
-                if (friendId == 0) {
+        try {
+            SimpleUserConverter.mm = this.mm;
+            if (friendStr.equalsIgnoreCase("support")) {
+                friendId = cm.getAdminId();
+            } else if (friendStr.equalsIgnoreCase("_stream")) {
+                if (me.getUserGroup() != User.ADMIN) {
+                    friendId = null;
+                    friend = new SimpleUser();
+                } else {
+                    adminMode = true;
                     friendId = null;
                     friend = new SimpleUser();
                 }
+            } else {
+                try {
+                    friendId = StringUtils.getValidLong(friendStr);
+                    if (friendId == 0) {
+                        friendId = null;
+                        friend = new SimpleUser();
+                    }
 
+                } catch (Exception ex) {
+                    friendId = null;
+                    friend = new SimpleUser();
+                }
+            }
+            try {
+                if (friendId != null) {
+                    friend = new SimpleUser(um.getUserById(friendId));
+                    friend.setOnline(SessionListener.isOnline(friendId));
+                }
             } catch (Exception ex) {
-                friendId = null;
                 friend = new SimpleUser();
+                friendId = null;
             }
-        }
-        try {
-            if (friendId != null) {
-                friend = new SimpleUser(um.getUserById(friendId));
-                friend.setOnline(SessionListener.isOnline(friendId));
+            if ((friendId != null && friendId != 0) || (godMode && dialogStr != null)) {
+                mode = MESSAGES_MODE;
             }
+            if (DIALOGS_MODE.equalsIgnoreCase(mode)) {
+                loadDialogs();
+            }
+            parsePeers();
         } catch (Exception ex) {
-            friend = new SimpleUser();
-            friendId = null;
+            log.error("init(): failed to initialize ChatBean... shit happens!", ex);
         }
-        if ((friendId != null && friendId != 0) || (godMode && dialogStr != null)) {
-            mode = MESSAGES_MODE;
-        }
-        if (DIALOGS_MODE.equalsIgnoreCase(mode)) {
-            loadDialogs();
-        }
-        parsePeers();
     }
 
     private void parsePeers() {
@@ -266,64 +271,65 @@ public class ChatBean implements Serializable {
         }
     }
 
-    private void loadDialogs() {
-        dialogs.clear();
-        if (!godMode) {
-            Set<SimpleUser> users = mm.getRecentUsers(me.getId());
-            SimpleUser me = new SimpleUser(this.me);
-            me.setOnline(true);
-            for (SimpleUser su : users) {
-                Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
-                ChatDialog cd = new ChatDialog();
-                cd.setLastMessage(new ChatMessage(lastMessage));
-                if (Arrays.asList(
-                        Message.REMOVED_BY_ADMIN,
-                        Message.REMOVED_BY_BOTH,
-                        Message.REMOVED_BY_RECEIVER,
-                        Message.REMOVED_BY_SENDER).contains(lastMessage.getRemovedBy())) {
-                    cd.getLastMessage().setText("// Сообщение удалено //");
+    public void loadDialogs() {
+        synchronized(dialogs) {
+            dialogs.clear();
+            if (!godMode) {
+                Set<SimpleUser> users = mm.getRecentUsers(me.getId());
+                if (users == null) {
+                    users = Collections.EMPTY_SET;
                 }
-                cd.setUser1(me);
-                cd.setUser2(su);
-                su.setOnline(SessionListener.isOnline(su.getId()));
-                cd.setLastMessageDate(lastMessage.getDateSent());
-                cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
-                dialogs.add(cd);
+                SimpleUser me = new SimpleUser(this.me);
+                me.setOnline(true);
+                for (SimpleUser su : users) {
+                    Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
+                    if(lastMessage == null)
+                        continue;
+                    ChatDialog cd = new ChatDialog();
+                    cd.setLastMessage(new ChatMessage(lastMessage));
+                    if (Arrays.asList(
+                            Message.REMOVED_BY_ADMIN,
+                            Message.REMOVED_BY_BOTH,
+                            Message.REMOVED_BY_RECEIVER,
+                            Message.REMOVED_BY_SENDER).contains(lastMessage.getRemovedBy())) {
+                        cd.getLastMessage().setText("// Сообщение удалено //");
+                    }
+                    cd.setUser1(me);
+                    cd.setUser2(su);
+                    su.setOnline(SessionListener.isOnline(su.getId()));
+                    cd.setLastMessageDate(lastMessage.getDateSent());
+                    cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
+                    dialogs.add(cd);
+                }
+            } else {
+                List<User> allUsers = um.getAllRegisteredUsers();
+                for (User u : allUsers) {
+                    Set<SimpleUser> users = mm.getRecentUsers(u.getId());
+                    SimpleUser me = new SimpleUser(u);
+                    me.setOnline(true);
+                    for (SimpleUser su : users) {
+                        Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
+                        if(lastMessage == null)
+                            continue;
+                        ChatDialog cd = new ChatDialog();
+                        cd.setLastMessage(new ChatMessage(lastMessage));
+                        cd.setUser1(me);
+                        cd.setUser2(su);
+                        su.setOnline(SessionListener.isOnline(su.getId()));
+                        cd.setLastMessageDate(lastMessage.getDateSent());
+                        cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
+                        if (!dialogs.contains(cd)) {
+                            dialogs.add(cd);
+                        }
+                    }
+                }
             }
-
             Collections.sort(dialogs, new Comparator<ChatDialog>() {
                 @Override
                 public int compare(ChatDialog o1, ChatDialog o2) {
                     return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
                 }
             });
-        } else {
-            List<User> allUsers = um.getAllRegisteredUsers();
-            for (User u : allUsers) {
-                Set<SimpleUser> users = mm.getRecentUsers(u.getId());
-                SimpleUser me = new SimpleUser(u);
-                me.setOnline(true);
-                for (SimpleUser su : users) {
-                    Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
-                    ChatDialog cd = new ChatDialog();
-                    cd.setLastMessage(new ChatMessage(lastMessage));
-                    cd.setUser1(me);
-                    cd.setUser2(su);
-                    su.setOnline(SessionListener.isOnline(su.getId()));
-                    cd.setLastMessageDate(lastMessage.getDateSent());
-                    cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
-                    if (!dialogs.contains(cd)) {
-                        dialogs.add(cd);
-                    }
-                }
-
-                Collections.sort(dialogs, new Comparator<ChatDialog>() {
-                    @Override
-                    public int compare(ChatDialog o1, ChatDialog o2) {
-                        return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
-                    }
-                });
-            }
         }
     }
 
@@ -459,14 +465,17 @@ public class ChatBean implements Serializable {
     }
 
     public void sendMessage(ActionEvent evt) {
+        System.out.println("me=" + me);
         if (me == null) {
+            System.out.println("me=" + me);
             return;
         }
 
         boolean needToSendEmail = (friendId == null) ? false : !SessionListener.isOnline(friendId);
         boolean messageSent = false;
-
-        if ((text != null && !text.isEmpty()) || !fileUploadController.getFiles().isEmpty()) {
+        System.out.println("text=" + text);
+        if (!StringUtils.isEmpty(this.text) || !fileUploadController.getFiles().isEmpty()) {
+            System.out.println("fuck!!! sending message");
             mm.sendMessageAndUpload(me.getId(), friendId, "chat", StringUtils.getValidString(getText()).replace("\"", "&quot;"), fileUploadController.getFiles());
             fileUploadController.clearFiles(evt);
             text = null;
@@ -486,6 +495,7 @@ public class ChatBean implements Serializable {
         }
 
         if (messageSent && needToSendEmail) {
+            System.out.println("fuck!!! send email");
             sendEmailNotification();
         }
     }
@@ -493,12 +503,12 @@ public class ChatBean implements Serializable {
     private void sendEmailNotification() {
         try {
             MailQueue.getInstance().addMyMail(
-                new MyMail(
-                "Reshaka.Ru: Вам пришло новое сообщение",
-                MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
-                + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), String.valueOf(me.getId().longValue())),
-                friend.getEmail(),
-                friend.getLogin()));
+                    new MyMail(
+                    "Reshaka.Ru: Вам пришло новое сообщение",
+                    MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
+                    + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), String.valueOf(me.getId().longValue())),
+                    friend.getEmail(),
+                    friend.getLogin()));
         } catch (Exception ex) {
             log.error("sendEmilNotification(): failed to send email.");
         }
