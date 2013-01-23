@@ -3,11 +3,7 @@ package quartz.jobs;
 import ejb.AttachmentManager;
 import ejb.MailManager;
 import ejb.util.EJBUtils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.AddressException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 

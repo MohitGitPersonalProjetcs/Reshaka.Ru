@@ -8,15 +8,15 @@
             xmlns:ui="http://java.sun.com/jsf/facelets">
         <h:head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="keywords" content="контрольная работа онлайн решение задач, онлайн помощь на экзамене, помощь студентам,скорая помощь студенту, центр помощи студентам, сайт помощи студентам, решение задач по физике, сайт решения задач по физике, онлайн решение задач по математике, заказать решение задач по математике, решение задач по химии, решение задач по химии онлайн, сайт решения задач по химии, решение задач по тоэ, решение задач по тоэ онлайн, теормех решение задач, решение задач по теории вероятности, теория вероятности решение задач онлайн, сопромат решение задач онлайн, теоретическая механика решение задач, теоретическая механика решение задач онлайн, решение задач по теории вероятности, теория вероятности решение задач онлайн, решение задач по алгебре, онлайн решение задач по алгебре, решение задач по матану, решение задач по мат анализу" />
+            <meta name="description" content="Помощь студентам, решение задач по физике, онлайн по математике, по химии, по теории вероятности, решение задач по алгебре, онлайн решение. Помощь студентам, скорая, сайт помощи студентам, решение задач по тоэ онлайн, сопромат, теоретическая механика, теормех решение задач, по химии, мат анализу, решение задач по матану онлайн" />
             <link href="#{request.contextPath}/images/favicon.png" rel="shortcut icon" type="image/x-icon" />
 
 
-            <title>Reshaka.RU</title>
+            <title>Помощь студентам, решение задач по физике, онлайн по математике, по химии, по теории вероятности, решение задач по алгебре, онлайн решение</title>
             <script type="text/javascript" src="#{request.contextPath}/js/scripts.js"></script>
-            
-            <!-- include block -->
-            <script type="text/javascript" src="#{request.contextPath}/js/snowstorm.js"></script>
-            
+
+
             <ui:insert name="headscripts">
             </ui:insert>
 
@@ -36,29 +36,16 @@
             <!-- RedHelper -->
             <script id="rhlpscrtg" type="text/javascript" charset="utf-8" async="async"
             src="https://web.redhelper.ru/service/main.js?c=reshaka"></script>
-            <!--/Redhelper -->
-
-
-            <script type="text/javascript">
-                //                <!--
-                //                if (screen.width <= 1000) {
-                //                    window.location = "#{request.contextPath}/mobile/index.xhtml";
-                //                }
-                //-->
-            </script>
+            <link href="#{request.contextPath}/css/template.css" rel="stylesheet" type="text/css" />
 
         </h:head>
 
         <h:body rendered="#{!'expired'.equals(param['status'])}">
-            <img src="#{request.contextPath}/images/vk_logo.jpg" style="display: none;" title="vk:vkImage" />
             <!-- include block -->
             <ui:insert name = "allincludes"> 
 
             </ui:insert>
-            <!-- end of include block -->
-            <!--[if lte IE 6]>
-            <div style="font-size: 12px; border-bottom: solid; border-width: 1px; z-index: 10000; font-weight: bolder; color: maroon; position: absolute; background-color: white; top: 0;">Мы настоятельно рекомендуем Вам использовать Internet Explorer 7 и выше! А лучше скачайте Google Chrome или Firefox.</div>
-            <![endif]-->
+
             <p:growl widgetVar="growl" id="growl" showDetail="true" life="1500" sticky="false" />
             <h:panelGroup id="main_panel">
                 <h:panelGroup id="rightcol">
@@ -66,19 +53,18 @@
                     </ui:insert>
                 </h:panelGroup>
                 <div id="topPanel">
-                    <div style="width: 250px; float: left;">
+                    <div id="logo_wrapper"  >
                         <a href="#{request.contextPath}/index.xhtml">
                             <img src="#{request.contextPath}/images/logo.png" title="Reshaka.RU" 
                                  alt="Reshaka.RU" width="230" height="80" border="0" />
                         </a>
                     </div>
-                    <div style="margin-left: 250px;">
-                        <ul style="padding-top: 17px;">
-                            <!-- buttons block to the right of logo -->
+                    <div id="buttonstotherightoflogo_wrapper">
+                        <ul>
                             <ui:insert name="buttonstotherightoflogo">
 
                             </ui:insert>
-                            <!-- end of buttons block to the right of logo -->
+
                         </ul>
                     </div>
 
@@ -88,8 +74,7 @@
                         <ui:insert name ="threebigbuttons">
 
                         </ui:insert>
-                        <div style="claer:both;"></div>
-                        <!-- end of block with three big buttons -->
+
                     </div>
                 </div>
                 <div id="bodyPanel">
@@ -109,14 +94,14 @@
                 </div>
 
                 <h:panelGroup >
-                    <div onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" id="share42"  style=" opacity: 0.5; top: 180px; z-index:1000; position:fixed; right:10px;  ">
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -224px 0" href="#" onclick="window.open('http://vkontakte.ru/share.php?url=http%3A%2F%2Freshaka.ru/index.xhtml', '_blank', 'scrollbars=0, resizable=1, menubar=0, left=200, top=200, width=554, height=421, toolbar=0, status=0');return false" title="Поделиться В Контакте" target="_blank"></a>                   
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -64px 0" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Freshaka.ru/index.xhtml&amp;t=" title="Поделиться в Facebook" target="_blank"></a>
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -192px 0" href="http://twitter.com/share?text=Решение задач для школьников и студентов на заказ. Очень помогло!&amp;url=http%3A%2F%2Freshaka.ru/" title="Добавить в Twitter" target="_blank"></a>
+                    <div onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" id="share42">
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" class="share1" rel="nofollow" href="#" onclick="window.open('http://vkontakte.ru/share.php?url=http%3A%2F%2Freshaka.ru/index.xhtml', '_blank', 'scrollbars=0, resizable=1, menubar=0, left=200, top=200, width=554, height=421, toolbar=0, status=0');return false;" title="Поделиться В Контакте" target="_blank"></a>                   
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" class="share2" rel="nofollow" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Freshaka.ru/index.xhtml&amp;t=" title="Поделиться в Facebook" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" class="share3" rel="nofollow" href="http://twitter.com/share?text=Решение задач для школьников и студентов на заказ. Очень помогло!&amp;url=http%3A%2F%2Freshaka.ru/" title="Добавить в Twitter" target="_blank"></a>
 
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -128px 0" href="http://connect.mail.ru/share?url=http%3A%2F%2Freshaka.ru/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов." title="Поделиться в Моем Мире@Mail.Ru" target="_blank"></a>
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -160px 0" href="http://www.odnoklassniki.ru/dk?st.cmd=addShare&amp;st._surl=http%3A%2F%2Freshaka.ru/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов на заказ. Рекомендую!" title="Добавить в Одноклассники" target="_blank"></a>
-                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" rel="nofollow" style="display:block;width:32px;height:32px;margin:0 0 6px;background:url(#{request.contextPath}/images/icons.png) -96px 0" href="http://www.google.com/bookmarks/mark?op=edit&amp;output=popup&amp;bkmk=http%3A%2F%2Freshaka.ru/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов." title="Сохранить закладку в Google" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" class="share4" rel="nofollow"  href="http://connect.mail.ru/share?url=http%3A%2F%2Freshaka.ru/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов." title="Поделиться в Моем Мире@Mail.Ru" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" class="share5" rel="nofollow"  href="http://www.odnoklassniki.ru/dk?st.cmd=addShare&amp;st._surl=http%3A%2F%2Freshaka.ru/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов на заказ. Рекомендую!" title="Добавить в Одноклассники" target="_blank"></a>
+                        <a onmouseout="$(this).css('opacity',0.5);" onmouseover="$(this).css('opacity',1);" class="share6" rel="nofollow"  href="http://www.google.com/bookmarks/mark?op=edit&amp;output=popup&amp;bkmk=http%3A%2F%2Freshaka.ru/&amp;title=Reshaka.Ru - Решение задач для школьников и студентов." title="Сохранить закладку в Google" target="_blank"></a>
                     </div>
                 </h:panelGroup>
                 <div id="footer">	
@@ -125,11 +110,17 @@
                         <ui:insert name ="footer">
                             Footer
                         </ui:insert>
+                        <div><p>Если у вас возникли трудности при решении задач, то наш центр помощи студентов поможет вам выйти без потерь из создавшегося положения. Скорая помощь студенту работает круглосуточно, без сбоев и помощь студентам оказывается в режиме онлайн. И если у вас есть возможность, то мы окажем онлайн помощь на экзамене, выдавая решения по мере запроса. Сайт помощи студентам — это реальный шанс решить даже сложную задачу.</p>
+
+                            <p>У вас «на носу» контрольная работа? Онлайн решение задач будет необходимым подспорьем к имеющимся знаниям. Если вы не уверены и из-за волнения забыли несколько физических формул, то сайт решения задач по физике «подскажет» правильные пути решения или предоставит полное решение задач по физике.</p>  
+                            <p>Иногда просто жизненно необходимо иметь «под рукой» ресурс, где онлайн решение задач по математике выполнят специалисты высокого класса, и где есть решение задач по химии. Онлайн помощь — это уникальная возможность оперативного устранения любого затруднения на экзаменах или контрольных. А, если есть время, то можно просто заказать решение задач по математике или решение задач по химии за небольшую оплату и к определенному сроку получить требуемый материал. Тем более что сайт решения задач по химии или иным предметам намного эффективнее, чем дорогостоящие репетиторы. У нас, возможно, практически все, и онлайн решение задач по алгебре и решение задач по теории вероятности.</p>
+                            <p>Нет времени подготовиться к экзамену, катастрофически не хватает времени даже на решение задач по алгебре? А решение задач по матану вызывает легкий ступор? Теперь вам не потребуются горы учебников и справочников. Здесь и сейчас вы получите решение задач по мат анализу, абсолютно точные решение задач по ТОЭ и даже «покорите» теормех. Решение задач с «доставкой на дом»! Именно это нужно загруженному студенту в горячую пору экзаменов! Вам не «дается» сопромат? Решение задач онлайн — ваш «козырь»!</p></div>	
                         <p class="copyright">
                             <h:panelGroup rendered="#{webSession.signedIn}">
                                 <span class="redhlp_button"><a href="javascript:void(0);" title="Задать вопрос оператору">Online-консультант</a></span> | 
                                 <a href="javascript:void()" onclick="sys_comments_dlg.show();" >добавить отзыв о проекте</a> | <a href="#{request.contextPath}/feedbacks.xhtml" > все отзывы</a> <br/>
                             </h:panelGroup>
+
                             © Reshaka.RU all rights reserved
 
 
@@ -162,7 +153,7 @@
             </h:panelGroup>
 
             <!--Openstat-->
-            <span id="openstat2286087" style="display: none;"></span>
+            <span id="openstat2286087" class="displaynone"></span>
             <script type="text/javascript">
                 var openstat = { counter: 2286087, image: 93, color: "ff9822", next: openstat };
                 (function(d, t, p) {

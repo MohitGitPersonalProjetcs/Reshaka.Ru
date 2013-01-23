@@ -2,16 +2,19 @@ package ejb;
 
 import data.SimpleUser;
 import ejb.util.ReshakaUploadedFile;
+import ejb.util.StringUtils;
 import entity.Attachment;
 import entity.Message;
 import entity.User;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,10 +31,8 @@ import org.apache.log4j.Logger;
 public class MessageManager implements MessageManagerLocal {
 
     private static Logger log = Logger.getLogger(MessageManager.class);
-    
     @PersistenceContext(unitName = "ReshaemCorePU")
     private EntityManager em;
-    
     @EJB
     AttachmentManagerLocal am;
 
@@ -92,10 +93,10 @@ public class MessageManager implements MessageManagerLocal {
         q.setParameter("beforeDate", beforeDate);
         setReadQuery.setParameter("beforeDate", beforeDate);
         setReadQuery.setParameter("isRead", true);
-        
+
         messages = (List<Message>) q.getResultList();
         setReadQuery.executeUpdate();
-        
+
 //        if (log.isTraceEnabled()) {
 //            log.trace("<< getIncomingMessages(): " + messages);
 //        }
@@ -205,16 +206,16 @@ public class MessageManager implements MessageManagerLocal {
             Query q = em.createQuery("SELECT DISTINCT m.toUser "
                     + "FROM Message m WHERE m.fromUser = :owner", User.class);
             q.setParameter("owner", u);
-            
+
             List<User> users = q.getResultList();
             if (users == null) {
                 return Collections.EMPTY_SET;
             }
-            Set<SimpleUser> lst = new HashSet<>(users.size()*2);
+            Set<SimpleUser> lst = new HashSet<>(users.size() * 2);
             for (User user : users) {
                 lst.add(new SimpleUser(user));
             }
-            
+
             q = em.createQuery("SELECT DISTINCT m.fromUser "
                     + "FROM Message m WHERE m.toUser = :owner", User.class);
             q.setParameter("owner", u);
@@ -222,11 +223,11 @@ public class MessageManager implements MessageManagerLocal {
             if (users == null) {
                 return lst;
             }
-            
+
             for (User user : users) {
                 lst.add(new SimpleUser(user));
             }
-            
+
             return lst;
         } catch (Exception ex) {
             if (log.isTraceEnabled()) {
@@ -235,7 +236,7 @@ public class MessageManager implements MessageManagerLocal {
             return Collections.EMPTY_SET;
         }
     }
-    
+
     @Override
     @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.SUPPORTS)
     public Set<SimpleUser> getRecentUsers(long owner, int limit) {
@@ -249,16 +250,16 @@ public class MessageManager implements MessageManagerLocal {
                     + "FROM Message m WHERE m.fromUser = :owner ORDER BY m.dateSent DESC", User.class);
             q.setParameter("owner", u);
             q.setMaxResults(limit);
-            
+
             List<User> users = q.getResultList();
             if (users == null) {
                 return Collections.EMPTY_SET;
             }
-            Set<SimpleUser> lst = new HashSet<>(users.size()*2);
+            Set<SimpleUser> lst = new HashSet<>(users.size() * 2);
             for (User user : users) {
                 lst.add(new SimpleUser(user));
             }
-            
+
             q = em.createQuery("SELECT DISTINCT m.fromUser "
                     + "FROM Message m WHERE m.toUser = :owner ORDER BY m.dateSent DESC", User.class);
             q.setParameter("owner", u);
@@ -267,11 +268,11 @@ public class MessageManager implements MessageManagerLocal {
             if (users == null) {
                 return lst;
             }
-            
+
             for (User user : users) {
                 lst.add(new SimpleUser(user));
             }
-            
+
             return lst;
         } catch (Exception ex) {
             if (log.isTraceEnabled()) {
@@ -296,7 +297,7 @@ public class MessageManager implements MessageManagerLocal {
             }
             return Collections.EMPTY_LIST;
         }
-        
+
         List<User> usrs = em.createQuery("SELECT u FROM User u WHERE u.login LIKE :login").setParameter("login", login + "%").setMaxResults(15).getResultList();
         for (User u : usrs) {
             lst.add(new SimpleUser(u));
@@ -319,7 +320,7 @@ public class MessageManager implements MessageManagerLocal {
             if (att != null) {
                 am.shareFile(att.getId(), userFrom, userTo);
                 msg.setAttachmentId(att.getId());
-            } else if(files!=null&&!files.isEmpty()) {
+            } else if (files != null && !files.isEmpty()) {
                 text += " (ошибка прикрепления файла)";
                 sendMessage(userFrom, userTo, "chat-error", "Невозможно отправить файл. Возможно слишком большой размер.", null);
             }
@@ -413,9 +414,9 @@ public class MessageManager implements MessageManagerLocal {
             log.trace(">> hasUnreadMessages(): id = " + id);
         }
         int r = getUnreadMessagesNumber(id, null);
-        if(r==0) {
+        if (r == 0) {
             return false;
-        }   
+        }
         if (log.isTraceEnabled()) {
             log.trace("<< hasUnreadMessages()");
         }
@@ -437,14 +438,21 @@ public class MessageManager implements MessageManagerLocal {
         }
         Query q;
         if (fromUserId != null) {
-            q = em.createQuery("select count(m) from Message m where m.toUser = :u and m.fromUser = :fromUser and m.read = false",
+            q = em.createQuery("select count(m) from Message m where m.toUser = :u and m.fromUser = :fromUser and m.read = false and (m.removedBy not in :removedBy or m.removedBy is null)",
                     Message.class);
             q.setParameter("fromUser", em.find(User.class, fromUserId));
         } else {
-            q = em.createQuery("select count(m) from Message m where m.toUser = :u and m.read = false",
+            q = em.createQuery("select count(m) from Message m where m.toUser = :u and m.read = false and (m.removedBy not in :removedBy or m.removedBy is null)",
                     Message.class);
         }
         q.setParameter("u", u);
+        q.setParameter("removedBy", 
+                Arrays.asList(
+                    Message.REMOVED_BY_ADMIN,
+                    Message.REMOVED_BY_BOTH,
+                    Message.REMOVED_BY_RECEIVER,
+                    Message.REMOVED_BY_SENDER
+                 ));
         Number n = (Number) q.getSingleResult();
 //        if (log.isTraceEnabled()) {
 //            log.trace("<< getUnreadMessagesNumber(): "+n);
@@ -456,23 +464,168 @@ public class MessageManager implements MessageManagerLocal {
     public Message getLastMessage(Long userId1, Long userId2) {
         Query q = em.createQuery("select m from Message m where "
                 + "m.fromUser.id = :userId1 and m.toUser.id = :userId2 "
+                + "and (m.removedBy not in :removedBy or m.removedBy is null) "
                 + "order by m.dateSent desc", Message.class);
         List<Message> list = q.setParameter("userId1", userId1)
                 .setParameter("userId2", userId2)
+                .setParameter("removedBy", 
+                    Arrays.asList(
+                        Message.REMOVED_BY_ADMIN,
+                        Message.REMOVED_BY_BOTH,
+                        Message.REMOVED_BY_RECEIVER,
+                        Message.REMOVED_BY_SENDER
+                     ))
                 .setMaxResults(1)
                 .getResultList();
         Message result = null;
-        if(!list.isEmpty())
+        if (!list.isEmpty()) {
             result = list.get(0);
-        
+        }
+
         list = q.setParameter("userId1", userId2)
                 .setParameter("userId2", userId1)
+                .setParameter("removedBy", 
+                    Arrays.asList(
+                        Message.REMOVED_BY_ADMIN,
+                        Message.REMOVED_BY_BOTH,
+                        Message.REMOVED_BY_RECEIVER,
+                        Message.REMOVED_BY_SENDER
+                     ))
                 .setMaxResults(1)
                 .getResultList();
-        if(list.isEmpty())
+        if (list.isEmpty()) {
             return result;
-        if(result == null)
+        }
+        if (result == null) {
             return list.get(0);
+        }
         return (result.getDateSent().after(list.get(0).getDateSent())) ? result : list.get(0);
+    }
+
+    @Override
+    public List<User> getUnreadMessagesUsers(Long userId) {
+        User u = em.find(User.class, userId);
+        if (u == null) {
+            return Collections.EMPTY_LIST;
+        }
+        List<User> results = em.createQuery("select distinct m.fromUser from Message m where m.toUser = :toUser and m.read = false order by m.dateSent desc", User.class)
+                .setParameter("toUser", u)
+                .getResultList();
+        if (results == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return results;
+    }
+
+    @Override
+    @javax.ejb.TransactionAttribute(javax.ejb.TransactionAttributeType.REQUIRED)
+    public List<Message> getIncomingMessages(long owner, Long fromUser, Date afterDate, Date beforeDate, boolean markRead) {
+        if (markRead) {
+            return getIncomingMessages(owner, fromUser, afterDate, beforeDate);
+        }
+
+        List<Message> messages = null;
+
+        Query q = null;
+        if (fromUser == null) {
+            q = em.createNamedQuery("Message.findIncomingBetween");
+        } else {
+            q = em.createNamedQuery("Message.findIncomingFromUserBetween");
+        }
+
+        User u = em.find(User.class, owner);
+        if (u == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("<< getIncomingMessages(): no user with ID=" + owner);
+            }
+            return Collections.EMPTY_LIST;
+        }
+        q.setParameter("owner", u);
+
+        if (fromUser != null) {
+            u = em.find(User.class, fromUser);
+            if (u == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("<< getIncomingMessages(): no user with ID=" + fromUser);
+                }
+                return Collections.EMPTY_LIST;
+            }
+            q.setParameter("fromUser", u);
+        }
+
+        if (afterDate == null) {
+            afterDate = new Date(0);
+        }
+        q.setParameter("afterDate", afterDate);
+        if (beforeDate == null) {
+            beforeDate = new Date();
+        }
+        q.setParameter("beforeDate", beforeDate);
+
+        messages = (List<Message>) q.getResultList();
+
+
+
+        if (markRead == false) {
+            List<Message> result = new ArrayList<>(messages.size());
+            for (int i = 0; i < messages.size(); i++) {
+                if (messages.get(i).getDateSent().after(afterDate)) {
+                    result.add(messages.get(i));
+                }
+            }
+            return result;
+        }
+
+        return messages;
+    }
+
+    @Override
+    public void markRemoved(long userId, Long id, String removedBy) {
+        User u = em.find(User.class, userId);
+        if (u == null) {
+            log.debug("markRemoved(): not authorized!");
+            throw new EJBException("You are not authorized for this operation.");
+        }
+        if (Message.REMOVED_BY_ADMIN.equalsIgnoreCase(removedBy)
+                && u.getUserGroup() != User.ADMIN) {
+            log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+            throw new EJBException("You are not authorized for this operation.");
+        }
+
+        Message msg = em.find(Message.class, id);
+        if (msg == null) {
+            log.debug("markRemoved(): no message with such id: " + id);
+            throw new EJBException("You are not authorized for this operation.");
+        }
+
+        if (Message.REMOVED_BY_BOTH.equalsIgnoreCase(removedBy) || Message.REMOVED_BY_SENDER.equalsIgnoreCase(removedBy)) {
+            // user must be sender of the message or admin
+            if (u.getUserGroup() != User.ADMIN && !u.equals(msg.getFromUser())) {
+                log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+                throw new EJBException("You are not authorized for this operation.");
+            }
+        }
+
+        if (Message.REMOVED_BY_RECEIVER.equalsIgnoreCase(removedBy)) {
+            if (u.getUserGroup() != User.ADMIN && !u.equals(msg.getToUser())) {
+                log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+                throw new EJBException("You are not authorized for this operation.");
+            }
+        }
+
+        if (StringUtils.isEmpty(removedBy)) {
+            if (u.getUserGroup() != User.ADMIN) {
+                log.debug("markRemoved(): not authorized: userId=" + userId + ", msgId=" + id);
+                throw new EJBException("You are not authorized for this operation.");
+            }
+        }
+
+        msg.setRemovedBy(removedBy);
+        msg.setRead(Arrays.asList(
+                    Message.REMOVED_BY_ADMIN,
+                    Message.REMOVED_BY_BOTH,
+                    Message.REMOVED_BY_RECEIVER,
+                    Message.REMOVED_BY_SENDER
+                 ).contains(removedBy));
     }
 }

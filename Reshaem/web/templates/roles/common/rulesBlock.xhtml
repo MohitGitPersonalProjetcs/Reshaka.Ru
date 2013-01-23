@@ -14,49 +14,49 @@ and open the template in the editor.
                 <br/>
                 <p> Прежде всего хотелось бы поблагодарить, что Вы решили воспользоваться нашей системой. С помощью сайта Вы сможете оперативно получить как обычную(оффлайн) помощь, так и онлайн помощь прямо на экзамене!</p>
                 <br/>
-                <ul>
-                    <li><span style="font-size:14px;">Сперва зарегистрируйтесь, введя свой email или войдите с помощью своего аккаунта в социальной сети.</span></li>
+                <ul class="fontsize14px">
+                    <li><span>Сперва зарегистрируйтесь, введя свой email или войдите с помощью своего аккаунта в социальной сети.</span></li>
                     <br/>
-                    <li><span style="font-size:14px;">Далее выберите тип помощи, который вам требуется.</span></li>
+                    <li><span>Далее выберите тип помощи, который вам требуется.</span></li>
                 </ul>
                 <br/>
                 <div id="wrapper">
                     <ul class="tabs" >
-                        <li  class="active" style="color:#FF6B03;"><a href="#tab1">Обычный заказ (оффлайн)</a></li>
+                        <li  class="active"><a href="#tab1">Обычный заказ (оффлайн)</a></li>
                         <li  class=""><a href="#tab2">Помощь на экзамене</a></li>
                     </ul>
                     <br/>
 
-                    <div class="tab_container" style="font-size: 14px; margin-top: 20px;" id="mytabs2" >
-                        <div style="display: block; width: 800px; padding-top: 40px; " id="tab1" class="tab_content">
-                            <span style="font-style: italic;">
-                                <span style="font-weight: bold;">Оффлайн заказ</span> - это заказ работы, которую нужно сделать к определённому сроку.
+                    <div class="tab_container fontsize14px margintop20px" id="mytabs2" >
+                        <div id="tab1" class="tab_content">
+                            <span class="italicfont">
+                                <span class="boldfont">Оффлайн заказ</span> - это заказ работы, которую нужно сделать к определённому сроку.
                                 <br/><br/>
                             </span>
 
                             Сделать заказ Вы можете в  <a href="#{request.contextPath}/index.xhtml#&amp;operation=order&amp;step=2">соответствующем разделе</a>, при этом по желанию
                             указывается примерная стоимость(можете оставить поле пустым). 
                             <br/><br/>
-                            <img src="#{request.contextPath}/images/rules_0.png" style="width: 60%; margin-left: 20%;" />
+                            <img src="#{request.contextPath}/images/rules_0.png" class="width60percent marginleft20percent"  />
                             <br/><br/>
 
                             Статус размещенного Вами заказа вы можете отслеживать в таблице <a href="#{request.contextPath}/index.xhtml"> "Мои заказы"</a>.
                             Он также попадает в таблицу всех задач (<a href ="#{request.contextPath}/allorders.xhtml">«Все  заказы» </a>), которую просматривают решающие.
                             <br/><br/>
 
-                            <img src="#{request.contextPath}/images/rules_1.png" style="width: 100%;" /> 
+                            <img src="#{request.contextPath}/images/rules_1.png" class="width100percent"/> 
                             <br/><br/>
-                            <div style="border-style: solid; border-color: #91C843; border-width: 2px; font-weight: bold; color: black; text-align: center; ">
-                                <span style="color: red;">Внимание!</span> <br/>Если через некоторое время Вы решите отредактировать ваш
+                            <div class="rulesborder">
+                                <span class="colorred">Внимание!</span> <br/>Если через некоторое время Вы решите отредактировать ваш
                                 заказ, внести изменение в условие или что-то добавить, то просто
                                 нажмите на конпку info(i)  в первой колонке таблицы <br/>
-                                <img src="#{request.contextPath}/images/rules_2.png" style="" />
+                                <img src="#{request.contextPath}/images/rules_2.png" />
                                 <br/>
                                 в меню выберите
                                 пункт "редактировать", не нужно создавать новый
                                 заказ!
 
-                                <img src="#{request.contextPath}/images/rules_3.png" style="width: 40%;" /> 
+                                <img src="#{request.contextPath}/images/rules_3.png" class="width40percent" /> 
 
                             </div>
                             <br/>
@@ -64,27 +64,27 @@ and open the template in the editor.
                             Далее, необходимо подождать, пока Ваш заказ не будет просмотрен и оценен решающими сайта. Статус заказа в этот момент изменится на "Оценен".
                             В столбце "Статус" в скобках отобразится количество заявок (при наведении мышкой появится полный список решающих).
                             <br/><br/>
-                            <img src="#{request.contextPath}/images/rules_4.png" style="width: 100%;" /> 
+                            <img src="#{request.contextPath}/images/rules_4.png" class="width100percent"/> 
                             <br/><br/>
 
-                            <div style="border-style: solid; border-color: #91C843; border-width: 2px; font-weight: bold; color: black; text-align: center; ">
-                                <span style="color: red;"> Внимание!</span> <br/>Выполнение задачи на заказ - это работа решающих! Не имеет смысла писать администрации сайта и просить просмотреть ваш заказ, это пустая трата времени. Заказ нужно загрузить на сайт и подождать пока его оценят решающие, которые свободны и выполняют заказы по Вашему предмету. Время оценки заказа зависят от степени загруженности, уровня задач, дисциплины. Обычно оценка задач происходит в кратчайшие сроки. <br/>
+                            <div class="rulesborder">
+                                <span class="colorred"> Внимание!</span> <br/>Выполнение задачи на заказ - это работа решающих! Не имеет смысла писать администрации сайта и просить просмотреть ваш заказ, это пустая трата времени. Заказ нужно загрузить на сайт и подождать пока его оценят решающие, которые свободны и выполняют заказы по Вашему предмету. Время оценки заказа зависят от степени загруженности, уровня задач, дисциплины. Обычно оценка задач происходит в кратчайшие сроки. <br/>
                             </div>
                             <br/>
 
                             Нажмите на кнопку info(i): <br/> <br/>
-                            <img src="#{request.contextPath}/images/rules_2.png" style ="margin-left: 50px;" /> 
+                            <img src="#{request.contextPath}/images/rules_2.png" class="marginleft50px" /> 
                             <br/><br/>
                             Выберите вкладку "Выбрать решающего":
                             <br/> <br/>
-                            <img src="#{request.contextPath}/images/rules_5.png" style ="margin-left: 50px;" /> 
+                            <img src="#{request.contextPath}/images/rules_5.png" class="marginleft50px" /> 
                             <br/> <br/>
                             Здесь вы можете посмотреть информаци о каждом решающем, отзывы, кликнув по нему.
                             <br/><br/>
 
-                            <div style="border-style: solid; border-color: #91C843; border-width: 2px; font-weight: bold; color: black; text-align: center; ">
-                                <span style="color: red;">Внимание!</span> <br/>
-                                Для того, чтобы решающий приступил к выполнению задания необходимо, чтобы на Вашем счете было не менее <span style="font-weight: bolder;">половины</span> предложенной стоимости заказа.
+                            <div class="rulesborder">
+                                <span class="colorred">Внимание!</span> <br/>
+                                Для того, чтобы решающий приступил к выполнению задания необходимо, чтобы на Вашем счете было не менее <span  class="bolderfont">половины</span> предложенной стоимости заказа.
                                 <br/>
                                 Пополнить баланс можно <a href ="#{request.contextPath}/payments.xhtml">здесь </a> , либо кликнув по ссылке "баланс" в левой панели.<br/>
                                                                 (Предоплата является гарантией серьезности Ваших намерений. Моментально после вашего согласия на выполнение, решающему отправляется уведомление и он приступает к решению Ваших задач. О <a href="#{request.contextPath}/payments.xhtml"> способах оплаты</a> и <a href="#{request.contextPath}/guarantees.xhtml"> гарантиях </a> вы можете прочитать, пройдя по ссылке.)
@@ -95,7 +95,7 @@ and open the template in the editor.
                             <br/><br/>
                             Пополнив баланс, вы сможете выбрать решающего: 
                             <br/><br/>
-                            <img src="#{request.contextPath}/images/rules_6.png" style ="margin-left: 50px;" /> 
+                            <img src="#{request.contextPath}/images/rules_6.png" class="marginleft50px"  /> 
                             <br/><br/>
                             Половина стоимости заказа будет заморожена в системе и заказ перейдёт в состояние "Согласен":
                             <br/><br/>
@@ -110,7 +110,7 @@ and open the template in the editor.
                             <br/><br/>
                             Теперь вы можете оплатить вторую половину заказа:
                             <br/><br/>
-                            <img src="#{request.contextPath}/images/rules_9.png" style ="margin-left: 50px;"  /> 
+                            <img src="#{request.contextPath}/images/rules_9.png" class="marginleft50px"  /> 
                             <br/><br/>
                             Заказ перейдёт в состояние "Оплачен":
                             <br/> <br/>
@@ -121,34 +121,34 @@ and open the template in the editor.
                             <img src="#{request.contextPath}/images/rules_11.png"  /> 
 
                         </div>
-                        <div style="display: block; width: 800px; padding-top: 40px; " id="tab2" class="tab_content">
-                            <span style="font-style: italic;">
-                                <span style="font-weight: bold;">Онлайн заказ</span> - это заказ на дистанционную помощь непосредственно на экзамене.
+                        <div  id="tab2" class="tab_content">
+                            <span class="italicfont">
+                                <span class="boldfont">Онлайн заказ</span> - это заказ на дистанционную помощь непосредственно на экзамене.
                                 <br/><br/>
                             </span>
 
                             Сделать заказ Вы можете в  <a href="#{request.contextPath}/index.xhtml#&amp;operation=online&amp;step=2">соответствующем разделе</a>, при этом по желанию
                             указывается примерная стоимость(можете оставить поле пустым). 
                             <br/><br/>
-                            <img src="#{request.contextPath}/images/rules_16.png" style="width: 60%; margin-left: 20%;" />
+                            <img src="#{request.contextPath}/images/rules_16.png" class="width60percent marginleft20percent" />
                             <br/><br/>
 
                             Статус размещенного Вами заказа вы можете отслеживать в таблице <a href="#{request.contextPath}/index.xhtml"> "Мои заказы"</a>.
                             Он также попадает в таблицу всех задач (<a href ="#{request.contextPath}/allorders.xhtml">«Все  заказы» </a>), которую просматривают решающие.
                             <br/><br/>
 
-                            <img src="#{request.contextPath}/images/rules_17.png" style="width: 100%;" /> 
+                            <img src="#{request.contextPath}/images/rules_17.png" class="width100percent"/> 
                             <br/><br/>
-                            <div style="border-style: solid; border-color: #91C843; border-width: 2px; font-weight: bold; color: black; text-align: center; ">
-                                <span style="color: red;">Внимание!</span> <br/>Если через некоторое время Вы решите отредактировать ваш
+                            <div class="rulesborder">
+                                <span class="colorred">Внимание!</span> <br/>Если через некоторое время Вы решите отредактировать ваш
                                 заказ, внести изменение в условие или что-то добавить, то просто
                                 нажмите на конпку info(i)  в первой колонке таблицы <br/>
-                                <img src="#{request.contextPath}/images/rules_2.png" style="" />
+                                <img src="#{request.contextPath}/images/rules_2.png"/>
                                 <br/>
                                 в меню выберите
                                 пункт "редактировать", не нужно создавать новый
                                 заказ!
-                                <img src="#{request.contextPath}/images/rules_18.png" style="width: 40%;" /> 
+                                <img src="#{request.contextPath}/images/rules_18.png" class="width40percent" /> 
 
                             </div>
                             <br/>
@@ -156,22 +156,22 @@ and open the template in the editor.
                             Далее, необходимо подождать, пока Ваш заказ не будет просмотрен и оценен решающими сайта. Статус заказа в этот момент изменится на "Оценен".
                             В столбце "Статус" в скобках отобразится количество заявок (при наведении мышкой появится полный список решающих).
                             <br/><br/>
-                            <img src="#{request.contextPath}/images/rules_20.png" style="width: 100%;" /> 
+                            <img src="#{request.contextPath}/images/rules_20.png" class="width100percent"/> 
                             <br/><br/>
 
                             Нажмите на кнопку info(i): <br/> <br/>
-                            <img src="#{request.contextPath}/images/rules_2.png" style ="margin-left: 50px;" /> 
+                            <img src="#{request.contextPath}/images/rules_2.png" class="marginleft50px" /> 
                             <br/><br/>
                             Выберите вкладку "Выбрать решающего":
                             <br/> <br/>
-                            <img src="#{request.contextPath}/images/rules_19.png" style ="margin-left: 50px;" /> 
+                            <img src="#{request.contextPath}/images/rules_19.png" class="marginleft50px"  /> 
                             <br/> <br/>
                             Здесь вы можете посмотреть информаци о каждом решающем, отзывы, кликнув по нему.
                             <br/><br/>
 
-                            <div style="border-style: solid; border-color: #91C843; border-width: 2px; font-weight: bold; color: black; text-align: center; ">
-                                <span style="color: red;">Внимание!</span> <br/>
-                                Для того, чтобы решающий помог вам на экзамене, необходимо, чтобы на вашем счете было не меньше  <span style="font-weight: bolder;">полной</span> предложенной стоимости заказа.
+                            <div class="rulesborder">
+                                <span class="colorred">Внимание!</span> <br/>
+                                Для того, чтобы решающий помог вам на экзамене, необходимо, чтобы на вашем счете было не меньше  <span class="bolderfont">полной</span> предложенной стоимости заказа.
                                 <br/>
                                 Пополнить баланс можно <a href ="#{request.contextPath}/payments.xhtml">здесь </a> , либо кликнув по ссылке "баланс" в левой панели. <br/>
 
@@ -179,23 +179,23 @@ and open the template in the editor.
                             <br/><br/>
                             Пополнив баланс, вы сможете выбрать решающего: 
                             <br/><br/>
-                            <img src="#{request.contextPath}/images/rules_21.png" style ="margin-left: 50px;" /> 
+                            <img src="#{request.contextPath}/images/rules_21.png" class="marginleft50px"  /> 
                             <br/><br/>
                             Полная стоимости заказа будет заморожена в системе и заказ перейдёт в состояние "Оплачен":
                             <br/><br/>
                             <img src="#{request.contextPath}/images/rules_22.png" /> 
                             <br/><br/>
-                            Теперь вы можете смело идти на экзамен, зная, что можете воспользоваться помощью компетентного решаюшего по эмейлу <span style="font-weight: bold;">online.reshaka@gmail.com </span> .
+                            Теперь вы можете смело идти на экзамен, зная, что можете воспользоваться помощью компетентного решаюшего по эмейлу <span class="boldfont">online.reshaka@gmail.com </span> .
                             Решающий будет онлайн за пол часа до начала экзамена до времени его окончания.
 
                         </div>
                     </div>
 
                     <br/> <br/>
-                    <span style="font-size: 14px;">
+                    <span class="fontsize14px">
 
                         Следует также принять во внимание, что претензии по выполненному заданию, если они
-                        возникают, принимаются в течение <span style="font-weight: bold;"> 10 дней </span> после его оплаты! Если вы не предъявили
+                        возникают, принимаются в течение <span class="boldfont"> 10 дней </span> после его оплаты! Если вы не предъявили
                         претензий своевременно, не уведомили администрацию, заказ считается выполненным
                         качественно и деньги переводятся на счет решающему!
                         <br/><br/>

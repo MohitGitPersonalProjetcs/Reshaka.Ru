@@ -1,9 +1,17 @@
 package ejb.util;
 
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Contains a few methods for dealing with Strings
@@ -125,6 +133,41 @@ public class StringUtils {
             return 0;
         } else {
             return Long.parseLong(s);
+        }
+    }
+    
+    /**
+     * Creates empty XML Document.
+     *
+     * @return new instance of Document object.
+     */
+    public static Document createDocument() {
+        try {
+            return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+            return null;
+        }
+    }
+    
+    /**
+     * Converts jdom Element to String
+     *
+     * @param elem an element to be converted.
+     * @return a String representation of the element
+     */
+    public static String elementToString(Element elem) {
+        if (elem == null) {
+            return EMPTY_STRING;
+        }
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            StreamResult result = new StreamResult(new StringWriter());
+            DOMSource source = new DOMSource(elem);
+            transformer.transform(source, result);
+            return result.getWriter().toString();
+        } catch (Exception ex) {
+            return EMPTY_STRING;
         }
     }
 }

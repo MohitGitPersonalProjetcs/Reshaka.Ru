@@ -27,8 +27,8 @@ and open the template in the editor.
                     <p>Часто задаваемые вопросы </p>
                 </div>
             </h:link>
-            <h:outputLink id="makeorder_link" style="text-decoration: none;" value="javascript:void(0)" onclick="orderButtonClicked()" title="Сделать заказ">
-                <div id="headerPanelthird" onclick="orderButtonClicked()">
+            <h:outputLink id="makeorder_link" style="text-decoration: none;" value="javascript:void(0)" onclick="orderButtonClicked(#{webSession.group})" title="Сделать заказ">
+                <div id="headerPanelthird" onclick="orderButtonClicked(#{webSession.group})">
                     <h2>задание</h2>
                     <p>Загрузите задание и наши специалисты помогут вам!</p>
                 </div>

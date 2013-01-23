@@ -3,6 +3,7 @@ package web.chat;
 import data.SimpleUser;
 import ejb.AttachmentManagerLocal;
 import ejb.ConfigurationManagerLocal;
+import ejb.MailManagerLocal;
 import ejb.MessageManagerLocal;
 import ejb.UserManagerLocal;
 import ejb.util.StringUtils;
@@ -10,6 +11,7 @@ import entity.Attachment;
 import entity.Message;
 import entity.User;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -23,6 +25,8 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.json.JSONArray;
+import ru.reshaka.core.email.MailQueue;
+import ru.reshaka.core.email.MyMail;
 import web.FileUploadController;
 import web.utils.SessionListener;
 
@@ -49,6 +53,9 @@ public class ChatBean implements Serializable {
 
     @EJB
     private UserManagerLocal um;
+
+    @EJB
+    private MailManagerLocal mailMan;
 
     @EJB
     private AttachmentManagerLocal am;
@@ -79,9 +86,13 @@ public class ChatBean implements Serializable {
 
     private int unreadMessagesNumber;
 
-    private List<ChatDialog> dialogs;
+    private final List<ChatDialog> dialogs;
 
     private List<SimpleUser> peers;
+
+    private boolean godMode;
+
+    private String dialogStr;
 
     /**
      * Creates a new instance of ChatBean
@@ -100,6 +111,9 @@ public class ChatBean implements Serializable {
 
         Map<String, String> params = fctx.getExternalContext().getRequestParameterMap();
         friendStr = StringUtils.getValidString(params.get("friend"));
+        godMode = (params.get("godmode") != null) && me.getUserGroup() == User.ADMIN;
+        dialogStr = params.get("dialog");
+        peers = new ArrayList<>();
 
         if (log.isTraceEnabled()) {
             log.trace("ChatBean(): friendStr = " + friendStr);
@@ -115,54 +129,68 @@ public class ChatBean implements Serializable {
 
     @PostConstruct
     private void init() {
-        SimpleUserConverter.mm = this.mm;
-        if (friendStr.equalsIgnoreCase("support")) {
-            friendId = cm.getAdminId();
-        } else if (friendStr.equalsIgnoreCase("_stream")) {
-            if (me.getUserGroup() != User.ADMIN) {
-                friendId = null;
-                friend = new SimpleUser();
-            } else {
-                adminMode = true;
-                friendId = null;
-                friend = new SimpleUser();
-            }
-        } else {
-            try {
-                friendId = StringUtils.getValidLong(friendStr);
-                if (friendId == 0) {
+        try {
+            SimpleUserConverter.mm = this.mm;
+            if (friendStr.equalsIgnoreCase("support")) {
+                friendId = cm.getAdminId();
+            } else if (friendStr.equalsIgnoreCase("_stream")) {
+                if (me.getUserGroup() != User.ADMIN) {
+                    friendId = null;
+                    friend = new SimpleUser();
+                } else {
+                    adminMode = true;
                     friendId = null;
                     friend = new SimpleUser();
                 }
+            } else {
+                try {
+                    friendId = StringUtils.getValidLong(friendStr);
+                    if (friendId == 0) {
+                        friendId = null;
+                        friend = new SimpleUser();
+                    }
 
+                } catch (Exception ex) {
+                    friendId = null;
+                    friend = new SimpleUser();
+                }
+            }
+            try {
+                if (friendId != null) {
+                    friend = new SimpleUser(um.getUserById(friendId));
+                    friend.setOnline(SessionListener.isOnline(friendId));
+                }
             } catch (Exception ex) {
-                friendId = null;
                 friend = new SimpleUser();
+                friendId = null;
             }
-        }
-        try {
-            if (friendId != null) {
-                friend = new SimpleUser(um.getUserById(friendId));
-                friend.setOnline(SessionListener.isOnline(friendId));
+            if ((friendId != null && friendId != 0) || (godMode && dialogStr != null)) {
+                mode = MESSAGES_MODE;
             }
+            if (DIALOGS_MODE.equalsIgnoreCase(mode)) {
+                loadDialogs();
+            }
+            parsePeers();
         } catch (Exception ex) {
-            friend = new SimpleUser();
-            friendId = null;
+            log.error("init(): failed to initialize ChatBean... shit happens!", ex);
         }
-        if (friendId != null && friendId != 0) {
-            mode = MESSAGES_MODE;
-        }
-        if (DIALOGS_MODE.equalsIgnoreCase(mode)) {
-            loadDialogs();
-        }
-        parsePeers();
     }
 
     private void parsePeers() {
         peers = new ArrayList<>();
+
+        // add admin to the top!
+        if (me.getUserGroup() != User.ADMIN) {
+            addUserToPeers(um.getUserById(cm.getAdminId()));
+        }
+
+        // get peers liest from request parameter
+        // if there is no such parameter, load it from session
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-        String peersParam = StringUtils.getValidString(request.getParameter("peers"), StringUtils.getValidString(SessionListener.getSessionAttribute(session,"chat_peers")));
+        String peersParam = StringUtils.getValidString(request.getParameter("peers"), StringUtils.getValidString(SessionListener.getSessionAttribute(session, "chat_peers")));
+
+        // parse peers parameter
         String[] p = peersParam.split("\\_");
         for (String peer : p) {
             long peerId = StringUtils.getValidLong(peer);
@@ -173,22 +201,47 @@ public class ChatBean implements Serializable {
             if (u == null) {
                 continue;
             }
-            SimpleUser su = new SimpleUser(u);
-            su.setOnline(SessionListener.isOnline(peerId));
-            su.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), peerId));
-            if (!peers.contains(su)) {
-                peers.add(su);
-            }
+            addUserToPeers(u);
         }
-        while(peers.size() > 10) {
-            peers.remove(peers.size()-1);
+        // truncate peers list
+        while (peers.size() > 10) {
+            peers.remove(peers.size() - 1);
         }
+
+        // current "friend" should be in peers list too
+        // it could have been deleted in the previous "while"
         if (friendId != null && friendId != 0 && !peers.contains(friend)) {
             peers.add(friend);
             friend.setOnline(SessionListener.isOnline(friendId));
             friend.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), friendId));
         }
-        SessionListener.setSessionAttribute(session, "chat_peers", getValidPeersParam()+"_"+StringUtils.getValidString(SessionListener.getSessionAttribute(session, "chat_peers")));
+
+        // if there are any unread messages from users who are not on the peers list
+        // add them to the top of the list
+        List<User> unreadMessagesUsers = mm.getUnreadMessagesUsers(me.getId());
+        for (User u : unreadMessagesUsers) {
+            addUserToPeers(u, 0);
+        }
+
+        SessionListener.setSessionAttribute(session, "chat_peers", getValidPeersParam() + "_" + StringUtils.getValidString(SessionListener.getSessionAttribute(session, "chat_peers")));
+    }
+
+    private void addUserToPeers(User u) {
+        SimpleUser su = new SimpleUser(u);
+        su.setOnline(SessionListener.isOnline(u.getId()));
+        su.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), u.getId()));
+        if (!peers.contains(su)) {
+            peers.add(su);
+        }
+    }
+
+    private void addUserToPeers(User u, int index) {
+        SimpleUser su = new SimpleUser(u);
+        su.setOnline(SessionListener.isOnline(u.getId()));
+        su.setUnreadMessages(mm.getUnreadMessagesNumber(me.getId(), u.getId()));
+        if (!peers.contains(su)) {
+            peers.add(index, su);
+        }
     }
 
     public String getValidPeersParam() {
@@ -218,35 +271,72 @@ public class ChatBean implements Serializable {
         }
     }
 
-    private void loadDialogs() {
-        dialogs.clear();
-        Set<SimpleUser> users = mm.getRecentUsers(me.getId());
-        SimpleUser me = new SimpleUser(this.me);
-        me.setOnline(true);
-        for (SimpleUser su : users) {
-            Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
-            ChatDialog cd = new ChatDialog();
-            cd.setLastMessage(new ChatMessage(lastMessage));
-            cd.setUser1(me);
-            cd.setUser2(su);
-            su.setOnline(SessionListener.isOnline(su.getId()));
-            cd.setLastMessageDate(lastMessage.getDateSent());
-            cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
-            dialogs.add(cd);
-        }
-
-        Collections.sort(dialogs, new Comparator<ChatDialog>() {
-            @Override
-            public int compare(ChatDialog o1, ChatDialog o2) {
-                return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
+    public void loadDialogs() {
+        synchronized(dialogs) {
+            dialogs.clear();
+            if (!godMode) {
+                Set<SimpleUser> users = mm.getRecentUsers(me.getId());
+                if (users == null) {
+                    users = Collections.EMPTY_SET;
+                }
+                SimpleUser me = new SimpleUser(this.me);
+                me.setOnline(true);
+                for (SimpleUser su : users) {
+                    Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
+                    if(lastMessage == null)
+                        continue;
+                    ChatDialog cd = new ChatDialog();
+                    cd.setLastMessage(new ChatMessage(lastMessage));
+                    if (Arrays.asList(
+                            Message.REMOVED_BY_ADMIN,
+                            Message.REMOVED_BY_BOTH,
+                            Message.REMOVED_BY_RECEIVER,
+                            Message.REMOVED_BY_SENDER).contains(lastMessage.getRemovedBy())) {
+                        cd.getLastMessage().setText("// Сообщение удалено //");
+                    }
+                    cd.setUser1(me);
+                    cd.setUser2(su);
+                    su.setOnline(SessionListener.isOnline(su.getId()));
+                    cd.setLastMessageDate(lastMessage.getDateSent());
+                    cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
+                    dialogs.add(cd);
+                }
+            } else {
+                List<User> allUsers = um.getAllRegisteredUsers();
+                for (User u : allUsers) {
+                    Set<SimpleUser> users = mm.getRecentUsers(u.getId());
+                    SimpleUser me = new SimpleUser(u);
+                    me.setOnline(true);
+                    for (SimpleUser su : users) {
+                        Message lastMessage = mm.getLastMessage(me.getId(), su.getId());
+                        if(lastMessage == null)
+                            continue;
+                        ChatDialog cd = new ChatDialog();
+                        cd.setLastMessage(new ChatMessage(lastMessage));
+                        cd.setUser1(me);
+                        cd.setUser2(su);
+                        su.setOnline(SessionListener.isOnline(su.getId()));
+                        cd.setLastMessageDate(lastMessage.getDateSent());
+                        cd.setNewMessages(mm.getUnreadMessagesNumber(me.getId(), su.getId()));
+                        if (!dialogs.contains(cd)) {
+                            dialogs.add(cd);
+                        }
+                    }
+                }
             }
-        });
+            Collections.sort(dialogs, new Comparator<ChatDialog>() {
+                @Override
+                public int compare(ChatDialog o1, ChatDialog o2) {
+                    return -o1.getLastMessageDate().compareTo(o2.getLastMessageDate());
+                }
+            });
+        }
     }
-    
+
     public void refreshDialogs() {
         loadDialogs();
     }
-    
+
     public void refreshPeers() {
         parsePeers();
     }
@@ -283,6 +373,10 @@ public class ChatBean implements Serializable {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public boolean isGodMode() {
+        return godMode;
     }
 
     public FileUploadController getFileUploadController() {
@@ -371,13 +465,21 @@ public class ChatBean implements Serializable {
     }
 
     public void sendMessage(ActionEvent evt) {
+        System.out.println("me=" + me);
         if (me == null) {
+            System.out.println("me=" + me);
             return;
         }
-        if((text != null && !text.isEmpty()) || !fileUploadController.getFiles().isEmpty()) {
+
+        boolean needToSendEmail = (friendId == null) ? false : !SessionListener.isOnline(friendId);
+        boolean messageSent = false;
+        System.out.println("text=" + text);
+        if (!StringUtils.isEmpty(this.text) || !fileUploadController.getFiles().isEmpty()) {
+            System.out.println("fuck!!! sending message");
             mm.sendMessageAndUpload(me.getId(), friendId, "chat", StringUtils.getValidString(getText()).replace("\"", "&quot;"), fileUploadController.getFiles());
             fileUploadController.clearFiles(evt);
             text = null;
+            messageSent = true;
         }
 
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -387,8 +489,28 @@ public class ChatBean implements Serializable {
                 long id = StringUtils.getValidLong(fileId);
                 if (id != 0) {
                     sendFileMessage(id);
+                    messageSent = true;
                 }
             }
+        }
+
+        if (messageSent && needToSendEmail) {
+            System.out.println("fuck!!! send email");
+            sendEmailNotification();
+        }
+    }
+
+    private void sendEmailNotification() {
+        try {
+            MailQueue.getInstance().addMyMail(
+                    new MyMail(
+                    "Reshaka.Ru: Вам пришло новое сообщение",
+                    MessageFormat.format("Пользователь {0} прислал вам новое личное сообщение. "
+                    + "<a target=\"_blank\" href=\"http://reshaka.ru/ichat.xhtml?friend={1}\">Перейти в чат</a>", me.getLogin(), String.valueOf(me.getId().longValue())),
+                    friend.getEmail(),
+                    friend.getLogin()));
+        } catch (Exception ex) {
+            log.error("sendEmilNotification(): failed to send email.");
         }
     }
 
@@ -493,22 +615,21 @@ public class ChatBean implements Serializable {
             }
         });
 
-        log.debug("Requesting messages from " + lastUpdate + " till now");
-        List<Message> msgs = mm.getIncomingMessages(me.getId(), friendId, lastUpdate, null);
-        if (msgs != null) {
-            for (Message m : msgs) {
-                s.add(new ChatMessage(m));
+        List<Message> msgs = getNewMessages(me.getId(), friendId, true);
+        for (Message m : msgs) {
+            String r = m.getRemovedBy();
+            if (Message.REMOVED_BY_ADMIN.equalsIgnoreCase(r) || Message.REMOVED_BY_BOTH.equalsIgnoreCase(r)) {
+                continue;
             }
-            msgs.clear();
-        }
-
-        msgs = mm.getOutcomingMessages(me.getId(), friendId, lastUpdate, null);
-        if (msgs != null) {
-            for (Message m : msgs) {
-                s.add(new ChatMessage(m));
+            if (me.equals(m.getFromUser()) && Message.REMOVED_BY_SENDER.equalsIgnoreCase(r)) {
+                continue;
             }
-            msgs.clear();
+            if (me.equals(m.getToUser()) && Message.REMOVED_BY_SENDER.equalsIgnoreCase(r)) {
+                continue;
+            }
+            s.add(new ChatMessage(m));
         }
+        msgs.clear();
 
         Date maxDate = new Date(0);
 
@@ -524,6 +645,83 @@ public class ChatBean implements Serializable {
         return s;
     }
 
+    private List<Message> getNewMessages(long userA, Long userB, boolean markRead) {
+        List<Message> result = mm.getIncomingMessages(userA, userB, lastUpdate, null, markRead);
+        if (result == null) {
+            result = new ArrayList<>();
+        }
+
+        List<Message> msgs = mm.getOutcomingMessages(userA, userB, lastUpdate, null);
+        if (msgs != null) {
+            result.addAll(msgs);
+        }
+
+        return result;
+    }
+
+    private void requestDialogMessages(String dialogStr) {
+        RequestContext ctx = RequestContext.getCurrentInstance();
+        Set<ChatMessage> s = new TreeSet<>(new Comparator<ChatMessage>() {
+            @Override
+            public int compare(ChatMessage t, ChatMessage t1) {
+                if (t.getDateSent().after(t1.getDateSent())) {
+                    return 1;
+                }
+                if (t.getDateSent().before(t1.getDateSent())) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        dialogStr = StringUtils.getValidString(dialogStr);
+        String[] ids = dialogStr.split("\\_");
+        if (ids.length == 2) {
+            long userId1 = StringUtils.getValidLong(ids[0]);
+            long userId2 = StringUtils.getValidLong(ids[1]);
+            if (userId1 != 0 || userId2 != 0) {
+                Long userA, userB;
+                if (userId1 == 0) {
+                    userA = userId2;
+                    userB = userId1;
+                } else if (userId2 == 0) {
+                    userA = userId1;
+                    userB = userId2;
+                } else {
+                    userA = userId1;
+                    userB = userId2;
+                }
+                List<Message> msgs = getNewMessages(userA, userB, false);
+                for (Message m : msgs) {
+                    ChatMessage cm = new ChatMessage(m);
+                    if (Arrays.asList(
+                            Message.REMOVED_BY_ADMIN,
+                            Message.REMOVED_BY_BOTH,
+                            Message.REMOVED_BY_RECEIVER,
+                            Message.REMOVED_BY_SENDER).contains(m.getRemovedBy())) {
+                        cm.setText("//DELETED//: " + cm.getText());
+                    }
+                    s.add(cm);
+                }
+                msgs.clear();
+                Date maxDate = new Date(0);
+
+                for (ChatMessage m : s) {
+                    if (maxDate.before(m.getDateSent())) {
+                        maxDate = m.getDateSent();
+                    }
+                }
+                if (lastUpdate == null || maxDate.after(lastUpdate)) {
+                    lastUpdate = maxDate;
+                }
+            }
+        }
+
+        ctx.addCallbackParam("ok", !s.isEmpty());
+        ctx.addCallbackParam("messages", new JSONArray(s, true).toString());
+    }
+
     public void requestNewMessages(ActionEvent evt) {
         if (me == null) {
             return;
@@ -531,6 +729,11 @@ public class ChatBean implements Serializable {
 
         if (adminMode && "_stream".equalsIgnoreCase(friendStr)) {
             requestStreamMessages();
+            return;
+        }
+
+        if (godMode && dialogStr != null) {
+            requestDialogMessages(dialogStr);
             return;
         }
 
