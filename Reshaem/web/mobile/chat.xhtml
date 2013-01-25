@@ -335,7 +335,7 @@
                                         <f:ajax onevent="function(data){if (data.status == 'success') messageSent();}" execute="@form" render=":hiddenMessagesPanel" />
                                     </h:commandButton>
                                     <a class="add_btn add_attach" href="javascript:void(0);" onclick="toggleAttachmentPanel();"><i></i></a>
-                                    <div class="near_btn" id="dialog_near#{chatBean.friend.login}"><span class="write_to" title="Посмотреть информацию о пользователе"><a class="user" href="#{request.contextPath}/mobile/profile.xhtml?id=#{chatBean.friend.id}" data-name="#{chatBean.friend.login}" target="_blank">#{chatBean.friend.login}</a></span></div>
+                                    <div class="near_btn" id="dialog_near#{chatBean.friend.login}"><span class="write_to" title="Посмотреть информацию о пользователе"><a class="user" href="#{request.contextPath}/profile.xhtml?id=#{chatBean.friend.id}" data-name="#{chatBean.friend.login}" target="_blank">#{chatBean.friend.login}</a></span></div>
                                 </div>
                             </h:form>
                             <div id="attachmentPanel" style="display: none;" class="upload">
@@ -360,7 +360,8 @@
                         <h:panelGroup id="chatMessages" class="messages" rendered="#{chatBean.mode == 'MESSAGES'}" style="display: block;"/>
                     </div>
 
-                    <h:panelGroup id="chatDialogs" class="messages" rendered="#{chatBean.mode == 'DIALOGS'}" style="display: block;">
+                    <h:panelGroup id="chatDialogs" class="pcont messages" rendered="#{chatBean.mode == 'DIALOGS'}" style="display: block;">
+                        <h4>Здесь отображены ваши диалоги (#{chatBean.me.login})</h4>
                         <c:forEach var="dialog" items="#{chatBean.allDialogs}">
                             <div class="msg" id="dlg-dialog.user2.id" style="cursor: pointer;" onclick="window.location.href = '#{request.contextPath}/mobile/chat.xhtml?friend=#{dialog.user2.id}&amp;peers=#{dialog.user2.id}_#{chatBean.validPeersParam}';" title="Открыть чат с #{dialog.user2.login}">
                                 <c:if test="#{dialog.newMessages >= 1}">
