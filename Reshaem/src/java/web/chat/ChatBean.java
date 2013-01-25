@@ -19,6 +19,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
@@ -53,9 +54,6 @@ public class ChatBean implements Serializable {
 
     @EJB
     private UserManagerLocal um;
-
-    @EJB
-    private MailManagerLocal mailMan;
 
     @EJB
     private AttachmentManagerLocal am;
@@ -93,6 +91,10 @@ public class ChatBean implements Serializable {
     private boolean godMode;
 
     private String dialogStr;
+    
+    private String searchUserQuery;
+    
+    private List<SimpleUser> searchUserResults = Collections.EMPTY_LIST;
 
     /**
      * Creates a new instance of ChatBean
@@ -166,9 +168,6 @@ public class ChatBean implements Serializable {
             }
             if ((friendId != null && friendId != 0) || (godMode && dialogStr != null)) {
                 mode = MESSAGES_MODE;
-            }
-            if (DIALOGS_MODE.equalsIgnoreCase(mode)) {
-                loadDialogs();
             }
             parsePeers();
         } catch (Exception ex) {
@@ -786,5 +785,21 @@ public class ChatBean implements Serializable {
         } else {
             return unreadMessagesNumber; // updated in hasNewMessages()
         }
+    }
+
+    public String getSearchUserQuery() {
+        return searchUserQuery;
+    }
+
+    public void setSearchUserQuery(String searchUserQuery) {
+        this.searchUserQuery = searchUserQuery;
+    }
+    
+    public void findUserAction(AjaxBehaviorEvent evt) {
+        searchUserResults = mm.filterUsersByLogin(me.getId(), getSearchUserQuery());
+    } 
+    
+    public List<SimpleUser> getSearchUserResults() {
+        return searchUserResults;
     }
 }

@@ -14,7 +14,7 @@
         <script type="text/javascript" src="#{request.contextPath}/js/urlize.js"></script>
         <f:event listener="#{mobileLoginBean.redirect(webSession.signedIn)}" type="preRenderView" />
         <c:if test="#{chatBean.mode == 'DIALOGS'}">
-        <f:event type="postAddToView" listener="#{chatBean.refreshDialogs()}" />
+            <f:event type="postAddToView" listener="#{chatBean.refreshDialogs()}" />
         </c:if>
         <style type="text/css">
             .right {
@@ -28,7 +28,7 @@
             .x_wide .msg .cont {
                 margin-left: 0px;
             }
-            
+
             form .near_box .add_btn i {
                 background: url('#{request.contextPath}/mobile/images/attach_icons.png') no-repeat 0 center !important;
             }
@@ -50,13 +50,28 @@
         <script type="text/javascript">
                         
             $(function(){
-                sustainSession();
+               setInterval(sustainSession, updateInterval);
             });
             
             var updateInterval = 10000;
+            
             function sustainSession() {
                 var p = $.get("/void",function(d){});
-                setTimeout(sustainSession, updateInterval);
+            }
+            
+            var searchMode = false;
+            
+            function toggleUserSearch() {
+                searchMode = !searchMode;
+                if(searchMode) {
+                    $('#msgDiv').hide();
+                    $('#chatDialogs').hide();
+                    $('#searchDiv').show();
+                } else {
+                    $('#msgDiv').show();
+                    $('#chatDialogs').show();
+                    $('#searchDiv').hide();
+                }
             }
         </script>
 
@@ -272,39 +287,42 @@
                 <div id="mhead" class="mhead">
                     <div class="btn home">
                         <c:if test="#{chatBean.mode == 'DIALOGS'}">
-                            <a href="#{request.contextPath}/mobile/index.xhtml" class="b" title="На главную страницу">
-                                <i> Назад  </i>
+                            <a href="#{request.contextPath}/mobile/index.xhtml" class="b back" title="На главную страницу">
+                                <i> &lt;&lt; </i>
                             </a>
                         </c:if>
                         <c:if test="#{chatBean.mode == 'MESSAGES'}">
-                            <a href="#{request.contextPath}/mobile/chat.xhtml" class="b" title="К диалогам">
-                                <i> Назад  </i>
+                            <a href="#{request.contextPath}/mobile/chat.xhtml" class="b back" title="К диалогам">
+                                <i> &lt;&lt; </i>
                             </a>
                         </c:if>
                     </div>
-
-                    <div class="btn back">
+                    <div class="btn">
                         <div class="b">
-                            <div class="title">
-                                <h1>Чат</h1>
-                            </div>
+                            <c:if test="#{chatBean.mode == 'DIALOGS'}">
+                                <div style="padding: 3px;" class="title" >
+                                    <h1 style="text-align: left; width: 70%; display:inline-block;">Диалоги</h1>
+                                    <span style="display:inline-block;">
+                                        <button id="refreshButton" onclick="window.location.reload();">R</button>
+                                        <button id="searchButton" onclick="toggleUserSearch();" title="Найти пользователя">S</button>
+                                    </span>
+                                </div>
+                            </c:if>
+                            <c:if test="#{chatBean.mode == 'MESSAGES'}">
+                                <div style="padding: 3px;" class="title" >
+                                    <h1 style="text-align: left; width: 70%; display:inline-block;">Сообщения</h1>
+                                    <span style="display:inline-block;">
+                                        <button id="refreshButton" onclick="requestNewMessages();">R</button>
+                                        <button id="searchButton" onclick="toggleUserSearch();" title="Найти пользователя">S</button>
+                                    </span>
+                                </div>
+                            </c:if>
                         </div>
-                        <c:if test="#{chatBean.mode == 'DIALOGS'}">
-                            <div class="b" style="padding: 15px; cursor: pointer;" onclick="window.location.reload();">
-                                Refresh
-                            </div>
-                        </c:if>
-                        <c:if test="#{chatBean.mode == 'MESSAGES'}">
-                            <div class="b" style="padding: 15px; cursor: pointer;" onclick="requestNewMessages();">
-                                Refresh
-                            </div>
-                        </c:if>
                     </div>
                 </div>
 
                 <div id="mcont" class="mcont">
-
-                    <div class="pcont mail bl_cont">
+                    <div class="pcont mail bl_cont" id="msgDiv">
                         <h:panelGroup class="post_add" style="display: block;" rendered="#{chatBean.mode == 'MESSAGES'}">
                             <h:form prependId="false" id="write_form" rendered="#{chatBean.friendId != null}" >
                                 <div class="iwrap">
@@ -371,7 +389,34 @@
                         </c:forEach>
                     </h:panelGroup>
 
-
+                    <div id="searchDiv" class="pcont bl_cont" style="display: none;">
+                            <h4>Поиск пользователя</h4>
+                            <div class="post_add">
+                                <h:form style="padding-left: 20px;">
+                                    <span style="display: inline-block; width: 80px; text-align: left:">Логин:</span> 
+                                    <h:inputText value="#{chatBean.searchUserQuery}" style="width: 180px;"/>
+                                    <h:commandButton value="Найти" class="btn">
+                                        <f:ajax execute="@form" render=":searchResultsPanel" listener="#{chatBean.findUserAction}"/>
+                                    </h:commandButton>
+                                </h:form>
+                                <hr/>
+                                <h:panelGroup style="padding-left: 20px;" id="searchResultsPanel">
+                                    <c:if test="#{empty(chatBean.searchUserResults)}">
+                                        Ничего не найдено. Уточните критерии поиска.
+                                    </c:if>
+                                    <ul style="font-size: larger; padding-left: 20px;">
+                                    <c:forEach var="simpleUser" items="#{chatBean.searchUserResults}">
+                                        <li>
+                                            <h:link value="#{simpleUser.login} [id=#{simpleUser.id}]">
+                                                <f:param name="friend" value="#{simpleUser.id}"/>
+                                                <f:param name="peers" value="#{chatBean.validPeersParam}"/>
+                                            </h:link>
+                                        </li>
+                                    </c:forEach>
+                                    </ul>
+                                </h:panelGroup>
+                            </div>
+                    </div>
 
                 </div>
 

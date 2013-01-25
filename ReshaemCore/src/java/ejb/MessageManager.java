@@ -298,7 +298,7 @@ public class MessageManager implements MessageManagerLocal {
             return Collections.EMPTY_LIST;
         }
 
-        List<User> usrs = em.createQuery("SELECT u FROM User u WHERE u.login LIKE :login").setParameter("login", login + "%").setMaxResults(15).getResultList();
+        List<User> usrs = em.createQuery("SELECT u FROM User u WHERE u.login LIKE :login order by u.login").setParameter("login", login + "%").setMaxResults(20).getResultList();
         for (User u : usrs) {
             lst.add(new SimpleUser(u));
         }
