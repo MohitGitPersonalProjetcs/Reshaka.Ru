@@ -31,11 +31,11 @@
         <ui:define name="tablesblock">
             <h3>Заявка решающего</h3>
             <br/><br/>
-            <h:form style="margin-bottom: 30px;">
+            <h:form class="marginbottom30px">
                 <p:panel>
                     <h:panelGrid columns="2" >
                         <h:panelGrid columns="2" width="100%;">
-                            <h:outputText style="color: red;" value="Email* :" />
+                            <h:outputText class="colorred" value="Email* :" />
                             <p:inputText value="#{requestBean.email}" />
 
                             <h:outputText value="Ваше имя:" />
@@ -55,9 +55,9 @@
 
                         </h:panelGrid>
 
-                        <h:panelGrid width="60%" style="margin-left: 4em;" >
+                        <h:panelGrid width="60%"  styleClass="marginleft4em" >
                             <h:outputText value="Отметьте галочкой предметы, которыми вы владеете"/>
-                            <p:scrollPanel mode="native"  style="height: 100px;">
+                            <p:scrollPanel mode="native" styleClass="height200px" >
                                 <p:selectManyCheckbox converter="subjectConverter2"  value="#{requestBean.selectedSubjects}"  
                                                       layout="pageDirection">  
                                     <f:selectItems value="#{requestBean.allSubjects}" itemLabel="#{subject.subjectName}" var="subject" />  
@@ -71,18 +71,18 @@
                     <h:outputText value="Несколько слов о себе" />
                     <br/>
                     <h:panelGroup>
-                        <p:inputTextarea id="ab_me" value="#{requestBean.additionalInfo}" style="width: 100%;" />
+                        <p:inputTextarea id="ab_me" value="#{requestBean.additionalInfo}" styleClass="width100percent"  />
                         <p:watermark for="ab_me" value="Например: 'Я, Вася Пупкин, хорошо решаю задачи по математике и физике.' "/>
                     </h:panelGroup>
                     <br/>
                     <h:outputText value="Дополнительные контакты" />
                     <br/>
                     <h:panelGroup>
-                        <p:inputTextarea id="dop_me" value="#{requestBean.additionalContacts}" style="width: 100%;" />
+                        <p:inputTextarea id="dop_me" value="#{requestBean.additionalContacts}" styleClass="width100percent"/>
                         <p:watermark for="dop_me" value="Например: 'Мне более привычно общаться в контакте: vk.com/vasya.pupkin ' "/>
                     </h:panelGroup>
                 </p:panel>
-                <div style="float: right; margin: 10px;">
+                <div  class="floatright margin10">
                     <h:panelGrid columns="2">
                         <p:commandButton value="Отправить заявку"  update=":growl"
                                          actionListener="#{requestBean.addNewRequest()}"

@@ -16,17 +16,18 @@
         <h:form>
             <ui:composition>
                 <div id="container">
-                    <div id="testimonials" style="width: 500px; float: left;">
+                    <div id="testimonials">
                         <h4>О проекте</h4>
 
                         <div id="testimonial">
                             <div id="slider">
                                 <ul>
                                     <li>
-                                        <div style="display: inline-block; height: 140px; width: 195px; float: left; margin-top: 20px; margin-left: 30px;" >
-                                            <img src="images/offline_student.jpeg" style="height: 100%;" />
+                                        <div id="offlinestudent"
+                                             >
+                                            <img src="images/offline_student.jpeg" class="height100percent"/>
                                         </div>
-                                        <div style="display: inline-block; margin-left: 20px; text-align: left; width: 200px; height: 140px; margin-top: 20px; ">
+                                        <div id="offlinestudent_text" >
                                             Нужно сделать кучу домашней работы, написать контрольную или курсовую, а времени нет?
                                             <br/>
                                             Мы без проблем выполним за вас работу  в самом лучшем виде! Кликайте на кнопку <span> "Задание" </span> !
@@ -34,20 +35,20 @@
                                     </li>
 
                                     <li>
-                                        <div style="display: inline-block; height: 140px; width: 195px; float: left; margin-top: 20px; margin-left: 15px;" >
-                                            <img src="images/online_student.jpeg" style="height: 100%;" />
+                                        <div id="onlinestudent" >
+                                            <img src="images/online_student.jpeg" class="height100percent"/>
                                         </div>
-                                        <div style="display: inline-block; margin-left: 20px; text-align: left; width: 200px; height: 140px; margin-top: 20px; ">
+                                        <div id="onlinestudent_text">
                                             Завтра экзамен по нелюбимому предмету? Жалко терять время на подготовку ? 
                                             <br/>
-                                            Мы и тут выручим вас! Закажите <span style="font-weight: bold;">"Онлайн помощь" </span> и идите спать спокойно!
+                                            Мы и тут выручим вас! Закажите <span class="boldfont">"Онлайн помощь" </span> и идите спать спокойно!
                                         </div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div id="solutions" style="width: 260px; margin-left: 500px;">
+                    <div id="solutions">
                         <h4>Наши плюсы</h4>
                         <ul>
                             <li><h:link outcome="guarantees.xhtml"><span>Надежные гарантии</span></h:link></li>
@@ -59,21 +60,12 @@
                             <li><span>Оперативная помощь</span> </li>
                         </ul>
                     </div>
-                    <div style="clear: left;"><br/></div>
+                    <div  class="clearleft"><br/></div>
                 </div>
                 <script src="#{request.contextPath}/js/easySlider1.7.js"></script>
                 <script type="text/javascript">
                     $(document).ready(function(){	
-                        $("#slider").easySlider({
-                            auto: true,
-                            continuous: true,
-                            //numeric: true,
-                            pause: 8000,
-                            prevText: '&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;',
-                            nextText: '&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;'
-                        });
-                        
-                        
+                        initSlider();
                     });
                 </script>
 

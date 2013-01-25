@@ -20,7 +20,7 @@ and open the template in the editor.
                 <h:panelGroup id="login_panel" rendered="#{!webSession.signedIn}">
                     <li class="NOTactive"> <!-- active -->
 
-                        <h:outputLink style="color: blue; text-decoration: underline;" id="login_link" value="javascript:void(0)" onclick="clearUrlParameters();dlg_login.show(); initOpenIdIframe();" title="login">     
+                        <h:outputLink id="login_link" class="login_link" value="javascript:void(0)" onclick="clearUrlParameters();dlg_login.show(); initOpenIdIframe();" title="login">     
                             Вход
                         </h:outputLink> 
 
@@ -48,7 +48,6 @@ and open the template in the editor.
             <li><h:link outcome="rules.xhtml" value="Помощь" /></li>
 
 
-            <!--        Переделать для каждой роли    -->
             <h:panelGroup rendered="#{!webSession.signedIn}">           
                 <li><a href="#{request.contextPath}/partner.xhtml">Партнёр</a></li>
             </h:panelGroup>
