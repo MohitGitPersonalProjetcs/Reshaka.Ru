@@ -301,7 +301,7 @@
                         <div class="b">
                             <c:if test="#{chatBean.mode == 'DIALOGS'}">
                                 <div style="padding: 3px;" class="title" >
-                                    <h1 style="text-align: left; width: 70%; display:inline-block;">Диалоги</h1>
+                                    <h1 style="text-align: left; width: 60%; display:inline-block;">Диалоги</h1>
                                     <span style="display:inline-block;">
                                         <button id="refreshButton" onclick="window.location.reload();">R</button>
                                         <button id="searchButton" onclick="toggleUserSearch();" title="Найти пользователя">S</button>
@@ -310,7 +310,7 @@
                             </c:if>
                             <c:if test="#{chatBean.mode == 'MESSAGES'}">
                                 <div style="padding: 3px;" class="title" >
-                                    <h1 style="text-align: left; width: 70%; display:inline-block;">Сообщения</h1>
+                                    <h1 style="text-align: left; width: 60%; display:inline-block;">Сообщения</h1>
                                     <span style="display:inline-block;">
                                         <button id="refreshButton" onclick="requestNewMessages();">R</button>
                                         <button id="searchButton" onclick="toggleUserSearch();" title="Найти пользователя">S</button>
@@ -394,8 +394,8 @@
                             <h4>Поиск пользователя</h4>
                             <div class="post_add">
                                 <h:form style="padding-left: 20px;">
-                                    <span style="display: inline-block; width: 80px; text-align: left:">Логин:</span> 
-                                    <h:inputText value="#{chatBean.searchUserQuery}" style="width: 180px;"/>
+                                    <span style="display: inline-block; width: 60px;; text-align: left:">Логин:</span> 
+                                    <h:inputText value="#{chatBean.searchUserQuery}" style="width: 160px;"/>
                                     <h:commandButton value="Найти" class="btn">
                                         <f:ajax execute="@form" render=":searchResultsPanel" listener="#{chatBean.findUserAction}"/>
                                     </h:commandButton>
